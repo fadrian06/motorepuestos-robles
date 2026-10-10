@@ -1,4 +1,4 @@
-# MOTOREPUESTOS Y MECÁNICA ROBLES
+![Logo de MOTOREPUESTOS Y MECÁNICA ROBLES](resources/images/logo.jpeg)
 
 [![Autor](https://img.shields.io/badge/autor-Franyer_Sánchez-blue)](https://github.com/fadrian06)
 [![Licencia](https://img.shields.io/badge/licencia-propietaria-red)](LICENSE)
