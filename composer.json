@@ -41,11 +41,23 @@
     "guzzlehttp/guzzle": "^8.2",
     "illuminate/container": "^13.35",
     "leafs/auth": "^5.1",
-    "phpmailer/phpmailer": "^7.1"
+    "phpmailer/phpmailer": "^7.1",
+    "symfony/dotenv": "^7.4"
   },
   "require-dev": {
     "carthage-software/mago": "^1.55",
-    "phpunit/phpunit": "^12.5"
+    "phpunit/phpunit": "^12.5",
+    "symfony/var-dumper": "^7.4"
+  },
+  "scripts": {
+    "format": "mago format",
+    "lint": [
+      "mago lint",
+      "mago analyze",
+      "mago guard"
+    ],
+    "serve": "php -S localhost:80",
+    "test": "phpunit"
   },
   "type": "project"
 }
