@@ -1,0 +1,27 @@
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+      - run: |
+          composer install --no-dev
+      - uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/tests/**
+          log-level: minimal
+          password: ${{ secrets.ftp_password }}
+          port: ${{ secrets.ftp_port }}
+          server: ${{ secrets.ftp_server }}
+          server-dir: ${{ secrets.ftp_server_dir }}
+          username: ${{ secrets.ftp_username }}
+
+on:
+  push:
+    branches: ['main']
+
+permissions:
+  contents: read
