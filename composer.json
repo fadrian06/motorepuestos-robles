@@ -20,6 +20,10 @@
       "Tests\\": "tests"
     }
   },
+  "config": {
+    "process-timeout": 0,
+    "sort-packages": true
+  },
   "description": "Sistema de ventas de repuestos con control de inventario por lote y trazabilidad de proveedor a cliente.",
   "homepage": "https://motorepuestos-robles.infinityfreeapp.com",
   "license": "proprietary",
@@ -35,11 +39,12 @@
     "ext-pdo_sqlite": "*",
     "faslatam/psr-framework": "dev-main",
     "guzzlehttp/guzzle": "^8.2",
-    "leafs/auth": "^5.1"
+    "leafs/auth": "^5.1",
+    "phpmailer/phpmailer": "^7.1"
   },
-  "type": "project",
   "require-dev": {
     "carthage-software/mago": "^1.55",
     "phpunit/phpunit": "^12.5"
-  }
+  },
+  "type": "project"
 }
