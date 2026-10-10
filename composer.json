@@ -39,6 +39,7 @@
     "ext-pdo_sqlite": "*",
     "faslatam/psr-framework": "dev-main",
     "guzzlehttp/guzzle": "^8.2",
+    "illuminate/container": "^13.35",
     "leafs/auth": "^5.1",
     "phpmailer/phpmailer": "^7.1"
   },
