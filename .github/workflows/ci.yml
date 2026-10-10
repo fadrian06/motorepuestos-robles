@@ -11,9 +11,14 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
+            **/database/**
+            **/storage/**
             **/tests/**
+            .env.example
             composer.*
             LICENSE
+            mago.toml
+            phpunit.xml.dist
             README.md
           log-level: minimal
           password: ${{ secrets.ftp_password }}

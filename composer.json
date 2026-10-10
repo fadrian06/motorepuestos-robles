@@ -33,7 +33,13 @@
     "php": ">=8.3",
     "ext-pdo_mysql": "*",
     "ext-pdo_sqlite": "*",
-    "faslatam/psr-framework": "dev-main"
+    "faslatam/psr-framework": "dev-main",
+    "guzzlehttp/guzzle": "^8.2",
+    "leafs/auth": "^5.1"
   },
-  "type": "project"
+  "type": "project",
+  "require-dev": {
+    "carthage-software/mago": "^1.55",
+    "phpunit/phpunit": "^12.5"
+  }
 }
