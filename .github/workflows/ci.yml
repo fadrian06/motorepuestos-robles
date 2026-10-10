@@ -12,6 +12,9 @@ jobs:
             **/.git*
             **/.git*/**
             **/tests/**
+            composer.*
+            LICENSE
+            README.md
           log-level: minimal
           password: ${{ secrets.ftp_password }}
           port: ${{ secrets.ftp_port }}
