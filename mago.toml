@@ -1,7 +1,15 @@
 #:schema https://mago.carthage.software/1.50.0/schema.json
 
 [source]
-paths = ["app", "resources/views", "routes", "tests"]
+paths = [
+  "app",
+  "bootstrap",
+  "config",
+  "resources/views",
+  "routes",
+  "tests",
+  "index.php",
+]
 includes = ["vendor"]
 
 [formatter]
