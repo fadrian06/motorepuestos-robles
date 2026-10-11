@@ -42,7 +42,7 @@
     "illuminate/container": "^13.35",
     "leafs/auth": "^5.1",
     "phpmailer/phpmailer": "^7.1",
-    "symfony/dotenv": "^7.4"
+    "twig/twig": "^3.30"
   },
   "require-dev": {
     "carthage-software/mago": "^1.55",

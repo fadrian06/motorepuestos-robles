@@ -16,8 +16,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 final readonly class Authenticate implements MiddlewareInterface
 {
     public function __construct(
-        private Auth $auth,
         private ResponseFactoryInterface $responseFactory,
+        private Auth $auth,
     ) {}
 
     #[Override]
@@ -31,11 +31,11 @@ final readonly class Authenticate implements MiddlewareInterface
         }
 
         /** @var string */
-        $redirectGuest = $this->auth->config('redirect.guest');
+        $redirectLogin = $this->auth->config('redirect.login');
 
         return $this->responseFactory->createResponse()->withHeader(
             'location',
-            $redirectGuest,
+            $redirectLogin,
         );
     }
 }

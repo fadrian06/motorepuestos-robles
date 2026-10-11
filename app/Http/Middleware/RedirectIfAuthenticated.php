@@ -16,8 +16,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 final readonly class RedirectIfAuthenticated implements MiddlewareInterface
 {
     public function __construct(
-        private Auth $auth,
         private ResponseFactoryInterface $responseFactory,
+        private Auth $auth,
     ) {}
 
     #[Override]
