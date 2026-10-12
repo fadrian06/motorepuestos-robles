@@ -9,6 +9,7 @@ use App\Http\Handlers\ResetPassword;
 use App\Http\Handlers\SignIn;
 use App\Http\Handlers\SignOut;
 use App\Http\Handlers\SignUp;
+use App\Http\Handlers\UpdatePassword;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EnsureEmailIsVerified;
@@ -151,6 +152,7 @@ $signOut = $container->get(SignOut::class);
 $verifyEmail = $container->get(VerifyEmail::class);
 $forgotPassword = $container->get(ForgotPassword::class);
 $resetPassword = $container->get(ResetPassword::class);
+$updatePassword = $container->get(UpdatePassword::class);
 $auth = $container->get(Auth::class);
 $redirectLogin = $auth->config('redirect.login');
 $redirectGuest = $auth->config('redirect.guest');
@@ -197,6 +199,12 @@ $router->attach(
     ['GET', 'POST'],
     ['#^/restablecer-clave$#'],
     new QueueRequestHandler($resetPassword, $redirectIfAuthenticated),
+);
+
+$router->attach(
+    ['GET', 'POST'],
+    ['#^/actualizar-clave$#'],
+    new QueueRequestHandler($updatePassword, $authenticate),
 );
 
 $routingMiddleware = new RoutingMiddleware($router);
