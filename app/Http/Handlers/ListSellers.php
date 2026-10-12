@@ -38,10 +38,6 @@ final readonly class ListSellers implements RequestHandlerInterface
         /** @var array[] */
         $sellers = $db->where($rolesKey, 'LIKE', '%seller%')->all();
 
-        if ($sellers) {
-            dd($sellers);
-        }
-
         $html = $this->environment->render('pages/sellers.twig', [
             'sellers' => $sellers,
         ]);

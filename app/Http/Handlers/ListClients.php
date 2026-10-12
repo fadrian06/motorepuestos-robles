@@ -31,10 +31,6 @@ final readonly class ListClients implements RequestHandlerInterface
         /** @var array[] */
         $clients = $db->all();
 
-        if ($clients) {
-            dd($clients);
-        }
-
         $html = $this->environment->render('pages/clients.twig', [
             'clients' => $clients,
         ]);
