@@ -3,15 +3,19 @@
 declare(strict_types=1);
 
 use App\Http\Handlers\Dashboard;
+use App\Http\Handlers\DeleteClient;
 use App\Http\Handlers\ForgotPassword;
+use App\Http\Handlers\ListClients;
 use App\Http\Handlers\ListSellers;
 use App\Http\Handlers\NotFound;
+use App\Http\Handlers\RegisterClient;
 use App\Http\Handlers\RegisterSeller;
 use App\Http\Handlers\ResetPassword;
 use App\Http\Handlers\ResetPermissions;
 use App\Http\Handlers\SignIn;
 use App\Http\Handlers\SignOut;
 use App\Http\Handlers\SignUp;
+use App\Http\Handlers\UpdateClient;
 use App\Http\Handlers\UpdatePassword;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Middleware\Authenticate;
@@ -25,7 +29,6 @@ use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Container\Container;
 use Leaf\Auth;
-use Leaf\Db;
 use Leaf\Helpers\Password;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -85,8 +88,9 @@ $container->singleton(Auth::class, static function (): Auth {
     /** @var string */
     $passwordKey = $auth->config('password.key');
 
-    /** @var Db */
-    $db = $auth->db()->createTableIfNotExists($authTable, [
+    $db = $auth->db();
+
+    $db->createTableIfNotExists($authTable, [
         $authIdKey => 'INTEGER PRIMARY KEY AUTOINCREMENT',
         'email' => 'TEXT NOT NULL UNIQUE CHECK (email LIKE "%@%")',
         $passwordKey => 'TEXT NOT NULL',
@@ -95,8 +99,14 @@ $container->singleton(Auth::class, static function (): Auth {
 
     $db->execute();
 
-    /** @var Db */
-    $db = $auth->db()->select($authTable);
+    $db->createTableIfNotExists('clients', [
+        'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+        'name' => 'TEXT NOT NULL UNIQUE',
+    ]);
+
+    $db->execute();
+
+    $db->select($authTable);
 
     /** @var array[] */
     $users = $db->all();
@@ -118,6 +128,10 @@ $container->singleton(Auth::class, static function (): Auth {
             'view sellers',
             'register seller',
             'reset seller permissions',
+            'view clients',
+            'register client',
+            'update client',
+            'delete client',
         ],
         'seller' => [],
         ...$customPermissions,
@@ -161,6 +175,10 @@ $updatePassword = $container->get(UpdatePassword::class);
 $registerSeller = $container->get(RegisterSeller::class);
 $listSellers = $container->get(ListSellers::class);
 $resetPermissions = $container->get(ResetPermissions::class);
+$registerClient = $container->get(RegisterClient::class);
+$listClients = $container->get(ListClients::class);
+$updateClient = $container->get(UpdateClient::class);
+$deleteClient = $container->get(DeleteClient::class);
 $auth = $container->get(Auth::class);
 $redirectLogin = $auth->config('redirect.login');
 $redirectGuest = $auth->config('redirect.guest');
@@ -249,6 +267,50 @@ $router->attach(
         $authenticate,
         $ensureEmailIsVerified,
         $authorize->withPermissions('reset seller permissions'),
+    ),
+);
+
+$router->attach(
+    ['GET'],
+    ['#^/clientes$#'],
+    new QueueRequestHandler(
+        $listClients,
+        $authenticate,
+        $ensureEmailIsVerified,
+        $authorize->withPermissions('view clients'),
+    ),
+);
+
+$router->attach(
+    ['GET', 'POST'],
+    ['#^/clientes/registrar$#'],
+    new QueueRequestHandler(
+        $registerClient,
+        $authenticate,
+        $ensureEmailIsVerified,
+        $authorize->withPermissions('register client'),
+    ),
+);
+
+$router->attach(
+    ['GET', 'POST'],
+    ['#^/clientes/(?<id>\d+)$#'],
+    new QueueRequestHandler(
+        $updateClient,
+        $authenticate,
+        $ensureEmailIsVerified,
+        $authorize->withPermissions('update client'),
+    ),
+);
+
+$router->attach(
+    ['GET'],
+    ['#^/clientes/(?<id>\d+)/eliminar$#'],
+    new QueueRequestHandler(
+        $deleteClient,
+        $authenticate,
+        $ensureEmailIsVerified,
+        $authorize->withPermissions('delete client'),
     ),
 );
 

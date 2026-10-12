@@ -9,14 +9,18 @@ use Leaf\Db;
 use NoDiscard;
 use Override;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
 
 final readonly class ListSellers implements RequestHandlerInterface
 {
-    public function __construct(private ResponseFactoryInterface $responseFactory, private Auth $auth, private Environment $environment) {}
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory,
+        private Auth $auth,
+        private Environment $environment,
+    ) {}
 
     #[Override]
     #[NoDiscard]

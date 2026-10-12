@@ -10,8 +10,8 @@ use Leaf\Flash;
 use NoDiscard;
 use Override;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
 
@@ -76,9 +76,13 @@ final readonly class ResetPermissions implements RequestHandlerInterface
                 /** @var array */
                 $permissions = $requestBody['permissions'] ?? [];
 
-                $this->auth->db()->update($authTable)->params([
-                    'permissions' => json_encode($permissions),
-                ])->execute();
+                $this->auth
+                    ->db()
+                    ->update($authTable)
+                    ->params([
+                        'permissions' => json_encode($permissions),
+                    ])
+                    ->execute();
 
                 return $this->responseFactory->createResponse()->withHeader(
                     'location',
