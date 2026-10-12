@@ -138,7 +138,12 @@ $router->attach(
     new QueueRequestHandler($signIn, $redirectIfAuthenticated),
 );
 
-$router->attach(['GET', 'POST'], ['#^/registrarse$#'], $signUp);
+$router->attach(
+    ['GET', 'POST'],
+    ['#^/registrarse$#'],
+    new QueueRequestHandler($signUp, $redirectIfAuthenticated),
+);
+
 $router->attach(['GET'], ['#^/salir$#'], $signOut);
 $router->attach(['GET', 'POST'], ['#^/verificar-correo$#'], $verifyEmail);
 
