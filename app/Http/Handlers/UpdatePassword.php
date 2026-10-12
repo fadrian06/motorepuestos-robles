@@ -42,12 +42,9 @@ final readonly class UpdatePassword implements RequestHandlerInterface
             case 'GET':
                 $flash = $this->flash->display();
 
-                if ($flash) {
-                    dd($flash);
-                }
-
                 $html = $this->environment->render('pages/update-password.twig', [
                     'passwordKey' => $passwordKey,
+                    'flash' => $flash,
                 ]);
 
                 $response = $this->responseFactory->createResponse();
@@ -68,7 +65,7 @@ final readonly class UpdatePassword implements RequestHandlerInterface
 
                     return $response->withHeader(
                         'location',
-                        '/update-password',
+                        '/actualizar-clave',
                     );
                 }
 
@@ -84,7 +81,7 @@ final readonly class UpdatePassword implements RequestHandlerInterface
                 $this->flash->set($this->auth->errors());
                 $response = $this->responseFactory->createResponse();
 
-                return $response->withHeader('location', '/update-password');
+                return $response->withHeader('location', '/actualizar-clave');
 
             default:
                 return $this->responseFactory->createResponse(405);
