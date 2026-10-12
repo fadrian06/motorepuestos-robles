@@ -187,7 +187,7 @@ $router = new Router();
 
 $router->attach(
     ['GET'],
-    ["#^{$redirectGuest}$#"],
+    ['#^/$#', "#^{$redirectGuest}$#"],
     new QueueRequestHandler($dashboard, $authenticate, $ensureEmailIsVerified),
 );
 
