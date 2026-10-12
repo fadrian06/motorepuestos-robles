@@ -150,7 +150,11 @@ $router->attach(
     new QueueRequestHandler($signOut, $authenticate),
 );
 
-$router->attach(['GET', 'POST'], ['#^/verificar-correo$#'], $verifyEmail);
+$router->attach(
+    ['GET', 'POST'],
+    ['#^/verificar-correo$#'],
+    new QueueRequestHandler($verifyEmail, $authenticate),
+);
 
 $router->attach(
     ['GET', 'POST'],
