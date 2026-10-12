@@ -107,7 +107,8 @@ $container->singleton(Auth::class, static function (): Auth {
         );
     }
 
-    $auth->createRoles([
+    /** @var array<string, string[]> */
+    $roles = [
         'admin' => [
             'view sellers',
             'register seller',
@@ -115,7 +116,9 @@ $container->singleton(Auth::class, static function (): Auth {
         ],
         'seller' => [],
         ...$customPermissions,
-    ]);
+    ];
+
+    $auth->createRoles($roles);
 
     return $auth;
 });
