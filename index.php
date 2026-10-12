@@ -105,6 +105,7 @@ $container->bind(PHPMailer::class, static function (): PHPMailer {
     $mail->Port = (int) $_ENV['MAIL_PORT'];
     $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
     $mail->isHTML(true);
+    $mail->CharSet = PHPMailer::CHARSET_UTF8;
 
     return $mail;
 });
