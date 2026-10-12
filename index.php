@@ -13,7 +13,6 @@ use App\Http\Handlers\VerifyEmail;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Http\Middleware\RedirectIfAuthenticated;
-use Faslatam\PsrFramework\DecoratingRequestHandler;
 use Faslatam\PsrFramework\QueueRequestHandler;
 use Faslatam\PsrFramework\Router;
 use Faslatam\PsrFramework\RoutingMiddleware;
@@ -136,7 +135,7 @@ $router->attach(
 $router->attach(
     ['GET', 'POST'],
     ["#^{$redirectLogin}$#"],
-    new DecoratingRequestHandler($redirectIfAuthenticated, $signIn),
+    new QueueRequestHandler($signIn, $redirectIfAuthenticated),
 );
 
 $router->attach(['GET', 'POST'], ['#^/registrarse$#'], $signUp);
@@ -146,13 +145,13 @@ $router->attach(['GET', 'POST'], ['#^/verificar-correo$#'], $verifyEmail);
 $router->attach(
     ['GET', 'POST'],
     ['#^/recuperar-clave$#'],
-    new DecoratingRequestHandler($redirectIfAuthenticated, $forgotPassword),
+    new QueueRequestHandler($forgotPassword, $redirectIfAuthenticated),
 );
 
 $router->attach(
     ['GET', 'POST'],
     ['#^/restablecer-clave$#'],
-    new DecoratingRequestHandler($redirectIfAuthenticated, $resetPassword),
+    new QueueRequestHandler($resetPassword, $redirectIfAuthenticated),
 );
 
 $routingMiddleware = new RoutingMiddleware($router);
