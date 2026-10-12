@@ -48,12 +48,9 @@ final readonly class UpdateClient implements RequestHandlerInterface
             case 'GET':
                 $flash = $this->flash->display();
 
-                if ($flash) {
-                    dd($flash);
-                }
-
                 $html = $this->environment->render('pages/update-client.twig', [
                     'client' => $client,
+                    'flash' => $flash,
                 ]);
 
                 $response = $this->responseFactory->createResponse();

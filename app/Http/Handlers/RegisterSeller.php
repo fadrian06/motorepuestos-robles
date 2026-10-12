@@ -42,12 +42,9 @@ final readonly class RegisterSeller implements RequestHandlerInterface
             case 'GET':
                 $flash = $this->flash->display();
 
-                if ($flash) {
-                    dd($flash);
-                }
-
                 $html = $this->environment->render('pages/register-seller.twig', [
                     'passwordKey' => $passwordKey,
+                    'flash' => $flash,
                 ]);
 
                 $response = $this->responseFactory->createResponse();
@@ -77,9 +74,9 @@ final readonly class RegisterSeller implements RequestHandlerInterface
                     $rolesKey => json_encode(['seller']),
                     'permissions' => json_encode([]),
                 ])) {
-                    $response = $this->responseFactory->createResponse(201);
+                    $response = $this->responseFactory->createResponse();
 
-                    return $response->withHeader('Location', '/vendedores');
+                    return $response->withHeader('location', '/vendedores');
                 }
 
                 $this->flash->set($this->auth->errors());

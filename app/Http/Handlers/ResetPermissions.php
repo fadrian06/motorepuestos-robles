@@ -55,16 +55,24 @@ final readonly class ResetPermissions implements RequestHandlerInterface
             return $this->responseFactory->createResponse(404);
         }
 
+        $availablePermissions = [
+            'view clients' => 'Ver directorio de clientes',
+            'register client' => 'Registrar nuevos clientes',
+            'update client' => 'Modificar clientes existentes',
+            'delete client' => 'Eliminar clientes',
+            'view sellers' => 'Ver lista de vendedores',
+            'register seller' => 'Registrar nuevos vendedores',
+            'reset seller permissions' => 'Gestionar permisos de otros vendedores',
+        ];
+
         switch ($request->getMethod()) {
             case 'GET':
                 $flash = $this->flash->display();
 
-                if ($flash) {
-                    dd($flash);
-                }
-
                 $html = $this->environment->render('pages/reset-permissions.twig', [
                     'seller' => $seller,
+                    'flash' => $flash,
+                    'availablePermissions' => $availablePermissions,
                 ]);
 
                 $response = $this->responseFactory->createResponse();
@@ -82,6 +90,7 @@ final readonly class ResetPermissions implements RequestHandlerInterface
                     ->params([
                         'permissions' => json_encode($permissions),
                     ])
+                    ->where($authIdKey, $sellerId)
                     ->execute();
 
                 return $this->responseFactory->createResponse()->withHeader(

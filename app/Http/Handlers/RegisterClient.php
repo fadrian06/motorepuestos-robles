@@ -38,12 +38,11 @@ final readonly class RegisterClient implements RequestHandlerInterface
             case 'GET':
                 $flash = $this->flash->display();
 
-                if ($flash) {
-                    dd($flash);
-                }
-
                 $html = $this->environment->render(
                     'pages/register-client.twig',
+                    [
+                        'flash' => $flash,
+                    ],
                 );
 
                 $response = $this->responseFactory->createResponse();
