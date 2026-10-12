@@ -44,6 +44,9 @@ final readonly class SignUp implements RequestHandlerInterface
         /** @var string */
         $redirectGuest = $this->auth->config('redirect.guest');
 
+        /** @var string */
+        $rolesKey = $this->auth->config('roles.key');
+
         /** @var array */
         $requestBody = $request->getParsedBody();
 
@@ -89,7 +92,11 @@ final readonly class SignUp implements RequestHandlerInterface
                     return $response->withHeader('location', '/registrarse');
                 }
 
-                if ($this->auth->register($validated)) {
+                if ($this->auth->register([
+                    ...$validated,
+                    $rolesKey => json_encode(['admin']),
+                    'permissions' => json_encode([]),
+                ])) {
                     $token = $this->auth->user()?->generateVerificationToken();
 
                     $mailBody = $this->environment->render('verify-email-token.twig', [

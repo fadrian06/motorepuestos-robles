@@ -85,9 +85,37 @@ $container->singleton(Auth::class, static function (): Auth {
         $authIdKey => 'INTEGER PRIMARY KEY AUTOINCREMENT',
         'email' => 'TEXT NOT NULL UNIQUE CHECK (email LIKE "%@%")',
         $passwordKey => 'TEXT NOT NULL',
+        'permissions' => 'TEXT NOT NULL',
     ]);
 
     $db->execute();
+
+    /** @var Db */
+    $db = $auth->db()->select($authTable);
+
+    /** @var array[] */
+    $users = $db->all();
+    $customPermissions = [];
+
+    foreach ($users as $user) {
+        /** @var string */
+        $permissions = $user['permissions'];
+
+        $customPermissions[$user['email']] = json_decode(
+            $permissions,
+            associative: true,
+        );
+    }
+
+    $auth->createRoles([
+        'admin' => [
+            'view sellers',
+            'register seller',
+            'reset seller permissions',
+        ],
+        'seller' => [],
+        ...$customPermissions,
+    ]);
 
     return $auth;
 });

@@ -27,6 +27,10 @@ final readonly class Authenticate implements MiddlewareInterface
         RequestHandlerInterface $handler,
     ): ResponseInterface {
         if ($this->auth->user()) {
+            /** @var string */
+            $email = $this->auth->user()?->email;
+            $this->auth->user()?->assign($email);
+
             return $handler->handle($request);
         }
 
