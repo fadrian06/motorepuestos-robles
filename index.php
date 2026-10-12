@@ -33,6 +33,7 @@ use Leaf\Helpers\Password;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\Loader\LoaderInterface;
 
@@ -57,6 +58,19 @@ $container->singleton(
     static fn(): LoaderInterface => new FilesystemLoader([
         __DIR__ . '/resources/views',
     ]),
+);
+
+$container->singleton(
+    Environment::class,
+    static function (Container $container): Environment {
+        $environment = new Environment(
+            $container->get(LoaderInterface::class),
+        );
+
+        $environment->addGlobal('_ENV', $_ENV);
+
+        return $environment;
+    },
 );
 
 $container->singleton(Auth::class, static function (): Auth {
