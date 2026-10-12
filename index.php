@@ -100,6 +100,9 @@ $container->singleton(Auth::class, static function (): Auth {
     $authIdKey = $auth->config('id.key');
 
     /** @var string */
+    $rolesKey = $auth->config('roles.key');
+
+    /** @var string */
     $passwordKey = $auth->config('password.key');
 
     $db = $auth->db();
@@ -108,6 +111,7 @@ $container->singleton(Auth::class, static function (): Auth {
         $authIdKey => 'INTEGER PRIMARY KEY AUTOINCREMENT',
         'email' => 'TEXT NOT NULL UNIQUE CHECK (email LIKE "%@%")',
         $passwordKey => 'TEXT NOT NULL',
+        $rolesKey => 'TEXT NOT NULL',
         'permissions' => 'TEXT NOT NULL',
     ]);
 
