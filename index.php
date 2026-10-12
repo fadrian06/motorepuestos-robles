@@ -24,7 +24,6 @@ use Leaf\Auth;
 use Leaf\Db;
 use Leaf\Helpers\Password;
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\Loader\FilesystemLoader;
@@ -58,12 +57,15 @@ $container->singleton(Auth::class, static function (): Auth {
 
     $auth->config('timestamps', false);
 
-    $auth->config('password.encode', static fn(
-        #[SensitiveParameter]
-        string $password,
-    ): string => Password::hash($password, Password::BCRYPT, [
-        'cost' => $_ENV['BCRYPT_ROUNDS'],
-    ]));
+    $auth->config(
+        'password.encode',
+        static fn(
+            #[SensitiveParameter]
+            string $password,
+        ): string => (string) Password::hash($password, Password::BCRYPT, [
+            'cost' => $_ENV['BCRYPT_ROUNDS'],
+        ]),
+    );
 
     $auth->config('session', true);
     $auth->config('token.secret', $_ENV['TOKEN_SECRET']);
@@ -91,10 +93,9 @@ $container->singleton(Auth::class, static function (): Auth {
     return $auth;
 });
 
-$container->singleton(PHPMailer::class, static function (): PHPMailer {
+$container->bind(PHPMailer::class, static function (): PHPMailer {
     $mail = new PHPMailer(true);
 
-    $mail->SMTPDebug = SMTP::DEBUG_SERVER;
     $mail->isSMTP();
     $mail->Host = $_ENV['MAIL_HOST'];
     $mail->SMTPAuth = true;
