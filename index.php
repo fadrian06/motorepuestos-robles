@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 use App\Http\Handlers\Dashboard;
 use App\Http\Handlers\ForgotPassword;
+use App\Http\Handlers\ListSellers;
 use App\Http\Handlers\NotFound;
+use App\Http\Handlers\RegisterSeller;
 use App\Http\Handlers\ResetPassword;
+use App\Http\Handlers\ResetPermissions;
 use App\Http\Handlers\SignIn;
 use App\Http\Handlers\SignOut;
 use App\Http\Handlers\SignUp;
 use App\Http\Handlers\UpdatePassword;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\Authorize;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Faslatam\PsrFramework\QueueRequestHandler;
@@ -145,6 +149,7 @@ $fallbackHandler = $container->get(NotFound::class);
 $authenticate = $container->get(Authenticate::class);
 $redirectIfAuthenticated = $container->get(RedirectIfAuthenticated::class);
 $ensureEmailIsVerified = $container->get(EnsureEmailIsVerified::class);
+$authorize = $container->get(Authorize::class);
 $dashboard = $container->get(Dashboard::class);
 $signIn = $container->get(SignIn::class);
 $signUp = $container->get(SignUp::class);
@@ -153,6 +158,9 @@ $verifyEmail = $container->get(VerifyEmail::class);
 $forgotPassword = $container->get(ForgotPassword::class);
 $resetPassword = $container->get(ResetPassword::class);
 $updatePassword = $container->get(UpdatePassword::class);
+$registerSeller = $container->get(RegisterSeller::class);
+$listSellers = $container->get(ListSellers::class);
+$resetPermissions = $container->get(ResetPermissions::class);
 $auth = $container->get(Auth::class);
 $redirectLogin = $auth->config('redirect.login');
 $redirectGuest = $auth->config('redirect.guest');
@@ -204,7 +212,44 @@ $router->attach(
 $router->attach(
     ['GET', 'POST'],
     ['#^/actualizar-clave$#'],
-    new QueueRequestHandler($updatePassword, $authenticate),
+    new QueueRequestHandler(
+        $updatePassword,
+        $authenticate,
+        $ensureEmailIsVerified,
+    ),
+);
+
+$router->attach(
+    ['GET'],
+    ['#^/vendedores$#'],
+    new QueueRequestHandler(
+        $listSellers,
+        $authenticate,
+        $ensureEmailIsVerified,
+        $authorize->withPermissions('view sellers'),
+    ),
+);
+
+$router->attach(
+    ['GET', 'POST'],
+    ['#^/vendedores/registrar$#'],
+    new QueueRequestHandler(
+        $registerSeller,
+        $authenticate,
+        $ensureEmailIsVerified,
+        $authorize->withPermissions('register seller'),
+    ),
+);
+
+$router->attach(
+    ['GET', 'POST'],
+    ['#^/vendedores/(?<id>\d+)$#'],
+    new QueueRequestHandler(
+        $resetPermissions,
+        $authenticate,
+        $ensureEmailIsVerified,
+        $authorize->withPermissions('reset seller permissions'),
+    ),
 );
 
 $routingMiddleware = new RoutingMiddleware($router);

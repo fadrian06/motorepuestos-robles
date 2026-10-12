@@ -1,0 +1,16 @@
+<form method="post" novalidate>
+  <input
+    type="email"
+    name="email"
+    required
+    placeholder="Correo electrónico">
+  <input
+    type="password"
+    name="{{ passwordKey }}"
+    required
+    placeholder="Contraseña">
+  <select name="permissions" multiple required>
+    <option value="" disabled selected>Permisos</option>
+  </select>
+  <input type="submit">
+</form>

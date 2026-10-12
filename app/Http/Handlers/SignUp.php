@@ -10,7 +10,6 @@ use Leaf\Flash;
 use Leaf\Form;
 use NoDiscard;
 use Override;
-use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,7 +24,6 @@ final readonly class SignUp implements RequestHandlerInterface
         private Environment $environment,
         private Form $form,
         private Flash $flash,
-        private PHPMailer $mail,
     ) {}
 
     #[Override]
@@ -97,18 +95,6 @@ final readonly class SignUp implements RequestHandlerInterface
                     $rolesKey => json_encode(['admin']),
                     'permissions' => json_encode([]),
                 ])) {
-                    $token = $this->auth->user()?->generateVerificationToken();
-
-                    $mailBody = $this->environment->render('verify-email-token.twig', [
-                        'appUrl' => $_ENV['APP_URL'],
-                        'token' => $token,
-                    ]);
-
-                    $this->mail->addAddress($validated['email']);
-                    $this->mail->Subject = 'Verifica tu correo electronico';
-                    $this->mail->Body = $mailBody;
-                    $this->mail->send();
-
                     $response = $this->responseFactory->createResponse();
 
                     return $response->withHeader('location', $redirectGuest);
