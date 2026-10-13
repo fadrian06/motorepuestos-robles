@@ -63,6 +63,7 @@ final readonly class ResetPermissions implements RequestHandlerInterface
             'view sellers' => 'Ver lista de vendedores',
             'register seller' => 'Registrar nuevos vendedores',
             'reset seller permissions' => 'Gestionar permisos de otros vendedores',
+            'update exchange rates' => 'Actualizar tasas de cambio',
         ];
 
         switch ($request->getMethod()) {

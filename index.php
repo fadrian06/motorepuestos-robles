@@ -16,6 +16,7 @@ use App\Http\Handlers\SignIn;
 use App\Http\Handlers\SignOut;
 use App\Http\Handlers\SignUp;
 use App\Http\Handlers\UpdateClient;
+use App\Http\Handlers\UpdateExchangeRates;
 use App\Http\Handlers\UpdatePassword;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Middleware\Authenticate;
@@ -60,18 +61,13 @@ $container->singleton(
     ]),
 );
 
-$container->singleton(
-    Environment::class,
-    static function (Container $container): Environment {
-        $environment = new Environment(
-            $container->get(LoaderInterface::class),
-        );
+$container->singleton(Environment::class, static function (Container $container): Environment {
+    $environment = new Environment($container->get(LoaderInterface::class));
 
-        $environment->addGlobal('_ENV', $_ENV);
+    $environment->addGlobal('_ENV', $_ENV);
 
-        return $environment;
-    },
-);
+    return $environment;
+});
 
 $container->singleton(Auth::class, static function (): Auth {
     $auth = new Auth();
@@ -117,6 +113,15 @@ $container->singleton(Auth::class, static function (): Auth {
 
     $db->execute();
 
+    $db->createTableIfNotExists('exchange_rates', [
+        'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+        'created_at' => 'TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP',
+        'usd_ves' => 'REAL NOT NULL',
+        'usd_cop' => 'REAL NOT NULL',
+    ]);
+
+    $db->execute();
+
     $db->createTableIfNotExists('clients', [
         'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
         'name' => 'TEXT NOT NULL UNIQUE',
@@ -150,6 +155,7 @@ $container->singleton(Auth::class, static function (): Auth {
             'register client',
             'update client',
             'delete client',
+            'update exchange rates',
         ],
         'seller' => [],
         ...$customPermissions,
@@ -197,6 +203,7 @@ $registerClient = $container->get(RegisterClient::class);
 $listClients = $container->get(ListClients::class);
 $updateClient = $container->get(UpdateClient::class);
 $deleteClient = $container->get(DeleteClient::class);
+$updateExchangeRates = $container->get(UpdateExchangeRates::class);
 $auth = $container->get(Auth::class);
 $redirectLogin = $auth->config('redirect.login');
 $redirectGuest = $auth->config('redirect.guest');
@@ -329,6 +336,17 @@ $router->attach(
         $authenticate,
         $ensureEmailIsVerified,
         $authorize->withPermissions('delete client'),
+    ),
+);
+
+$router->attach(
+    ['GET', 'POST'],
+    ['#^/cotizaciones$#'],
+    new QueueRequestHandler(
+        $updateExchangeRates,
+        $authenticate,
+        $ensureEmailIsVerified,
+        $authorize->withPermissions('update exchange rates'),
     ),
 );
 
