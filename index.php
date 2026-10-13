@@ -66,7 +66,8 @@ $container->singleton(Auth::class, static function (): Auth {
 
     $auth->autoConnect();
 
-    $migrationFiles = array_filter((array) glob(__DIR__ . '/database/migrations/*.php'));
+    $migrationFiles = array_filter((array) glob(__DIR__
+    . '/database/migrations/*.php'));
 
     foreach ($migrationFiles as $migration) {
         /** @var Migration */

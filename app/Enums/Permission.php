@@ -31,7 +31,10 @@ enum Permission
 
     public static function keys(): array
     {
-        return array_map(static fn(Permission $permission) => $permission->key(), self::cases());
+        return array_map(
+            static fn(Permission $permission) => $permission->key(),
+            self::cases(),
+        );
     }
 
     public function name(): string
@@ -51,22 +54,37 @@ enum Permission
     public function description(): string
     {
         return match ($this) {
-            Permission::ViewSellers => 'Permite visualizar el listado del equipo de vendedores.',
-            Permission::RegisterSeller => 'Permite crear cuentas para nuevos vendedores.',
-            Permission::ResetPermissions => 'Permite modificar permisos de otros usuarios.',
-            Permission::ViewClients => 'Permite consultar el listado y directorio de clientes.',
-            Permission::RegisterClient => 'Permite dar de alta a nuevos compradores.',
-            Permission::UpdateClient => 'Permite editar la información de clientes.',
-            Permission::DeleteClient => 'Permite borrar registros de clientes del sistema.',
-            Permission::UpdateExchangeRates => 'Permite actualizar las tasas de cambio USD/VES y USD/COP.',
+            Permission::ViewSellers
+                => 'Permite visualizar el listado del equipo de vendedores.',
+            Permission::RegisterSeller
+                => 'Permite crear cuentas para nuevos vendedores.',
+            Permission::ResetPermissions
+                => 'Permite modificar permisos de otros usuarios.',
+            Permission::ViewClients
+                => 'Permite consultar el listado y directorio de clientes.',
+            Permission::RegisterClient
+                => 'Permite dar de alta a nuevos compradores.',
+            Permission::UpdateClient
+                => 'Permite editar la información de clientes.',
+            Permission::DeleteClient
+                => 'Permite borrar registros de clientes del sistema.',
+            Permission::UpdateExchangeRates
+                => 'Permite actualizar las tasas de cambio USD/VES y USD/COP.',
         };
     }
 
     public function category(): string
     {
         return match ($this) {
-            Permission::ViewSellers, Permission::RegisterSeller, Permission::ResetPermissions => 'Vendedores',
-            Permission::ViewClients, Permission::RegisterClient, Permission::UpdateClient, Permission::DeleteClient => 'Clientes',
+            Permission::ViewSellers,
+            Permission::RegisterSeller,
+            Permission::ResetPermissions,
+                => 'Vendedores',
+            Permission::ViewClients,
+            Permission::RegisterClient,
+            Permission::UpdateClient,
+            Permission::DeleteClient,
+                => 'Clientes',
             Permission::UpdateExchangeRates => 'Cotizaciones',
         };
     }

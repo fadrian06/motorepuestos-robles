@@ -81,7 +81,11 @@ return static function (ContainerInterface $container): Router {
     $router->attach(
         ['GET'],
         ['#^/$#', "#^{$redirectGuest}$#"],
-        new QueueRequestHandler($dashboard, $authenticate, $ensureEmailIsVerified),
+        new QueueRequestHandler(
+            $dashboard,
+            $authenticate,
+            $ensureEmailIsVerified,
+        ),
     );
 
     $router->attach(
