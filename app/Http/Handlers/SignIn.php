@@ -45,12 +45,9 @@ final readonly class SignIn implements RequestHandlerInterface
             case 'GET':
                 $flash = $this->flash->display();
 
-                if ($flash) {
-                    dd($flash);
-                }
-
                 $html = $this->environment->render('pages/signin.twig', [
                     'passwordKey' => $passwordKey,
+                    'flash' => $flash,
                 ]);
 
                 $response = $this->responseFactory->createResponse();
@@ -67,21 +64,26 @@ final readonly class SignIn implements RequestHandlerInterface
 
                 if (!$validated) {
                     $this->flash->set($this->form->errors());
-                    $response = $this->responseFactory->createResponse(400);
 
-                    return $response->withHeader('location', $redirectLogin);
+                    return $this->responseFactory->createResponse()->withHeader(
+                        'location',
+                        $redirectLogin,
+                    );
                 }
 
-                if ($this->auth->login($validated)) {
-                    $response = $this->responseFactory->createResponse();
+                if (!$this->auth->login($validated)) {
+                    $this->flash->set($this->auth->errors());
 
-                    return $response->withHeader('location', $redirectGuest);
+                    return $this->responseFactory->createResponse()->withHeader(
+                        'location',
+                        $redirectLogin,
+                    );
                 }
 
-                $this->flash->set($this->auth->errors());
-                $response = $this->responseFactory->createResponse();
-
-                return $response->withHeader('location', $redirectLogin);
+                return $this->responseFactory->createResponse()->withHeader(
+                    'location',
+                    $redirectGuest,
+                );
 
             default:
                 return $this->responseFactory->createResponse(405);
