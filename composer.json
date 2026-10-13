@@ -34,7 +34,7 @@
     }
   },
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.4",
     "ext-pdo_mysql": "*",
     "ext-pdo_sqlite": "*",
     "faslatam/psr-framework": "dev-main",
@@ -45,9 +45,9 @@
     "twig/twig": "^3.30"
   },
   "require-dev": {
-    "carthage-software/mago": "^1.55",
-    "phpunit/phpunit": "^12.5",
-    "symfony/var-dumper": "^7.4"
+    "carthage-software/mago": "^1.56",
+    "phpunit/phpunit": "^13.4",
+    "symfony/var-dumper": "^8.1"
   },
   "scripts": {
     "format": "mago format",
