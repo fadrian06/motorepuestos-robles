@@ -36,7 +36,6 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Twig\Loader\LoaderInterface;
 
 use function Faslatam\PsrFramework\send_response;
 
@@ -54,15 +53,10 @@ $container->singleton(
     ServerRequest::fromGlobals(...),
 );
 
-$container->singleton(
-    LoaderInterface::class,
-    static fn(): LoaderInterface => new FilesystemLoader([
+$container->singleton(Environment::class, static function (): Environment {
+    $environment = new Environment(new FilesystemLoader([
         __DIR__ . '/resources/views',
-    ]),
-);
-
-$container->singleton(Environment::class, static function (Container $container): Environment {
-    $environment = new Environment($container->get(LoaderInterface::class));
+    ]));
 
     $environment->addGlobal('_ENV', $_ENV);
 
