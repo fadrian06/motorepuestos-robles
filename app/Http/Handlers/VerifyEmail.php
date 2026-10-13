@@ -59,7 +59,7 @@ final readonly class VerifyEmail implements RequestHandlerInterface
                 /** @var string */
                 $email = $this->auth->user()?->get()['email'] ?? '';
 
-                $mailBody = $this->environment->render('verify-email-token.twig', [
+                $mailBody = $this->environment->render('emails/verify-email-token.twig', [
                     'appUrl' => $_ENV['APP_URL'],
                     'token' => $token,
                 ]);
