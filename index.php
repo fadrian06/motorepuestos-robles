@@ -24,6 +24,7 @@ use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authorize;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Migration;
 use Faslatam\PsrFramework\QueueRequestHandler;
 use Faslatam\PsrFramework\Router;
 use Faslatam\PsrFramework\RoutingMiddleware;
@@ -84,46 +85,17 @@ $container->singleton(Auth::class, static function (): Auth {
 
     $auth->autoConnect();
 
+    $migrationFiles = array_filter((array) glob(__DIR__ . '/database/migrations/*.php'));
+
+    foreach ($migrationFiles as $migration) {
+        /** @var Migration */
+        $migration = require_once $migration;
+        $migration->up($auth);
+    }
+
     /** @var string */
     $authTable = $auth->config('db.table');
-
-    /** @var string */
-    $authIdKey = $auth->config('id.key');
-
-    /** @var string */
-    $rolesKey = $auth->config('roles.key');
-
-    /** @var string */
-    $passwordKey = $auth->config('password.key');
-
     $db = $auth->db();
-
-    $db->createTableIfNotExists($authTable, [
-        $authIdKey => 'INTEGER PRIMARY KEY AUTOINCREMENT',
-        'email' => 'TEXT NOT NULL UNIQUE CHECK (email LIKE "%@%")',
-        $passwordKey => 'TEXT NOT NULL',
-        $rolesKey => 'TEXT NOT NULL',
-        'permissions' => 'TEXT NOT NULL',
-    ]);
-
-    $db->execute();
-
-    $db->createTableIfNotExists('exchange_rates', [
-        'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
-        'created_at' => 'TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP',
-        'usd_ves' => 'REAL NOT NULL',
-        'usd_cop' => 'REAL NOT NULL',
-    ]);
-
-    $db->execute();
-
-    $db->createTableIfNotExists('clients', [
-        'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
-        'name' => 'TEXT NOT NULL UNIQUE',
-    ]);
-
-    $db->execute();
-
     $db->select($authTable);
 
     /** @var array[] */
