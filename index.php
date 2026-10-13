@@ -3,27 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\Permission;
-use App\Http\Handlers\Dashboard;
-use App\Http\Handlers\DeleteClient;
-use App\Http\Handlers\ForgotPassword;
-use App\Http\Handlers\ListClients;
-use App\Http\Handlers\ListSellers;
 use App\Http\Handlers\NotFound;
-use App\Http\Handlers\RegisterClient;
-use App\Http\Handlers\RegisterSeller;
-use App\Http\Handlers\ResetPassword;
-use App\Http\Handlers\ResetPermissions;
-use App\Http\Handlers\SignIn;
-use App\Http\Handlers\SignOut;
-use App\Http\Handlers\SignUp;
-use App\Http\Handlers\UpdateClient;
-use App\Http\Handlers\UpdateExchangeRates;
-use App\Http\Handlers\UpdatePassword;
-use App\Http\Handlers\VerifyEmail;
-use App\Http\Middleware\Authenticate;
-use App\Http\Middleware\Authorize;
-use App\Http\Middleware\EnsureEmailIsVerified;
-use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Migration;
 use Faslatam\PsrFramework\QueueRequestHandler;
 use Faslatam\PsrFramework\Router;
@@ -34,6 +14,7 @@ use Illuminate\Container\Container;
 use Leaf\Auth;
 use Leaf\Helpers\Password;
 use PHPMailer\PHPMailer\PHPMailer;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\Environment;
@@ -142,172 +123,9 @@ $container->bind(PHPMailer::class, static function (): PHPMailer {
 });
 
 $fallbackHandler = $container->get(NotFound::class);
-$authenticate = $container->get(Authenticate::class);
-$redirectIfAuthenticated = $container->get(RedirectIfAuthenticated::class);
-$ensureEmailIsVerified = $container->get(EnsureEmailIsVerified::class);
-$authorize = $container->get(Authorize::class);
-$dashboard = $container->get(Dashboard::class);
-$signIn = $container->get(SignIn::class);
-$signUp = $container->get(SignUp::class);
-$signOut = $container->get(SignOut::class);
-$verifyEmail = $container->get(VerifyEmail::class);
-$forgotPassword = $container->get(ForgotPassword::class);
-$resetPassword = $container->get(ResetPassword::class);
-$updatePassword = $container->get(UpdatePassword::class);
-$registerSeller = $container->get(RegisterSeller::class);
-$listSellers = $container->get(ListSellers::class);
-$resetPermissions = $container->get(ResetPermissions::class);
-$registerClient = $container->get(RegisterClient::class);
-$listClients = $container->get(ListClients::class);
-$updateClient = $container->get(UpdateClient::class);
-$deleteClient = $container->get(DeleteClient::class);
-$updateExchangeRates = $container->get(UpdateExchangeRates::class);
-$auth = $container->get(Auth::class);
-$redirectLogin = $auth->config('redirect.login');
-$redirectGuest = $auth->config('redirect.guest');
-
-$router = new Router();
-
-$router->attach(
-    ['GET'],
-    ['#^/$#', "#^{$redirectGuest}$#"],
-    new QueueRequestHandler($dashboard, $authenticate, $ensureEmailIsVerified),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ["#^{$redirectLogin}$#"],
-    new QueueRequestHandler($signIn, $redirectIfAuthenticated),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/registrarse$#'],
-    new QueueRequestHandler($signUp, $redirectIfAuthenticated),
-);
-
-$router->attach(
-    ['GET'],
-    ['#^/salir$#'],
-    new QueueRequestHandler($signOut, $authenticate),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/verificar-correo$#'],
-    new QueueRequestHandler($verifyEmail, $authenticate),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/recuperar-clave$#'],
-    new QueueRequestHandler($forgotPassword, $redirectIfAuthenticated),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/restablecer-clave$#'],
-    new QueueRequestHandler($resetPassword, $redirectIfAuthenticated),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/actualizar-clave$#'],
-    new QueueRequestHandler(
-        $updatePassword,
-        $authenticate,
-        $ensureEmailIsVerified,
-    ),
-);
-
-$router->attach(
-    ['GET'],
-    ['#^/vendedores$#'],
-    new QueueRequestHandler(
-        $listSellers,
-        $authenticate,
-        $ensureEmailIsVerified,
-        $authorize->withPermissions('view sellers'),
-    ),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/vendedores/registrar$#'],
-    new QueueRequestHandler(
-        $registerSeller,
-        $authenticate,
-        $ensureEmailIsVerified,
-        $authorize->withPermissions('register seller'),
-    ),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/vendedores/(?<id>\d+)$#'],
-    new QueueRequestHandler(
-        $resetPermissions,
-        $authenticate,
-        $ensureEmailIsVerified,
-        $authorize->withPermissions('reset seller permissions'),
-    ),
-);
-
-$router->attach(
-    ['GET'],
-    ['#^/clientes$#'],
-    new QueueRequestHandler(
-        $listClients,
-        $authenticate,
-        $ensureEmailIsVerified,
-        $authorize->withPermissions('view clients'),
-    ),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/clientes/registrar$#'],
-    new QueueRequestHandler(
-        $registerClient,
-        $authenticate,
-        $ensureEmailIsVerified,
-        $authorize->withPermissions('register client'),
-    ),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/clientes/(?<id>\d+)$#'],
-    new QueueRequestHandler(
-        $updateClient,
-        $authenticate,
-        $ensureEmailIsVerified,
-        $authorize->withPermissions('update client'),
-    ),
-);
-
-$router->attach(
-    ['GET'],
-    ['#^/clientes/(?<id>\d+)/eliminar$#'],
-    new QueueRequestHandler(
-        $deleteClient,
-        $authenticate,
-        $ensureEmailIsVerified,
-        $authorize->withPermissions('delete client'),
-    ),
-);
-
-$router->attach(
-    ['GET', 'POST'],
-    ['#^/cotizaciones$#'],
-    new QueueRequestHandler(
-        $updateExchangeRates,
-        $authenticate,
-        $ensureEmailIsVerified,
-        $authorize->withPermissions('update exchange rates'),
-    ),
-);
-
+/** @var callable(ContainerInterface): Router */
+$webRouterFactory = require_once __DIR__ . '/routes/web.php';
+$router = $webRouterFactory($container);
 $routingMiddleware = new RoutingMiddleware($router);
 
 $queueRequestHandler = new QueueRequestHandler(
