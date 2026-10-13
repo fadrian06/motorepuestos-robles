@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Handlers;
 
+use App\Enums\Permission;
 use Leaf\Auth;
 use Leaf\Db;
 use Leaf\Flash;
@@ -55,16 +56,15 @@ final readonly class ResetPermissions implements RequestHandlerInterface
             return $this->responseFactory->createResponse(404);
         }
 
-        $availablePermissions = [
-            'view clients' => 'Ver directorio de clientes',
-            'register client' => 'Registrar nuevos clientes',
-            'update client' => 'Modificar clientes existentes',
-            'delete client' => 'Eliminar clientes',
-            'view sellers' => 'Ver lista de vendedores',
-            'register seller' => 'Registrar nuevos vendedores',
-            'reset seller permissions' => 'Gestionar permisos de otros vendedores',
-            'update exchange rates' => 'Actualizar tasas de cambio',
-        ];
+        $availablePermissions = array_map(
+            static fn(Permission $permission): array => [
+                'key' => $permission->key(),
+                'name' => $permission->name(),
+                'desc' => $permission->description(),
+                'category' => $permission->category(),
+            ],
+            Permission::cases(),
+        );
 
         switch ($request->getMethod()) {
             case 'GET':

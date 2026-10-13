@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\Permission;
 use App\Http\Handlers\Dashboard;
 use App\Http\Handlers\DeleteClient;
 use App\Http\Handlers\ForgotPassword;
@@ -141,16 +142,7 @@ $container->singleton(Auth::class, static function (): Auth {
 
     /** @var array<string, string[]> */
     $roles = [
-        'admin' => [
-            'view sellers',
-            'register seller',
-            'reset seller permissions',
-            'view clients',
-            'register client',
-            'update client',
-            'delete client',
-            'update exchange rates',
-        ],
+        'admin' => Permission::keys(),
         'seller' => [],
         ...$customPermissions,
     ];

@@ -276,32 +276,23 @@
   </style>
 </head>
 <body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+  x-data='{
+    isDarkMode: window.matchMedia(`(prefers-color-scheme: dark)`).matches,
     sidebarOpen: false,
     submitting: false,
-    allPermissions: [
-      { key: 'view clients', name: 'Ver Clientes', desc: 'Permite consultar el listado y directorio de clientes.', category: 'Clientes' },
-      { key: 'register client', name: 'Registrar Clientes', desc: 'Permite dar de alta a nuevos compradores.', category: 'Clientes' },
-      { key: 'update client', name: 'Modificar Clientes', desc: 'Permite editar la información de clientes.', category: 'Clientes' },
-      { key: 'delete client', name: 'Eliminar Clientes', desc: 'Permite borrar registros de clientes del sistema.', category: 'Clientes' },
-      { key: 'view sellers', name: 'Ver Vendedores', desc: 'Permite visualizar el listado del equipo de vendedores.', category: 'Vendedores' },
-      { key: 'register seller', name: 'Registrar Vendedores', desc: 'Permite crear cuentas para nuevos vendedores.', category: 'Vendedores' },
-      { key: 'reset seller permissions', name: 'Gestionar Permisos', desc: 'Permite modificar permisos de otros usuarios.', category: 'Vendedores' },
-      { key: 'update exchange rates', name: 'Actualizar Tasas de Cambio', desc: 'Permite actualizar las tasas de cambio USD/VES y USD/COP.', category: 'Cotizaciones' }
-    ],
+    allPermissions: JSON.parse(`{{ availablePermissions|json_encode }}`),
     selectedPermissions: (function() {
       try {
-        var raw = '{{ seller.permissions|default("[]")|e("js") }}';
-        return typeof raw === 'string' ? JSON.parse(raw) : (Array.isArray(raw) ? raw : []);
+        var raw = `{{ seller.permissions|default("[]")|e("js") }}`;
+        return typeof raw === `string` ? JSON.parse(raw) : (Array.isArray(raw) ? raw : []);
       } catch(e) {
         return [];
       }
     })(),
     init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const mediaQuery = window.matchMedia(`(prefers-color-scheme: dark)`);
       this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
+      mediaQuery.addEventListener(`change`, (event) => {
         this.isDarkMode = event.matches;
       });
     },
@@ -321,7 +312,7 @@
     clearAll() {
       this.selectedPermissions = [];
     }
-  }"
+  }'
   :class="{ 'w3-dark-mode': isDarkMode }"
 >
 
