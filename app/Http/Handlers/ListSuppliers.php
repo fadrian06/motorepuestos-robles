@@ -33,10 +33,6 @@ final readonly class ListSuppliers implements RequestHandlerInterface
         /** @var array[] */
         $suppliers = $db->all();
 
-        if ($suppliers) {
-            dd($suppliers);
-        }
-
         $html = $this->environment->render('pages/suppliers.twig', [
             'suppliers' => $suppliers,
             'flash' => $this->flash,
