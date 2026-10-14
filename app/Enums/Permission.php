@@ -14,6 +14,10 @@ enum Permission
     case UpdateClient;
     case DeleteClient;
     case UpdateExchangeRates;
+    case ViewSuppliers;
+    case RegisterSupplier;
+    case UpdateSupplier;
+    case DeleteSupplier;
 
     public function key(): string
     {
@@ -26,6 +30,10 @@ enum Permission
             Permission::UpdateClient => 'update client',
             Permission::DeleteClient => 'delete client',
             Permission::UpdateExchangeRates => 'update exchange rates',
+            Permission::ViewSuppliers => 'view suppliers',
+            Permission::RegisterSupplier => 'register supplier',
+            Permission::UpdateSupplier => 'update supplier',
+            Permission::DeleteSupplier => 'delete supplier',
         };
     }
 
@@ -48,6 +56,10 @@ enum Permission
             Permission::UpdateClient => 'Modificar Clientes',
             Permission::DeleteClient => 'Eliminar Clientes',
             Permission::UpdateExchangeRates => 'Actualizar Tasas de Cambio',
+            Permission::ViewSuppliers => 'Ver Proveedores',
+            Permission::RegisterSupplier => 'Registrar Proveedores',
+            Permission::UpdateSupplier => 'Modificar Proveedores',
+            Permission::DeleteSupplier => 'Eliminar Proveedores',
         };
     }
 
@@ -70,6 +82,14 @@ enum Permission
                 => 'Permite borrar registros de clientes del sistema.',
             Permission::UpdateExchangeRates
                 => 'Permite actualizar las tasas de cambio USD/VES y USD/COP.',
+            Permission::ViewSuppliers
+                => 'Permite visualizar el listado de proveedores.',
+            Permission::RegisterSupplier
+                => 'Permite registrar nuevos proveedores.',
+            Permission::UpdateSupplier
+                => 'Permite actualizar la información de proveedores.',
+            Permission::DeleteSupplier
+                => 'Permite eliminar proveedores del sistema.',
         };
     }
 
@@ -86,6 +106,11 @@ enum Permission
             Permission::DeleteClient,
                 => 'Clientes',
             Permission::UpdateExchangeRates => 'Cotizaciones',
+            Permission::ViewSuppliers,
+            Permission::RegisterSupplier,
+            Permission::UpdateSupplier,
+            Permission::DeleteSupplier,
+                => 'Proveedores',
         };
     }
 }

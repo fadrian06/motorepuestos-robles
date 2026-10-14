@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 use App\Http\Handlers\Dashboard;
 use App\Http\Handlers\DeleteClient;
+use App\Http\Handlers\DeleteSupplier;
 use App\Http\Handlers\ForgotPassword;
 use App\Http\Handlers\ListClients;
 use App\Http\Handlers\ListSellers;
+use App\Http\Handlers\ListSuppliers;
 use App\Http\Handlers\RegisterClient;
 use App\Http\Handlers\RegisterSeller;
+use App\Http\Handlers\RegisterSupplier;
 use App\Http\Handlers\ResetPassword;
 use App\Http\Handlers\ResetPermissions;
 use App\Http\Handlers\SignIn;
@@ -17,6 +20,7 @@ use App\Http\Handlers\SignUp;
 use App\Http\Handlers\UpdateClient;
 use App\Http\Handlers\UpdateExchangeRates;
 use App\Http\Handlers\UpdatePassword;
+use App\Http\Handlers\UpdateSupplier;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authorize;
@@ -71,6 +75,14 @@ return static function (ContainerInterface $container): Router {
     $deleteClient = $container->get(DeleteClient::class);
     /** @var RequestHandlerInterface */
     $updateExchangeRates = $container->get(UpdateExchangeRates::class);
+    /** @var RequestHandlerInterface */
+    $listSuppliers = $container->get(ListSuppliers::class);
+    /** @var RequestHandlerInterface */
+    $registerSupplier = $container->get(RegisterSupplier::class);
+    /** @var RequestHandlerInterface */
+    $updateSupplier = $container->get(UpdateSupplier::class);
+    /** @var RequestHandlerInterface */
+    $deleteSupplier = $container->get(DeleteSupplier::class);
     /** @var Auth */
     $auth = $container->get(Auth::class);
     $redirectLogin = $auth->config('redirect.login');
@@ -219,6 +231,50 @@ return static function (ContainerInterface $container): Router {
             $authenticate,
             $ensureEmailIsVerified,
             $authorize->withPermissions('update exchange rates'),
+        ),
+    );
+
+    $router->attach(
+        ['GET'],
+        ['#^/proveedores$#'],
+        new QueueRequestHandler(
+            $listSuppliers,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('view suppliers'),
+        ),
+    );
+
+    $router->attach(
+        ['GET', 'POST'],
+        ['#^/proveedores/registrar$#'],
+        new QueueRequestHandler(
+            $registerSupplier,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('register supplier'),
+        ),
+    );
+
+    $router->attach(
+        ['GET', 'POST'],
+        ['#^/proveedores/(?<id>\d+)$#'],
+        new QueueRequestHandler(
+            $updateSupplier,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('update supplier'),
+        ),
+    );
+
+    $router->attach(
+        ['GET'],
+        ['#^/proveedores/(?<id>\d+)/eliminar$#'],
+        new QueueRequestHandler(
+            $deleteSupplier,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('delete supplier'),
         ),
     );
 

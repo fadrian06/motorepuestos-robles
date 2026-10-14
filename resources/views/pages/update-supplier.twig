@@ -1,0 +1,9 @@
+<form method="post" novalidate>
+  <input name="name" required placeholder="Nombre" value="{{ supplier['name'] }}">
+  <input name="tax_id" required placeholder="RIF" value="{{ supplier['tax_id'] }}">
+  <textarea name="address" required placeholder="Dirección">{{ supplier['address'] }}</textarea>
+  <input type="tel" name="phone" required placeholder="Teléfono" value="{{ supplier['phone'] }}">
+  <input name="seller" required placeholder="Vendedor" value="{{ supplier['seller'] }}">
+  <input name="alias" required placeholder="Alias" value="{{ supplier['alias'] }}">
+  <input type="submit">
+</form>
