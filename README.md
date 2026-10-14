@@ -2,163 +2,160 @@
 
 [![Autor](https://img.shields.io/badge/autor-Franyer_Sánchez-blue)](https://github.com/fadrian06)
 [![Licencia](https://img.shields.io/badge/licencia-propietaria-red)](LICENSE)
-[![PHP](https://img.shields.io/badge/PHP-8.3-777bb4)](https://php.net)
+[![PHP](https://img.shields.io/badge/PHP-8.4+-777bb4)](https://php.net)
+[![Sitio Web](https://img.shields.io/badge/web-InfinityFree-22c55e)](https://motorepuestos-robles.infinityfreeapp.com)
 
 > Desarrollado por **Franyer Sánchez** ([@fadrian06](https://github.com/fadrian06))
-> para MOTOREPUESTOS Y MECÁNICA ROBLES.
+> para **MOTOREPUESTOS Y MECÁNICA ROBLES**.
 
-Sistema de registro y control de ventas para un comercio de productos
-automotrices. Permite gestionar el catálogo de productos, las compras a
-proveedores, los clientes y las ventas, con trazabilidad completa entre el
-lote comprado y la venta que lo consumió.
+Sistema web de gestión comercial y venta de repuestos automotrices con control de inventario por lote y trazabilidad de compras a clientes.
 
-## Características
+---
 
-- **Catálogo de productos** — alta, edición y baja de productos, agrupados
-  por categoría y con precio de venta único.
-- **Compras por lote** — cada renglón de una compra a proveedor se registra
-  como un lote independiente, con su propio costo unitario y cantidad
-  disponible.
-- **Inventario por lote** — el stock de un producto es la suma de las
-  cantidades disponibles de sus lotes. Cada venta descuenta del lote
-  seleccionado manualmente por el vendedor.
-- **Punto de venta** — búsqueda rápida por código, nombre o categoría,
-  selección de lote, carrito, cobro en uno o varios métodos de pago y
-  comprobante imprimible.
-- **Trazabilidad** — cada línea de venta queda asociada al lote del que
-  salió la mercancía, lo que permite conocer el proveedor, la fecha y el
-  costo de origen de cada repuesto vendido.
-- **Cotización configurable** — la tasa de cambio se guarda junto a cada
-  venta para conservar el valor histórico.
-- **Clientes** — registro de nombre del comprador, con opción de
-  "Consumidor final".
-- **Proveedores** — datos comerciales completos, incluyendo RIF, vendedor
-  asignado y alias.
-- **Usuarios y permisos** — autenticación por correo electrónico verificado,
-  recuperación de contraseña por enlace temporal y permisos granulares por
-  usuario.
-- **Comprobante de venta** — formato simple, imprimible desde el navegador.
+## Características Principales
 
-## Fuera de alcance
+- **Gestión de Proveedores (CRUD Completo)** — Directorio de importadoras y distribuidores mayoristas con RIF, alias para lotes, asesor comercial asignado, teléfono y dirección física.
+- **Directorio de Clientes** — Registro y administración de compradores particulares y talleres mecánicos para cotizaciones y ventas.
+- **Gestión de Vendedores y Permisos Granulares** — Control de acceso basado en permisos (`App\Enums\Permission`) con gestión de roles y restablecimiento de accesos.
+- **Cotizaciones y Tasas de Cambio** — Registro y actualización en tiempo real de tasas oficiales USD/VES y USD/COP para cálculo y preservación histórica en ventas.
+- **Seguridad y Autenticación Robusta** — Registro, inicio de sesión, verificación de correo electrónico vía token, recuperación y cambio de contraseñas.
+- **Interfaz Moderna y Modo Oscuro** — UI responsiva optimizada con W3.CSS, variables de diseño de marca (`--brand-red`), Alpine.js para búsquedas reactivas en vivo, modales y alternador de tema claro/oscuro.
+- **Próximas Fases:**
+  - *Inventario y Lotes* — Registro de compras con costo unitario y stock calculado por suma de lotes disponibles.
+  - *Punto de Venta (POS)* — Búsqueda por código/nombre, selección manual de lote por el vendedor, comprobante imprimible y pago mixto.
 
-Este sistema **no incluye** y no está previsto que incluya:
+---
 
-- Módulo de servicios de mecánica o mano de obra.
-- Órdenes de trabajo por vehículo.
-- Alertas de stock mínimo.
-- Reportes de utilidad, costo o margen.
-- Kardex o histórico de movimientos de inventario.
-- Anulación de ventas.
+## Requisitos del Sistema
 
-El único alcance cubierto es el ciclo **compra → inventario por lote → venta**
-junto con la administración básica de usuarios, clientes y proveedores.
+- **PHP 8.4 o superior** (`declare(strict_types=1);`, constructor promotion readonly, atributos `#[Override]` y `#[NoDiscard]`).
+- **Extensiones de PHP:**
+  - `pdo_sqlite` (desarrollo local / pruebas)
+  - `pdo_mysql` (producción)
+  - `mbstring`
+  - `openssl`
+  - `json`
+- **Composer 2+**
+- **Servidor Web:** Apache 2.4 con módulo `mod_rewrite` activo (o PHP Built-in Server para desarrollo).
 
-## Requisitos
+---
 
-- PHP 8.3 o superior
-- Extensiones: `pdo`, `json`, `openssl` (para tokens), `mbstring`
-- Composer
-- MySQL 5.7+ (producción) o SQLite 3 (desarrollo)
-- Apache 2.4 con `mod_rewrite` habilitado
+## Instalación y Puesta en Marcha
 
-## Instalación
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/fadrian06/motorepuestos-robles.git
+   cd motorepuestos-robles
+   ```
 
-1. Clonar el repositorio:
-```cmd
-git clone <url-del-repo> motorepuestos-mecanica-robles
-cd motorepuestos-mecanica-robles
+2. **Instalar dependencias de Composer:**
+   ```bash
+   composer install
+   ```
+
+3. **Configurar el entorno:**
+   ```bash
+   cp .env.example .env
+   ```
+   Ajustar los parámetros de base de datos (`DB_CONNECTION=sqlite` o `mysql`) y configuración de correo SMTP en el archivo `.env`.
+
+4. **Ejecutar el servidor local:**
+   ```bash
+   composer serve
+   ```
+   *El servidor quedará disponible en `http://localhost:80` (o el puerto configurado).*
+
+---
+
+## Scripts y Herramientas de Desarrollo
+
+El proyecto integra herramientas de análisis estático, formato y pruebas automatizadas:
+
+```bash
+# Ejecutar linter y análisis estático con Carthage Mago
+composer lint
+
+# Formatear el código fuente según los estándares del proyecto
+composer format
+
+# Ejecutar la suite de pruebas automatizadas con PHPUnit
+composer test
+
+# Iniciar servidor de desarrollo local
+composer serve
 ```
 
-2. Instalar dependencias:
-```cmd
-composer install
-```
+---
 
-3. Copiar el archivo de entorno y completar credenciales:
-```cmd
-cp .env.example .env
-```
+## Estructura del Proyecto
 
-4. Crear la base de datos MySQL (o dejar que SQLite se cree solo en
-desarrollo) y ajustar las variables `DB_*` en `.env`.
-
-5. Crear el primer usuario administrador (ver sección *Primer usuario*).
-
-6. Levantar el servidor (Apache apuntando a la raíz del proyecto, o
-`php -S localhost:8000` con el `.htaccess` adaptado).
-
-## Primer usuario
-
-El primer usuario debe crearse con `verificado = 1` y el permiso comodín
-`*` en la columna `permisos` de la tabla `usuarios`. Los usuarios
-posteriores se registran desde `/register` y activan su cuenta mediante el
-enlace de verificación enviado por correo.
-
-## Estructura del proyecto
-```cmd
-motorepuestos-mecanica-robles/
-├── index.php Punto de entrada único
-├── composer.json
-├── .env Variables de entorno (no versionado)
-├── .env.example Plantilla de variables
-├── .htaccess Reglas de reescritura y bloqueo
-├── bootstrap/ Arranque de la aplicación
-├── routes/ Definición de rutas HTTP
+```text
+motorepuestos-robles/
 ├── app/
-│ ├── Http/ Middleware y handlers
-│ ├── Models/ Acceso a datos
-├── resources/
-│ └── views/ Plantillas
+│   ├── Enums/
+│   │   └── Permission.php             # Enums de permisos del sistema (spatie-like)
+│   ├── Http/
+│   │   ├── Handlers/                  # Handlers PSR-15 individuales por acción (Single Responsibility)
+│   │   └── Middlewares/               # Middlewares (Authenticate, Authorize, VerifyEmail, etc.)
+│   └── Migration.php                  # Contrato base para migraciones de BD
 ├── database/
-│ ├── database.sqlite Base de datos local (no versionado)
-│ └── migrations/ Esquema SQL
-└── vendor/ Dependencias de Composer
+│   ├── database.sqlite                # Base de datos local SQLite (ignorado en git)
+│   └── migrations/                    # Migraciones numeradas del sistema
+├── resources/
+│   ├── images/                        # Logotipos, favicons y banners
+│   ├── scripts/                       # Alpine.js y librerías cliente
+│   ├── styles/                        # W3.CSS con personalización de marca
+│   └── views/
+│       ├── emails/                    # Plantillas de correo (tokens de verificación y clave)
+│       └── pages/                     # Vistas Twig del panel y formularios
+├── routes/
+│   └── web.php                        # Definición central de rutas y pipelines de middlewares
+├── index.php                          # Punto de entrada HTTP único
+├── composer.json                      # Dependencias y scripts de automatización
+└── AGENTS.md                          # Guía de contexto y arquitectura para agentes AI
 ```
 
+---
 
-## Variables de entorno
+## Módulos y Rutas del Sistema
 
-Las variables principales se documentan en `.env.example`. Las más
-relevantes:
+| Módulo | Rutas | Descripción |
+| :--- | :--- | :--- |
+| **Dashboard** | `GET /` | Panel principal de métricas y accesos rápidos de operaciones. |
+| **Proveedores** | `GET /proveedores`<br>`GET,POST /proveedores/registrar`<br>`GET,POST /proveedores/{id}`<br>`GET /proveedores/{id}/eliminar` | Directorio, alta, modificación y eliminación con confirmación modal. |
+| **Clientes** | `GET /clientes`<br>`GET,POST /clientes/registrar`<br>`GET,POST /clientes/{id}`<br>`GET /clientes/{id}/eliminar` | Cartera de compradores y talleres automotrices. |
+| **Vendedores** | `GET /vendedores`<br>`GET,POST /vendedores/registrar` | Equipo comercial y asignación de permisos de usuario. |
+| **Cotizaciones** | `GET,POST /cotizaciones` | Ajuste de tasas de cambio operativas USD / VES / COP. |
+| **Autenticación** | `GET,POST /entrar`<br>`GET /salir`<br>`GET,POST /registrarse`<br>`GET,POST /verificar-correo`<br>`GET,POST /recuperar-clave`<br>`GET,POST /restablecer-clave`<br>`GET,POST /actualizar-clave` | Flujo de seguridad, verificación de correo y contraseñas. |
 
-| Variable | Descripción |
-|---|---|
-| `DB_CONNECTION` | `mysql` o `sqlite` |
-| `DB_*` | Credenciales de conexión |
+---
 
-## Esquema de datos
+## Esquema de Base de Datos
 
-Tablas principales:
+### Tablas Implementadas:
+- **`users`** — Cuentas de usuario con roles, permisos serializados, correo único y estado de verificación.
+- **`exchange_rates`** — Historial y registro de tasas de cambio (`usd_ves`, `usd_cop`).
+- **`clients`** — Cartera de clientes (`id`, `name`).
+- **`suppliers`** — Proveedores con `name`, `tax_id` (RIF), `alias`, `seller`, `phone` y `address`.
 
-- `usuarios` — cuentas del sistema con permisos
-- `clientes` — compradores
-- `productos` — catálogo de productos
-- `proveedores` — datos de proveedores
-- `compras` — cabecera de la compra
-- `compra_detalle` — lotes: producto, cantidad, costo unitario, cantidad
-  disponible, precio de venta del lote
-- `ventas` — cabecera de la venta
-- `venta_detalle` — líneas asociadas a un lote específico
-- `pagos` — pagos aplicados a una venta (permite pago mixto)
+### Tablas Planificadas (Inventario y Ventas):
+- `products` — Catálogo de repuestos con precio de venta base.
+- `purchases` / `purchase_items` — Cabecera de compra y renglones de lote con costo unitario y cantidad disponible.
+- `sales` / `sale_items` — Cabecera de venta y detalle enlazado al lote específico consumido.
+- `payments` — Métodos y montos aplicados a cada venta (pago mixto).
 
-## Uso
+---
 
-1. Ingresar con un usuario verificado.
-2. Registrar proveedores en `/proveedores`.
-3. Cargar el catálogo de productos en `/productos`.
-4. Registrar compras en `/compras`; cada renglón crea un lote.
-5. Vender desde `/ventas/vender`: buscar producto, elegir el lote del que se
-   descuenta, agregar al carrito y cobrar.
-6. Consultar ventas históricas en `/ventas`.
+## Despliegue en Producción
 
-## Despliegue
+El sistema está diseñado para ser compatible tanto con servidores dedicados como con entornos de hosting compartido (e.g. InfinityFree / cPanel con Apache + PHP 8.4+ + MySQL).
 
-Compatible con hosting compartido tipo InfinityFree (Apache + PHP 8.3 +
-MySQL). Verificar que `mod_rewrite` esté activo y que el `.htaccess`
-bloquee el acceso directo a `app/`, `bootstrap/`, `routes/`, `resources/`,
-`database/` y `vendor/`.
+- Verificar que el módulo `mod_rewrite` esté activo.
+- Asegurar que el archivo `.htaccess` en la raíz restrinja el acceso directo a los directorios protegidos (`app/`, `database/`, `resources/views/`, `routes/`, `vendor/`) y enrute todo el tráfico a través de `index.php`.
 
-## Autor
+---
+
+## Autor y Licencia
 
 | | |
 |---|---|
@@ -168,11 +165,4 @@ bloquee el acceso directo a `app/`, `bootstrap/`, `routes/`, `resources/`,
 | **Cliente** | MOTOREPUESTOS Y MECÁNICA ROBLES |
 | **Año** | 2026 |
 
-## Licencia
-
-Ver el archivo [`LICENSE`](LICENSE) en la raíz del proyecto.
-
-```LICENSE
-Copyright (c) 2026 Franyer Sánchez. Desarrollado por encargo para
-MOTOREPUESTOS Y MECÁNICA ROBLES. Todos los derechos reservados.
-```
+Ver el archivo [`LICENSE`](LICENSE) para más detalles sobre los términos de uso y derechos de autor.
