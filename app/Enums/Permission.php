@@ -18,6 +18,8 @@ enum Permission
     case RegisterSupplier;
     case UpdateSupplier;
     case DeleteSupplier;
+    case ViewProducts;
+    case RegisterProduct;
 
     public function key(): string
     {
@@ -34,6 +36,8 @@ enum Permission
             Permission::RegisterSupplier => 'register supplier',
             Permission::UpdateSupplier => 'update supplier',
             Permission::DeleteSupplier => 'delete supplier',
+            Permission::ViewProducts => 'view products',
+            Permission::RegisterProduct => 'register product',
         };
     }
 
@@ -60,6 +64,8 @@ enum Permission
             Permission::RegisterSupplier => 'Registrar Proveedores',
             Permission::UpdateSupplier => 'Modificar Proveedores',
             Permission::DeleteSupplier => 'Eliminar Proveedores',
+            Permission::ViewProducts => 'Ver Catálogo de Productos',
+            Permission::RegisterProduct => 'Registrar Productos',
         };
     }
 
@@ -90,6 +96,10 @@ enum Permission
                 => 'Permite actualizar la información de proveedores.',
             Permission::DeleteSupplier
                 => 'Permite eliminar proveedores del sistema.',
+            Permission::ViewProducts
+                => 'Permite consultar el catálogo de productos y sus precios.',
+            Permission::RegisterProduct
+                => 'Permite dar de alta nuevos productos al catálogo.',
         };
     }
 
@@ -111,6 +121,9 @@ enum Permission
             Permission::UpdateSupplier,
             Permission::DeleteSupplier,
                 => 'Proveedores',
+            Permission::ViewProducts,
+            Permission::RegisterProduct,
+                => 'Productos',
         };
     }
 }

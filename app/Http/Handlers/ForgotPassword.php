@@ -38,13 +38,9 @@ final readonly class ForgotPassword implements RequestHandlerInterface
             case 'GET':
                 $flash = $this->flash->display();
 
-                if ($flash) {
-                    dd($flash);
-                }
-
-                $html = $this->environment->render(
-                    'pages/forgot-password.twig',
-                );
+                $html = $this->environment->render('pages/forgot-password.twig', [
+                    'flash' => $flash,
+                ]);
 
                 $response = $this->responseFactory->createResponse();
                 $response->getBody()->write($html);

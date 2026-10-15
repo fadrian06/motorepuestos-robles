@@ -7,9 +7,11 @@ use App\Http\Handlers\DeleteClient;
 use App\Http\Handlers\DeleteSupplier;
 use App\Http\Handlers\ForgotPassword;
 use App\Http\Handlers\ListClients;
+use App\Http\Handlers\ListProducts;
 use App\Http\Handlers\ListSellers;
 use App\Http\Handlers\ListSuppliers;
 use App\Http\Handlers\RegisterClient;
+use App\Http\Handlers\RegisterProduct;
 use App\Http\Handlers\RegisterSeller;
 use App\Http\Handlers\RegisterSupplier;
 use App\Http\Handlers\ResetPassword;
@@ -83,6 +85,10 @@ return static function (ContainerInterface $container): Router {
     $updateSupplier = $container->get(UpdateSupplier::class);
     /** @var RequestHandlerInterface */
     $deleteSupplier = $container->get(DeleteSupplier::class);
+    /** @var RequestHandlerInterface */
+    $listProducts = $container->get(ListProducts::class);
+    /** @var RequestHandlerInterface */
+    $registerProduct = $container->get(RegisterProduct::class);
     /** @var Auth */
     $auth = $container->get(Auth::class);
     $redirectLogin = $auth->config('redirect.login');
@@ -275,6 +281,28 @@ return static function (ContainerInterface $container): Router {
             $authenticate,
             $ensureEmailIsVerified,
             $authorize->withPermissions('delete supplier'),
+        ),
+    );
+
+    $router->attach(
+        ['GET'],
+        ['#^/productos$#'],
+        new QueueRequestHandler(
+            $listProducts,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('view products'),
+        ),
+    );
+
+    $router->attach(
+        ['GET', 'POST'],
+        ['#^/productos/registrar$#'],
+        new QueueRequestHandler(
+            $registerProduct,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('register product'),
         ),
     );
 
