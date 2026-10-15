@@ -23,6 +23,7 @@ enum Permission
     case UpdateProduct;
     case DeleteProduct;
     case ViewPurchases;
+    case RegisterPurchase;
 
     public function key(): string
     {
@@ -44,6 +45,7 @@ enum Permission
             Permission::UpdateProduct => 'update product',
             Permission::DeleteProduct => 'delete product',
             Permission::ViewPurchases => 'view purchases',
+            Permission::RegisterPurchase => 'register purchase',
         };
     }
 
@@ -75,6 +77,7 @@ enum Permission
             Permission::UpdateProduct => 'Modificar Productos',
             Permission::DeleteProduct => 'Eliminar Productos',
             Permission::ViewPurchases => 'Ver Compras',
+            Permission::RegisterPurchase => 'Registrar Compras',
         };
     }
 
@@ -115,6 +118,8 @@ enum Permission
                 => 'Permite eliminar productos del catálogo.',
             Permission::ViewPurchases
                 => 'Permite consultar el historial de compras por lote.',
+            Permission::RegisterPurchase
+                => 'Permite registrar nuevas órdenes de compra por lote.',
         };
     }
 
@@ -141,7 +146,9 @@ enum Permission
             Permission::UpdateProduct,
             Permission::DeleteProduct,
                 => 'Productos',
-            Permission::ViewPurchases => 'Compras',
+            Permission::ViewPurchases,
+            Permission::RegisterPurchase,
+                => 'Compras',
         };
     }
 }

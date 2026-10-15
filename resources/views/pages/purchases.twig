@@ -579,6 +579,13 @@
             Registro de todas las órdenes de compra realizadas a proveedores, con su estado de verificación y trazabilidad de lotes.
           </p>
         </div>
+
+        <a href="/compras/registrar" class="btn-brand">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Registrar Compra
+        </a>
       </div>
 
       <!-- Métricas rápidas -->
@@ -725,6 +732,16 @@
         {% endif %}
       </div>
     </main>
+
+    <!-- Footer -->
+    <footer style="padding: 20px 24px; border-top: 1px solid var(--w3-border-light); font-size: 12px; color: #71717a; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <div>
+        &copy; 2026 <strong>{{ _ENV['APP_NAME'] }}</strong>. Historial de compras por lote.
+      </div>
+      <div>
+        Sistema de inventario por lote y trazabilidad comercial.
+      </div>
+    </footer>
   </div>
 
 </body>
