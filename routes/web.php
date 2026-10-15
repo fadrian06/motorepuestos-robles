@@ -11,6 +11,7 @@ use App\Http\Handlers\ForgotPassword;
 use App\Http\Handlers\ListClients;
 use App\Http\Handlers\ListProducts;
 use App\Http\Handlers\ListPurchases;
+use App\Http\Handlers\ListSales;
 use App\Http\Handlers\ListSellers;
 use App\Http\Handlers\ListSuppliers;
 use App\Http\Handlers\RegisterClient;
@@ -96,6 +97,8 @@ return static function (ContainerInterface $container): Router {
     $listProducts = $container->get(ListProducts::class);
     /** @var RequestHandlerInterface */
     $listPurchases = $container->get(ListPurchases::class);
+    /** @var RequestHandlerInterface */
+    $listSales = $container->get(ListSales::class);
     /** @var RequestHandlerInterface */
     $registerPurchase = $container->get(RegisterPurchase::class);
     /** @var RequestHandlerInterface */
@@ -401,6 +404,17 @@ return static function (ContainerInterface $container): Router {
             $authenticate,
             $ensureEmailIsVerified,
             $authorize->withPermissions('verify purchase'),
+        ),
+    );
+
+    $router->attach(
+        ['GET'],
+        ['#^/ventas$#'],
+        new QueueRequestHandler(
+            $listSales,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('view sales'),
         ),
     );
 
