@@ -25,9 +25,10 @@ Todos los controladores del sistema se implementan como handlers PSR-15 individu
   - **POST:** 
     1. Obtener datos con `$request->getParsedBody()`.
     2. Validar con `$this->form->validate($body, [ ... ])`.
-    3. Si falla la validación, guardar errores con `$this->flash->set($this->form->errors())` y responder con redirect header `location` al formulario.
-    4. Ejecutar la operación en base de datos. Si falla, guardar `$db->errors()` en flash y redirigir.
-    5. Si tiene éxito, redirigir al listado o siguiente vista con header `location`.
+    3. Si maneja renglones múltiples o lotes (`product_id[]`, `quantity[]`, `cost[]`), validar cada elemento individualmente.
+    4. Si falla la validación, guardar errores con `$this->flash->set($this->form->errors())` y responder con redirect header `location` al formulario.
+    5. Para operaciones compuestas (ej: compras con ítems), envolver en transacción PDO (`$pdo->beginTransaction()`, `$pdo->commit()`, `$pdo->rollBack()`). Si falla, guardar `$db->errors()` en flash y redirigir.
+    6. Si tiene éxito, redirigir al listado o siguiente vista con header `location`.
 
 ## 3. Manejo de Parámetros de Ruta
 

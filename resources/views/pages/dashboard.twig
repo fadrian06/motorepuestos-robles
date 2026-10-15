@@ -556,18 +556,18 @@
         </a>
 
         <!-- KPI 3: Lotes e Inventario -->
-        <div class="kpi-card">
+        <a href="/compras" class="kpi-card" style="text-decoration: none; color: inherit;">
           <div class="kpi-icon red">
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
           <div>
-            <div style="font-size: 12px; color: #71717a; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Trazabilidad</div>
+            <div style="font-size: 12px; color: #71717a; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Compras</div>
             <div style="font-size: 22px; font-weight: 800; margin-top: 2px;">Por Lote</div>
-            <div style="font-size: 11px; color: #22c55e; font-weight: 600; margin-top: 2px;">Control unitario</div>
+            <div style="font-size: 11px; color: var(--brand-red); font-weight: 600; margin-top: 2px;">Ver historial &rarr;</div>
           </div>
-        </div>
+        </a>
 
         <!-- KPI 4: Seguridad -->
         <a href="/actualizar-clave" class="kpi-card" style="text-decoration: none; color: inherit;">
@@ -661,6 +661,22 @@
                 <span class="btn-secondary" style="font-size: 12px;">Gestionar</span>
               </a>
 
+              <!-- Tarjeta de Compras por Lote -->
+              <a href="/compras" class="action-tile">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <div style="width: 40px; height: 40px; border-radius: 8px; background-color: rgba(220, 38, 38, 0.1); color: var(--brand-red); display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div style="font-weight: 700; font-size: 14px;">Compras por Lote</div>
+                    <div style="font-size: 12px; color: #71717a; margin-top: 2px;">Historial, verificación de lotes y costos unitarios</div>
+                  </div>
+                </div>
+                <span class="btn-secondary" style="font-size: 12px;">Gestionar</span>
+              </a>
+
               <!-- Tarjeta de Cotizaciones y Tasas -->
               <a href="/cotizaciones" class="action-tile">
                 <div style="display: flex; align-items: center; gap: 14px;">
@@ -720,6 +736,22 @@
                   <div>
                     <div style="font-weight: 700; font-size: 14px;">Registrar Nuevo Producto</div>
                     <div style="font-size: 12px; color: #71717a; margin-top: 2px;">Alta de repuesto en el catálogo comercial</div>
+                  </div>
+                </div>
+                <span class="btn-brand" style="font-size: 12px; padding: 6px 12px;">+ Registrar</span>
+              </a>
+
+              <!-- Registrar Compra -->
+              <a href="/compras/registrar" class="action-tile">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <div style="width: 40px; height: 40px; border-radius: 8px; background-color: rgba(220, 38, 38, 0.1); color: var(--brand-red); display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div style="font-weight: 700; font-size: 14px;">Registrar Nueva Compra</div>
+                    <div style="font-size: 12px; color: #71717a; margin-top: 2px;">Ingreso de factura y nuevos lotes a inventario</div>
                   </div>
                 </div>
                 <span class="btn-brand" style="font-size: 12px; padding: 6px 12px;">+ Registrar</span>

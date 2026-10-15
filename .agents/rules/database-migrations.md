@@ -7,10 +7,15 @@ Las migraciones residen en `database/migrations/` y definen la estructura del es
 - Cada archivo debe seguir el orden numérico secuencial con prefijo de dos dígitos:
   - `01_create_roles_and_permissions_tables.php`
   - `02_create_users_table.php`
-  - `03_create_exchange_rates_table.php`
+  - `03_create_clients_table.php`
   - `04_create_suppliers_table.php`
   - `05_create_products_table.php`
-  - etc.
+  - `06_create_purchases_table.php`
+  - `07_create_purchases_items_table.php`
+  - `08_create_sales_table.php`
+  - `09_create_sales_items_table.php`
+  - `10_create_payments_table.php`
+  - `11_create_loses_table.php`
 - El archivo debe retornar una clase anónima `readonly` que implemente `App\Migration`:
   ```php
   <?php

@@ -14,9 +14,11 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
+            **/.agents/**
             **/storage/**
             **/tests/**
             .env.example
+            AGENTS.md
             composer.*
             LICENSE
             mago.toml

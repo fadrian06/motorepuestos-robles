@@ -53,12 +53,13 @@ motorepuestos-robles/
 | :--- | :--- | :--- | :--- |
 | **Dashboard** | `GET /` | `Dashboard` | `resources/views/pages/dashboard.twig` |
 | **Productos** | `GET /productos`<br>`GET,POST /productos/registrar`<br>`GET,POST /productos/{id}`<br>`GET /productos/{id}/eliminar` | `ListProducts`<br>`RegisterProduct`<br>`UpdateProduct`<br>`DeleteProduct` | `pages/products.twig`<br>`pages/register-product.twig`<br>`pages/update-product.twig` |
+| **Compras / Lotes** | `GET /compras`<br>`GET,POST /compras/registrar`<br>`GET,POST /compras/{id}`<br>`GET /compras/{id}/eliminar`<br>`GET /compras/{id}/verificar` | `ListPurchases`<br>`RegisterPurchase`<br>`UpdatePurchase`<br>`DeletePurchase`<br>`VerifyPurchase` | `pages/purchases.twig`<br>`pages/register-purchase.twig`<br>`pages/update-purchase.twig` |
 | **Proveedores** | `GET /proveedores`<br>`GET,POST /proveedores/registrar`<br>`GET,POST /proveedores/{id}`<br>`GET /proveedores/{id}/eliminar` | `ListSuppliers`<br>`RegisterSupplier`<br>`UpdateSupplier`<br>`DeleteSupplier` | `pages/suppliers.twig`<br>`pages/register-supplier.twig`<br>`pages/update-supplier.twig` |
 | **Clientes** | `GET /clientes`<br>`GET,POST /clientes/registrar`<br>`GET,POST /clientes/{id}`<br>`GET /clientes/{id}/eliminar` | `ListClients`<br>`RegisterClient`<br>`UpdateClient`<br>`DeleteClient` | `pages/clients.twig`<br>`pages/register-client.twig`<br>`pages/update-client.twig` |
 | **Vendedores** | `GET /vendedores`<br>`GET,POST /vendedores/registrar` | `ListSellers`<br>`RegisterSeller` | `pages/sellers.twig`<br>`pages/register-seller.twig` |
 | **Cotizaciones** | `GET,POST /cotizaciones` | `UpdateExchangeRates` | `pages/update-exchange-rates.twig` |
 | **Seguridad & Auth** | `/entrar`, `/salir`, `/registrarse`, `/verificar-correo`, `/recuperar-clave`, `/restablecer-clave`, `/actualizar-clave` | Handlers en `app/Http/Handlers/` | `signin.twig`, `signup.twig`, `update-password.twig`, etc. |
-| **En Progreso** | Inventario por lote (`#inventario`), POS (`#pos`) | Pendientes | Pendientes |
+| **En Progreso** | POS (`#pos`), Mermas (`#mermas`) | Pendientes | Pendientes |
 
 ---
 
@@ -69,6 +70,21 @@ motorepuestos-robles/
 - `name`: TEXT NOT NULL UNIQUE (Nombre descriptivo del repuesto)
 - `category`: TEXT NOT NULL (Categoría o agrupación)
 - `price`: REAL NOT NULL CHECK (price > 0) (Precio base en USD)
+
+### Tabla `purchases`:
+- `id`: INTEGER PRIMARY KEY AUTOINCREMENT
+- `user_id`: INTEGER NOT NULL REFERENCES users(id)
+- `supplier_id`: INTEGER NOT NULL REFERENCES suppliers(id)
+- `supplier_invoice_code`: TEXT NOT NULL UNIQUE CHECK (LENGTH(supplier_invoice_code) > 0)
+- `created_at`: TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+- `verified_at`: TEXT UNIQUE (NULL = pendiente/editable/eliminable, TIMESTAMP = verificada/inmutable)
+
+### Tabla `purchases_items`:
+- `id`: INTEGER PRIMARY KEY AUTOINCREMENT
+- `purchase_id`: INTEGER NOT NULL REFERENCES purchases(id)
+- `product_id`: INTEGER NOT NULL REFERENCES products(id)
+- `quantity`: REAL NOT NULL CHECK (quantity > 0)
+- `cost`: REAL NOT NULL CHECK (cost > 0) (Costo unitario en USD)
 
 ### Tabla `suppliers`:
 - `id`: INTEGER PRIMARY KEY AUTOINCREMENT

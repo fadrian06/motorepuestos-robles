@@ -14,7 +14,7 @@ Sistema web de gestión comercial y venta de repuestos automotrices con control 
 
 ## Características Principales
 
-- **Gestión de Proveedores (CRUD Completo)** — Directorio de importadoras y distribuidores mayoristas con RIF, alias para lotes, asesor comercial asignado, teléfono y dirección física.
+- **Gestión de Compras e Inventario por Lote (CRUD Completo)** — Órdenes de compra a proveedores con código de factura, registro de ítems con costo unitario en USD y cantidad, actualización de compras no verificadas, anulación/eliminación atómica con sus ítems, y verificación para inmutabilidad del lote.
 - **Directorio de Clientes** — Registro y administración de compradores particulares y talleres mecánicos para cotizaciones y ventas.
 - **Catálogo de Productos y Repuestos (CRUD Completo)** — Gestión completa de repuestos clasificados por categoría, precio base en USD, búsqueda reactiva y validación legal de margen comercial.
 - **Gestión de Vendedores y Permisos Granulares** — Control de acceso basado en permisos (`App\Enums\Permission`) con gestión de roles y restablecimiento de accesos.
@@ -22,8 +22,8 @@ Sistema web de gestión comercial y venta de repuestos automotrices con control 
 - **Seguridad y Autenticación Robusta** — Registro, inicio de sesión, verificación de correo electrónico vía token, recuperación y cambio de contraseñas.
 - **Interfaz Moderna y Modo Oscuro** — UI responsiva optimizada con W3.CSS, variables de diseño de marca (`--brand-red`), Alpine.js para búsquedas reactivas en vivo, modales y alternador de tema claro/oscuro.
 - **Próximas Fases:**
-  - *Inventario y Lotes* — Registro de compras con costo unitario y stock calculado por suma de lotes disponibles.
   - *Punto de Venta (POS)* — Búsqueda por nombre/categoría, selección manual de lote por el vendedor, comprobante imprimible y pago mixto.
+  - *Control de Mermas y Pérdidas* — Registro y trazabilidad de productos vencidos o dañados por lote (`products_losses`).
 
 ---
 
@@ -124,6 +124,7 @@ motorepuestos-robles/
 | :--- | :--- | :--- |
 | **Dashboard** | `GET /` | Panel principal de métricas y accesos rápidos de operaciones. |
 | **Productos** | `GET /productos`<br>`GET,POST /productos/registrar`<br>`GET,POST /productos/{id}`<br>`GET /productos/{id}/eliminar` | Catálogo de repuestos, registro, edición y eliminación de productos. |
+| **Compras / Lotes** | `GET /compras`<br>`GET,POST /compras/registrar`<br>`GET,POST /compras/{id}`<br>`GET /compras/{id}/eliminar`<br>`GET /compras/{id}/verificar` | Control de compras por lote, registro atómico con ítems, edición, verificación de inmutabilidad y eliminación. |
 | **Proveedores** | `GET /proveedores`<br>`GET,POST /proveedores/registrar`<br>`GET,POST /proveedores/{id}`<br>`GET /proveedores/{id}/eliminar` | Directorio, alta, modificación y eliminación con confirmación modal. |
 | **Clientes** | `GET /clientes`<br>`GET,POST /clientes/registrar`<br>`GET,POST /clientes/{id}`<br>`GET /clientes/{id}/eliminar` | Cartera de compradores y talleres automotrices. |
 | **Vendedores** | `GET /vendedores`<br>`GET,POST /vendedores/registrar` | Equipo comercial y asignación de permisos de usuario. |
@@ -140,11 +141,13 @@ motorepuestos-robles/
 - **`clients`** — Cartera de clientes (`id`, `name`).
 - **`suppliers`** — Proveedores con `name`, `tax_id` (RIF), `alias`, `seller`, `phone` y `address`.
 - **`products`** — Catálogo de repuestos automotrices (`id`, `name`, `category`, `price`).
+- **`purchases`** — Órdenes de compra (`id`, `user_id`, `supplier_id`, `supplier_invoice_code`, `created_at`, `verified_at`).
+- **`purchases_items`** — Lotes y renglones de compra (`id`, `purchase_id`, `product_id`, `quantity`, `cost`).
 
-### Tablas Planificadas (Inventario y Ventas):
-- `purchases` / `purchase_items` — Cabecera de compra y renglones de lote con costo unitario y cantidad disponible.
-- `sales` / `sale_items` — Cabecera de venta y detalle enlazado al lote específico consumido.
+### Tablas Planificadas (Punto de Venta y Mermas):
+- `sales` / `sales_items` — Cabecera de venta y detalle enlazado al lote específico consumido (`purchase_item_id`).
 - `payments` — Métodos y montos aplicados a cada venta (pago mixto).
+- `products_losses` — Registro de pérdidas y mermas por lote (`purchase_item_id`, `quantity`, `reason`).
 
 ---
 
