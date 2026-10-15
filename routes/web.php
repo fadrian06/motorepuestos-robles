@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Handlers\Dashboard;
 use App\Http\Handlers\DeleteClient;
+use App\Http\Handlers\DeleteProduct;
 use App\Http\Handlers\DeleteSupplier;
 use App\Http\Handlers\ForgotPassword;
 use App\Http\Handlers\ListClients;
@@ -22,6 +23,7 @@ use App\Http\Handlers\SignUp;
 use App\Http\Handlers\UpdateClient;
 use App\Http\Handlers\UpdateExchangeRates;
 use App\Http\Handlers\UpdatePassword;
+use App\Http\Handlers\UpdateProduct;
 use App\Http\Handlers\UpdateSupplier;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Middleware\Authenticate;
@@ -89,6 +91,10 @@ return static function (ContainerInterface $container): Router {
     $listProducts = $container->get(ListProducts::class);
     /** @var RequestHandlerInterface */
     $registerProduct = $container->get(RegisterProduct::class);
+    /** @var RequestHandlerInterface */
+    $updateProduct = $container->get(UpdateProduct::class);
+    /** @var RequestHandlerInterface */
+    $deleteProduct = $container->get(DeleteProduct::class);
     /** @var Auth */
     $auth = $container->get(Auth::class);
     $redirectLogin = $auth->config('redirect.login');
@@ -303,6 +309,28 @@ return static function (ContainerInterface $container): Router {
             $authenticate,
             $ensureEmailIsVerified,
             $authorize->withPermissions('register product'),
+        ),
+    );
+
+    $router->attach(
+        ['GET', 'POST'],
+        ['#^/productos/(?<id>\d+)$#'],
+        new QueueRequestHandler(
+            $updateProduct,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('update product'),
+        ),
+    );
+
+    $router->attach(
+        ['GET'],
+        ['#^/productos/(?<id>\d+)/eliminar$#'],
+        new QueueRequestHandler(
+            $deleteProduct,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('delete product'),
         ),
     );
 

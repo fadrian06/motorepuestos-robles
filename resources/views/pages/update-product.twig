@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modificar Producto - {{ _ENV['APP_NAME'] }}</title>
+  <link rel="icon" type="image/jpeg" href="/resources/images/favicon.jpg">
+  <link rel="stylesheet" href="/resources/styles/w3.css">
+  <script defer src="/resources/scripts/alpinejs/dist/cdn.min.js"></script>
+  <style>
+    :root {
+      --brand-red: #dc2626;
+      --brand-red-hover: #b91c1c;
+      --brand-red-glow: rgba(220, 38, 38, 0.25);
+      --brand-black: #0d0d11;
+      --brand-charcoal: #18181b;
+      --sidebar-width: 260px;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--w3-surface-alt);
+      color: var(--w3-text-color);
+      font-family: var(--w3-font-family);
+      margin: 0;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.w3-dark-mode {
+      background-color: var(--w3-page-bg);
+    }
+
+    /* Sidebar Layout */
+    .app-sidebar {
+      width: var(--sidebar-width);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      background-color: var(--brand-black);
+      color: #ffffff;
+      z-index: 20;
+      overflow-y: auto;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.3s ease;
+    }
+
+    .app-main {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: margin-left 0.3s ease;
+    }
+
+    @media (max-width: 992px) {
+      .app-sidebar {
+        transform: translateX(-100%);
+      }
+      .app-sidebar.open {
+        transform: translateX(0);
+      }
+      .app-main {
+        margin-left: 0;
+      }
+    }
+
+    /* Topbar */
+    .app-topbar {
+      height: 64px;
+      background-color: var(--w3-surface);
+      border-bottom: 1px solid var(--w3-border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Brand Header in Sidebar */
+    .sidebar-brand {
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid var(--brand-red);
+      background-color: #08080a;
+    }
+
+    .brand-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1.5px solid var(--brand-red);
+      box-shadow: 0 2px 10px var(--brand-red-glow);
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #71717a;
+      padding: 16px 20px 6px;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      color: #a1a1aa;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-item.active {
+      color: #ffffff;
+      background-color: rgba(220, 38, 38, 0.12);
+      border-left-color: var(--brand-red);
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Panel Card */
+    .panel-card {
+      background-color: var(--w3-surface);
+      border-radius: 12px;
+      border: 1px solid var(--w3-border-light);
+      box-shadow: var(--w3-shadow-card);
+      overflow: hidden;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--w3-border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Botones */
+    .btn-brand {
+      background-color: var(--brand-red);
+      color: #ffffff;
+      border: 1px solid var(--brand-red);
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-brand:hover {
+      background-color: var(--brand-red-hover);
+      border-color: var(--brand-red-hover);
+      color: #ffffff;
+    }
+
+    .btn-brand:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--w3-text-color);
+      border: 1px solid var(--w3-border-color);
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    body.w3-dark-mode .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Badges */
+    .badge-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-red {
+      background-color: rgba(220, 38, 38, 0.12);
+      color: var(--brand-red);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background-color: var(--w3-surface);
+      color: var(--w3-text-color);
+      border: 1px solid var(--w3-border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      border-color: var(--brand-red);
+      box-shadow: 0 0 0 3px var(--brand-red-glow);
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: #71717a;
+      margin-top: 4px;
+    }
+
+    .price-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .price-prefix {
+      position: absolute;
+      left: 14px;
+      font-weight: 700;
+      color: #71717a;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .price-wrapper .form-input {
+      padding-left: 32px;
+    }
+
+    .alert-error {
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .alert-warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #d97706;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 15;
+    }
+  </style>
+</head>
+<body
+  x-data="{
+    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+    sidebarOpen: false,
+    submitting: false,
+    price: '{{ product.price }}',
+    showMarginWarning: false,
+    cost: '',
+    checkMargin() {
+      const p = parseFloat(this.price);
+      const c = parseFloat(this.cost);
+      if (!isNaN(p) && !isNaN(c) && c > 0) {
+        const margin = ((p - c) / c) * 100;
+        this.showMarginWarning = margin > 30;
+      } else {
+        this.showMarginWarning = false;
+      }
+    },
+    init() {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      this.isDarkMode = mediaQuery.matches;
+      mediaQuery.addEventListener('change', (event) => {
+        this.isDarkMode = event.matches;
+      });
+    }
+  }"
+  :class="{ 'w3-dark-mode': isDarkMode }"
+>
+
+  <!-- Telón de fondo móvil -->
+  <div
+    class="sidebar-backdrop"
+    x-show="sidebarOpen"
+    @click="sidebarOpen = false"
+    x-transition:enter="w3-animate-opacity"
+    x-transition:leave="w3-animate-opacity"
+    style="display: none;"
+  ></div>
+
+  <!-- Barra lateral (Sidebar) -->
+  <aside class="app-sidebar" :class="{ 'open': sidebarOpen }">
+    <div class="sidebar-brand">
+      <img
+        src="/resources/images/banner.jpg"
+        alt="{{ _ENV['APP_NAME'] }}"
+        class="brand-avatar"
+        onerror="this.style.display='none'"
+      >
+      <div style="overflow: hidden;">
+        <div style="font-weight: 800; font-size: 13px; text-transform: uppercase; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          {{ _ENV['APP_NAME'] }}
+        </div>
+        <div style="font-size: 11px; color: #a1a1aa; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background-color: #22c55e; display: inline-block;"></span>
+          Sistema en línea
+        </div>
+      </div>
+    </div>
+
+    <nav style="padding: 8px 0 24px;">
+      <div class="nav-group-title">Principal</div>
+
+      <a href="/" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="nav-group-title">Gestión de Negocio</div>
+
+      <a href="/clientes" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span>Clientes</span>
+      </a>
+
+      <a href="/proveedores" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+        <span>Proveedores</span>
+      </a>
+
+      <a href="/vendedores" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <span>Vendedores</span>
+      </a>
+
+      <a href="/cotizaciones" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Tasas de Cambio</span>
+      </a>
+
+      <div class="nav-group-title">Módulos de Repuestos</div>
+
+      <a href="/productos" class="nav-item active">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <span>Catálogo de Productos</span>
+      </a>
+
+      <a href="#inventario" class="nav-item" @click.prevent="alert('Módulo de inventario y lotes en proceso')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+        <span>Inventario y Lotes</span>
+      </a>
+
+      <a href="#pos" class="nav-item" @click.prevent="alert('Punto de venta y facturación en proceso')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+        <span>Punto de Venta (POS)</span>
+      </a>
+
+      <div class="nav-group-title">Sistema y Seguridad</div>
+
+      <a href="/actualizar-clave" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <span>Actualizar Contraseña</span>
+      </a>
+
+      <a href="/salir" class="nav-item" style="color: #ef4444;">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span>Cerrar Sesión</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Área principal -->
+  <div class="app-main">
+    <!-- Topbar -->
+    <header class="app-topbar">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button
+          type="button"
+          class="btn-secondary w3-hide-large"
+          @click="sidebarOpen = true"
+          aria-label="Abrir menú"
+        >
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <h1 style="margin: 0; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+          <span>Modificar Producto</span>
+          <span class="badge-pill badge-red w3-hide-small">Edición</span>
+        </h1>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button
+          type="button"
+          class="btn-secondary"
+          @click="isDarkMode = !isDarkMode"
+          :title="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+          aria-label="Alternar modo de color"
+        >
+          <svg x-show="isDarkMode" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg x-show="!isDarkMode" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <a href="/salir" class="btn-brand" style="padding: 7px 14px;" title="Cerrar sesión actual">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span class="w3-hide-small">Salir</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Contenido -->
+    <main style="padding: 24px; flex: 1;">
+      <!-- Migas de pan y encabezado -->
+      <div style="margin-bottom: 24px;">
+        <div style="font-size: 12px; color: #71717a; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+          <a href="/" style="color: inherit; text-decoration: none;">Dashboard</a>
+          <span>&rsaquo;</span>
+          <a href="/productos" style="color: inherit; text-decoration: none;">Productos</a>
+          <span>&rsaquo;</span>
+          <span style="color: var(--brand-red); font-weight: 600;">Modificar</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <h2 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.3px;">
+            Modificar Producto #{{ product.id }}
+          </h2>
+          <a href="/productos" class="btn-secondary" style="font-size: 13px;">
+            &larr; Volver al Catálogo
+          </a>
+        </div>
+      </div>
+
+      <!-- Formulario -->
+      <div style="max-width: 720px; margin: 0 auto;">
+        <div class="panel-card">
+          <div class="panel-header">
+            <div style="font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+              <span style="width: 4px; height: 18px; background-color: var(--brand-red); border-radius: 2px;"></span>
+              <span>Datos del Producto</span>
+            </div>
+            <span class="badge-pill badge-red">Edición</span>
+          </div>
+
+          <div style="padding: 24px;">
+            <!-- Errores flash -->
+            {% if flash %}
+              <div class="alert-error">
+                <div style="font-weight: 700; margin-bottom: 4px;">Atención:</div>
+                {% for key, error in flash %}
+                  <div>&bull; {{ error is iterable ? error|join(', ') : error }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <!-- Alerta de margen -->
+            <div class="alert-warning" x-show="showMarginWarning" style="display: none;">
+              <strong>Margen superior al 30%.</strong>
+              En Venezuela el techo legal de ganancia para repuestos automotrices es del 30%.
+              Verifica el precio antes de guardar.
+            </div>
+
+            <form method="post" novalidate @submit="submitting = true">
+
+              <!-- Nombre del Producto -->
+              <div class="form-group">
+                <label for="product_name" class="form-label">
+                  Nombre del Producto <span style="color: var(--brand-red);">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="product_name"
+                  name="name"
+                  value="{{ product['name'] }}"
+                  class="form-input"
+                  required
+                  placeholder="Ej: Filtro de Aceite Toyota Corolla"
+                  autofocus
+                >
+                <div class="form-hint">Nombre descriptivo y único del repuesto.</div>
+              </div>
+
+              <!-- Categoría -->
+              <div class="form-group">
+                <label for="product_category" class="form-label">
+                  Categoría <span style="color: var(--brand-red);">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="product_category"
+                  name="category"
+                  value="{{ product['category'] }}"
+                  class="form-input"
+                  required
+                  placeholder="Ej: Filtros, Frenos, Suspensión, Motor..."
+                >
+                <div class="form-hint">Agrupación del producto dentro del catálogo.</div>
+              </div>
+
+              <!-- Precio de venta (USD) -->
+              <div class="form-group">
+                <label for="product_price" class="form-label">
+                  Precio de Venta (USD) <span style="color: var(--brand-red);">*</span>
+                </label>
+                <div class="price-wrapper">
+                  <span class="price-prefix">$</span>
+                  <input
+                    type="number"
+                    id="product_price"
+                    name="price"
+                    class="form-input"
+                    required
+                    min="0.01"
+                    step="0.01"
+                    placeholder="0.00"
+                    x-model="price"
+                    @input="checkMargin()"
+                  >
+                </div>
+                <div class="form-hint">
+                  Precio de venta base en dólares (USD).
+                </div>
+              </div>
+
+              <!-- Acciones -->
+              <div style="margin-top: 28px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--w3-border-light); padding-top: 20px;">
+                <a href="/productos" class="btn-secondary">Cancelar</a>
+                <button
+                  type="submit"
+                  class="btn-brand"
+                  :disabled="submitting"
+                >
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  <span x-text="submitting ? 'Guardando...' : 'Guardar Cambios'"></span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="padding: 20px 24px; border-top: 1px solid var(--w3-border-light); font-size: 12px; color: #71717a; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <div>
+        &copy; 2026 <strong>{{ _ENV['APP_NAME'] }}</strong>. Modificar producto.
+      </div>
+      <div>
+        Sistema de inventario por lote y trazabilidad comercial.
+      </div>
+    </footer>
+  </div>
+
+</body>
+</html>

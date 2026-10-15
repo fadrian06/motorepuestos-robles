@@ -303,11 +303,55 @@
       pointer-events: none;
     }
 
+    .btn-danger-outline {
+      background-color: transparent;
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 6px 12px;
+      font-weight: 500;
+      font-size: 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-danger-outline:hover {
+      background-color: rgba(239, 68, 68, 0.1);
+      border-color: #ef4444;
+      color: #dc2626;
+    }
+
     .sidebar-backdrop {
       position: fixed;
       inset: 0;
       background-color: rgba(0, 0, 0, 0.6);
       z-index: 15;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.65);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background-color: var(--w3-surface);
+      border-radius: 14px;
+      border: 1px solid var(--w3-border-light);
+      max-width: 440px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
     }
   </style>
 </head>
@@ -316,6 +360,8 @@
     isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
     sidebarOpen: false,
     search: '',
+    deleteModalOpen: false,
+    productToDelete: null,
     productsList: [
       {% for product in products %}
       {
@@ -343,6 +389,15 @@
     },
     formatPrice(value) {
       return '$\u00a0' + parseFloat(value).toFixed(2);
+    },
+    openDelete(product) {
+      this.productToDelete = product;
+      this.deleteModalOpen = true;
+    },
+    confirmDelete() {
+      if (this.productToDelete) {
+        window.location.href = '/productos/' + this.productToDelete.id + '/eliminar';
+      }
     }
   }"
   :class="{ 'w3-dark-mode': isDarkMode }"
@@ -619,6 +674,7 @@
                   <th>Producto</th>
                   <th style="width: 160px;">Categoría</th>
                   <th style="text-align: right; width: 120px;">Precio (USD)</th>
+                  <th style="text-align: right; width: 180px;">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -649,6 +705,37 @@
 
                     <!-- Precio -->
                     <td style="text-align: right; font-weight: 700; font-size: 15px;" x-text="formatPrice(product.price)"></td>
+
+                    <!-- Acciones -->
+                    <td style="text-align: right;">
+                      <div style="display: inline-flex; align-items: center; gap: 8px;">
+                        <!-- Editar -->
+                        <a
+                          :href="'/productos/' + product.id"
+                          class="btn-secondary"
+                          style="padding: 6px 10px; font-size: 12px;"
+                          title="Editar producto"
+                        >
+                          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                          </svg>
+                          <span>Editar</span>
+                        </a>
+
+                        <!-- Eliminar -->
+                        <button
+                          type="button"
+                          class="btn-danger-outline"
+                          @click="openDelete(product)"
+                          title="Eliminar producto"
+                        >
+                          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          <span>Eliminar</span>
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 </template>
               </tbody>
@@ -668,6 +755,50 @@
         {% endif %}
       </div>
     </main>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div
+      class="modal-backdrop"
+      x-show="deleteModalOpen"
+      x-transition:enter="w3-animate-opacity"
+      x-transition:leave="w3-animate-opacity"
+      style="display: none;"
+      @click.self="deleteModalOpen = false"
+    >
+      <div class="modal-box">
+        <div style="display: flex; align-items: flex-start; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 10px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 17px; font-weight: 700;">¿Eliminar producto?</h3>
+            <p style="margin: 8px 0 0; font-size: 13px; color: #71717a; line-height: 1.5;">
+              ¿Estás seguro de que deseas eliminar el producto <strong x-text="productToDelete ? productToDelete.name : ''"></strong>? Esta acción borrará el registro del catálogo de forma permanente.
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button
+            type="button"
+            class="btn-secondary"
+            @click="deleteModalOpen = false"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn-brand"
+            style="background-color: #ef4444; border-color: #ef4444;"
+            @click="confirmDelete()"
+          >
+            Sí, eliminar
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer style="padding: 20px 24px; border-top: 1px solid var(--w3-border-light); font-size: 12px; color: #71717a; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
