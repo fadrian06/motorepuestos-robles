@@ -22,6 +22,7 @@ return new readonly class implements Migration {
                 NOT NULL
                 REFERENCES purchases_items(id)
             ',
+            'product_price' => 'REAL NOT NULL CHECK (product_price > 0)',
             'quantity' => 'REAL NOT NULL CHECK (quantity > 0)',
         ]);
 
