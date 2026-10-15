@@ -17,13 +17,17 @@ return new readonly class implements Migration {
                 INTEGER
                 NOT NULL
                 REFERENCES sales(id)
-                ON DELETE CASCADE
             ',
             'amount' => 'REAL NOT NULL CHECK (amount > 0)',
             'currency' => '
                 TEXT
                 NOT NULL
                 CHECK (currency IN ("usd", "cop", "ves"))
+            ',
+            'exchange_rate_id' => '
+                INTEGER
+                NOT NULL
+                REFERENCES exchange_rates(id)
             ',
         ]);
 

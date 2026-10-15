@@ -73,9 +73,7 @@ final readonly class RegisterSupplier implements RequestHandlerInterface
                     ->unique(
                         'name',
                         'tax_id',
-                        'address',
                         'phone',
-                        'seller',
                         'alias',
                     );
 

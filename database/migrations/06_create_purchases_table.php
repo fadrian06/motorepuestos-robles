@@ -24,13 +24,11 @@ return new readonly class implements Migration
                 INTEGER
                 NOT NULL
                 REFERENCES {$authTable}({$authIdKey})
-                ON DELETE CASCADE
             ",
             'supplier_id' => '
                 INTEGER
                 NOT NULL
                 REFERENCES suppliers(id)
-                ON DELETE CASCADE
             ',
             'supplier_invoice_code' => '
                 TEXT
@@ -41,7 +39,6 @@ return new readonly class implements Migration
             'created_at' => '
                 TEXT
                 NOT NULL
-                UNIQUE
                 DEFAULT CURRENT_TIMESTAMP
                 CHECK (created_at LIKE "____-__-__ __:__:__")
             ',

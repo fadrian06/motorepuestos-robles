@@ -16,13 +16,11 @@ return new readonly class implements Migration {
                 INTEGER
                 NOT NULL
                 REFERENCES sales(id)
-                ON DELETE CASCADE
             ',
             'purchase_item_id' => '
                 INTEGER
                 NOT NULL
                 REFERENCES purchases_items(id)
-                ON DELETE CASCADE
             ',
             'quantity' => 'REAL NOT NULL CHECK (quantity > 0)',
         ]);

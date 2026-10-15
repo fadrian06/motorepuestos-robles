@@ -18,30 +18,18 @@ return new readonly class implements Migration
                 INTEGER
                 NOT NULL
                 REFERENCES purchases(id)
-                ON DELETE CASCADE
             ',
             'product_id' => '
                 INTEGER
                 NOT NULL
                 REFERENCES products(id)
-                ON DELETE CASCADE
             ',
-            'quantity_purchased' => '
+            'quantity' => '
                 REAL
                 NOT NULL
-                CHECK (quantity_purchased > 0)
+                CHECK (quantity > 0)
             ',
-            'quantity_available' => '
-                REAL
-                NOT NULL
-                CHECK (quantity_available >= 0)
-            ',
-            'purchase_price' => 'REAL NOT NULL CHECK (purchase_price > 0)',
-            'sale_price' => '
-                REAL
-                NOT NULL
-                CHECK (sale_price >= purchase_price * 1.3)
-            ',
+            'cost' => 'REAL NOT NULL CHECK (cost > 0)',
         ]);
 
         $db->execute();

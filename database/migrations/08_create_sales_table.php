@@ -24,7 +24,6 @@ return new readonly class implements Migration
             'created_at' => '
                 TEXT
                 NOT NULL
-                UNIQUE
                 DEFAULT CURRENT_TIMESTAMP
                 CHECK (created_at LIKE "____-__-__ __:__:__")
             ',
@@ -32,14 +31,17 @@ return new readonly class implements Migration
                 INTEGER
                 NOT NULL
                 REFERENCES clients(id)
-                ON DELETE CASCADE
             ',
             'user_id' => "
                 INTEGER
                 NOT NULL
                 REFERENCES {$authTable}({$authIdKey})
-                ON DELETE CASCADE
             ",
+            'exchange_rate_id' => '
+                INTEGER
+                NOT NULL
+                REFERENCES exchange_rates(id)
+            ',
         ]);
 
         $db->execute();

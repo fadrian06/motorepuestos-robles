@@ -17,7 +17,6 @@ return new readonly class implements Migration
             'created_at' => '
                 TEXT
                 NOT NULL
-                UNIQUE
                 DEFAULT CURRENT_TIMESTAMP
                 CHECK (created_at LIKE "____-__-__ __:__:__")
             ',
