@@ -320,7 +320,6 @@
       {% for product in products %}
       {
         id: {{ product.id }},
-        code: '{{ product.code|e('js') }}',
         name: '{{ product.name|e('js') }}',
         category: '{{ product.category|e('js') }}',
         price: {{ product.price }}
@@ -339,7 +338,6 @@
       const q = this.search.toLowerCase().trim();
       return this.productsList.filter(p =>
         p.name.toLowerCase().includes(q) ||
-        p.code.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q)
       );
     },
@@ -522,7 +520,7 @@
             Catálogo de Repuestos
           </h2>
           <p style="margin: 4px 0 0; font-size: 13px; color: #71717a;">
-            Gestiona los productos, sus códigos de referencia y precios de venta en USD.
+            Gestiona los productos y sus precios de venta en USD.
           </p>
         </div>
 
@@ -582,7 +580,7 @@
             </svg>
             <input
               type="text"
-              placeholder="Buscar por nombre, código o categoría..."
+              placeholder="Buscar por nombre o categoría..."
               x-model="search"
               aria-label="Buscar producto"
             >
@@ -618,7 +616,6 @@
               <thead>
                 <tr>
                   <th style="width: 80px;"># ID</th>
-                  <th style="width: 130px;">Código</th>
                   <th>Producto</th>
                   <th style="width: 160px;">Categoría</th>
                   <th style="text-align: right; width: 120px;">Precio (USD)</th>
@@ -630,14 +627,6 @@
                     <!-- ID -->
                     <td style="font-weight: 700; color: #71717a; font-family: monospace;">
                       #<span x-text="String(product.id).padStart(3, '0')"></span>
-                    </td>
-
-                    <!-- Código -->
-                    <td>
-                      <span
-                        style="font-family: monospace; font-size: 13px; background-color: rgba(0,0,0,0.05); padding: 3px 8px; border-radius: 6px;"
-                        x-text="product.code"
-                      ></span>
                     </td>
 
                     <!-- Nombre e ícono -->

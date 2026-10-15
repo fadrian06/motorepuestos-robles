@@ -49,7 +49,6 @@ final readonly class RegisterProduct implements RequestHandlerInterface
 
             case 'POST':
                 $validated = $this->form->validate($requestBody, [
-                    'code' => 'string',
                     'name' => 'string',
                     'category' => 'string',
                     'price' => 'number',
@@ -67,7 +66,7 @@ final readonly class RegisterProduct implements RequestHandlerInterface
                 $db
                     ->insert('products')
                     ->params($validated)
-                    ->unique('code', 'name');
+                    ->unique('name');
 
                 if ($db->execute()) {
                     return $this->responseFactory->createResponse()->withHeader(

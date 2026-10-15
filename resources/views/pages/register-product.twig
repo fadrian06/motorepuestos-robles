@@ -538,38 +538,21 @@
 
             <form method="post" novalidate @submit="submitting = true">
 
-              <!-- Código y Nombre -->
-              <div class="form-grid">
-                <div class="form-group">
-                  <label for="product_code" class="form-label">
-                    Código de Referencia <span style="color: var(--brand-red);">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="product_code"
-                    name="code"
-                    class="form-input"
-                    required
-                    placeholder="Ej: FIL-AC-0042"
-                    autofocus
-                  >
-                  <div class="form-hint">Código interno o referencia del fabricante.</div>
-                </div>
-
-                <div class="form-group">
-                  <label for="product_name" class="form-label">
-                    Nombre del Producto <span style="color: var(--brand-red);">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="product_name"
-                    name="name"
-                    class="form-input"
-                    required
-                    placeholder="Ej: Filtro de Aceite Toyota Corolla"
-                  >
-                  <div class="form-hint">Nombre descriptivo y único del repuesto.</div>
-                </div>
+              <!-- Nombre del Producto -->
+              <div class="form-group">
+                <label for="product_name" class="form-label">
+                  Nombre del Producto <span style="color: var(--brand-red);">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="product_name"
+                  name="name"
+                  class="form-input"
+                  required
+                  placeholder="Ej: Filtro de Aceite Toyota Corolla"
+                  autofocus
+                >
+                <div class="form-hint">Nombre descriptivo y único del repuesto.</div>
               </div>
 
               <!-- Categoría -->
