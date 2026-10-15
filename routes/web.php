@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Handlers\Dashboard;
 use App\Http\Handlers\DeleteClient;
 use App\Http\Handlers\DeleteProduct;
+use App\Http\Handlers\DeletePurchase;
 use App\Http\Handlers\DeleteSupplier;
 use App\Http\Handlers\ForgotPassword;
 use App\Http\Handlers\ListClients;
@@ -29,6 +30,7 @@ use App\Http\Handlers\UpdateProduct;
 use App\Http\Handlers\UpdatePurchase;
 use App\Http\Handlers\UpdateSupplier;
 use App\Http\Handlers\VerifyEmail;
+use App\Http\Handlers\VerifyPurchase;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authorize;
 use App\Http\Middleware\EnsureEmailIsVerified;
@@ -104,6 +106,10 @@ return static function (ContainerInterface $container): Router {
     $updatePurchase = $container->get(UpdatePurchase::class);
     /** @var RequestHandlerInterface */
     $deleteProduct = $container->get(DeleteProduct::class);
+    /** @var RequestHandlerInterface */
+    $deletePurchase = $container->get(DeletePurchase::class);
+    /** @var RequestHandlerInterface */
+    $verifyPurchase = $container->get(VerifyPurchase::class);
     /** @var Auth */
     $auth = $container->get(Auth::class);
     $redirectLogin = $auth->config('redirect.login');
@@ -373,6 +379,28 @@ return static function (ContainerInterface $container): Router {
             $authenticate,
             $ensureEmailIsVerified,
             $authorize->withPermissions('update purchase'),
+        ),
+    );
+
+    $router->attach(
+        ['GET'],
+        ['#^/compras/(?<id>\d+)/eliminar$#'],
+        new QueueRequestHandler(
+            $deletePurchase,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('delete purchase'),
+        ),
+    );
+
+    $router->attach(
+        ['GET'],
+        ['#^/compras/(?<id>\d+)/verificar$#'],
+        new QueueRequestHandler(
+            $verifyPurchase,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('verify purchase'),
         ),
     );
 

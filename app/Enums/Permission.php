@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+/** @mago-expect lint:too-many-enum-cases */
 enum Permission
 {
     case ViewSellers;
@@ -25,6 +26,8 @@ enum Permission
     case ViewPurchases;
     case RegisterPurchase;
     case UpdatePurchase;
+    case DeletePurchase;
+    case VerifyPurchase;
 
     public function key(): string
     {
@@ -48,6 +51,8 @@ enum Permission
             Permission::ViewPurchases => 'view purchases',
             Permission::RegisterPurchase => 'register purchase',
             Permission::UpdatePurchase => 'update purchase',
+            Permission::DeletePurchase => 'delete purchase',
+            Permission::VerifyPurchase => 'verify purchase',
         };
     }
 
@@ -81,6 +86,8 @@ enum Permission
             Permission::ViewPurchases => 'Ver Compras',
             Permission::RegisterPurchase => 'Registrar Compras',
             Permission::UpdatePurchase => 'Modificar Compras',
+            Permission::DeletePurchase => 'Eliminar Compras',
+            Permission::VerifyPurchase => 'Verificar Compras',
         };
     }
 
@@ -125,6 +132,10 @@ enum Permission
                 => 'Permite registrar nuevas órdenes de compra por lote.',
             Permission::UpdatePurchase
                 => 'Permite modificar compras no verificadas.',
+            Permission::DeletePurchase
+                => 'Permite anular o eliminar compras no verificadas.',
+            Permission::VerifyPurchase
+                => 'Permite verificar compras e incorporarlas al inventario.',
         };
     }
 
@@ -154,6 +165,8 @@ enum Permission
             Permission::ViewPurchases,
             Permission::RegisterPurchase,
             Permission::UpdatePurchase,
+            Permission::DeletePurchase,
+            Permission::VerifyPurchase,
                 => 'Compras',
         };
     }

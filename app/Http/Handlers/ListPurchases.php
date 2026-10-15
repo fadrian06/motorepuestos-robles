@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Handlers;
 
 use Leaf\Auth;
+use Leaf\Flash;
 use NoDiscard;
 use Override;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -19,6 +20,7 @@ final readonly class ListPurchases implements RequestHandlerInterface
         private ResponseFactoryInterface $responseFactory,
         private Auth $auth,
         private Environment $environment,
+        private Flash $flash,
     ) {}
 
     #[Override]
@@ -43,6 +45,7 @@ final readonly class ListPurchases implements RequestHandlerInterface
 
         $html = $this->environment->render('pages/purchases.twig', [
             'purchases' => $purchases ?? [],
+            'flash' => $this->flash->display(),
         ]);
 
         $response = $this->responseFactory->createResponse();
