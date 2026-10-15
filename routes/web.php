@@ -9,6 +9,7 @@ use App\Http\Handlers\DeleteSupplier;
 use App\Http\Handlers\ForgotPassword;
 use App\Http\Handlers\ListClients;
 use App\Http\Handlers\ListProducts;
+use App\Http\Handlers\ListPurchases;
 use App\Http\Handlers\ListSellers;
 use App\Http\Handlers\ListSuppliers;
 use App\Http\Handlers\RegisterClient;
@@ -89,6 +90,8 @@ return static function (ContainerInterface $container): Router {
     $deleteSupplier = $container->get(DeleteSupplier::class);
     /** @var RequestHandlerInterface */
     $listProducts = $container->get(ListProducts::class);
+    /** @var RequestHandlerInterface */
+    $listPurchases = $container->get(ListPurchases::class);
     /** @var RequestHandlerInterface */
     $registerProduct = $container->get(RegisterProduct::class);
     /** @var RequestHandlerInterface */
@@ -331,6 +334,17 @@ return static function (ContainerInterface $container): Router {
             $authenticate,
             $ensureEmailIsVerified,
             $authorize->withPermissions('delete product'),
+        ),
+    );
+
+    $router->attach(
+        ['GET'],
+        ['#^/compras$#'],
+        new QueueRequestHandler(
+            $listPurchases,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('view purchases'),
         ),
     );
 

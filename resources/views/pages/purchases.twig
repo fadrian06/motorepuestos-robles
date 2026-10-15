@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Compras - {{ _ENV['APP_NAME'] }}</title>
+  <link rel="icon" type="image/jpeg" href="/resources/images/favicon.jpg">
+  <link rel="stylesheet" href="/resources/styles/w3.css">
+  <script defer src="/resources/scripts/alpinejs/dist/cdn.min.js"></script>
+  <style>
+    :root {
+      --brand-red: #dc2626;
+      --brand-red-hover: #b91c1c;
+      --brand-red-glow: rgba(220, 38, 38, 0.25);
+      --brand-black: #0d0d11;
+      --brand-charcoal: #18181b;
+      --sidebar-width: 260px;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--w3-surface-alt);
+      color: var(--w3-text-color);
+      font-family: var(--w3-font-family);
+      margin: 0;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.w3-dark-mode {
+      background-color: var(--w3-page-bg);
+    }
+
+    /* Sidebar Layout */
+    .app-sidebar {
+      width: var(--sidebar-width);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      background-color: var(--brand-black);
+      color: #ffffff;
+      z-index: 20;
+      overflow-y: auto;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.3s ease;
+    }
+
+    .app-main {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: margin-left 0.3s ease;
+    }
+
+    @media (max-width: 992px) {
+      .app-sidebar {
+        transform: translateX(-100%);
+      }
+      .app-sidebar.open {
+        transform: translateX(0);
+      }
+      .app-main {
+        margin-left: 0;
+      }
+    }
+
+    /* Topbar */
+    .app-topbar {
+      height: 64px;
+      background-color: var(--w3-surface);
+      border-bottom: 1px solid var(--w3-border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Brand Header in Sidebar */
+    .sidebar-brand {
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid var(--brand-red);
+      background-color: #08080a;
+    }
+
+    .brand-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1.5px solid var(--brand-red);
+      box-shadow: 0 2px 10px var(--brand-red-glow);
+    }
+
+    /* Navigation Links */
+    .nav-group-title {
+      padding: 16px 20px 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #71717a;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 20px;
+      color: #a1a1aa;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-left-color: #71717a;
+    }
+
+    .nav-item.active {
+      color: #ffffff;
+      background-color: rgba(220, 38, 38, 0.12);
+      border-left-color: var(--brand-red);
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Buttons */
+    .btn-brand {
+      background-color: var(--brand-red);
+      color: #ffffff;
+      border: 1px solid var(--brand-red);
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 13px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-brand:hover {
+      background-color: var(--brand-red-hover);
+      border-color: var(--brand-red-hover);
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: inherit;
+      border: 1px solid var(--w3-border-color);
+      padding: 8px 14px;
+      font-weight: 500;
+      font-size: 13px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--w3-hover-bg);
+      color: var(--w3-hover-text);
+    }
+
+    /* Panel Card */
+    .panel-card {
+      background-color: var(--w3-surface);
+      border-radius: 12px;
+      border: 1px solid var(--w3-border-light);
+      overflow: hidden;
+      margin-bottom: 24px;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--w3-border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Badges */
+    .badge-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-red {
+      background-color: rgba(220, 38, 38, 0.15);
+      color: var(--brand-red);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+    }
+
+    .badge-gray {
+      background-color: rgba(113, 113, 122, 0.15);
+      color: #a1a1aa;
+      border: 1px solid rgba(113, 113, 122, 0.3);
+    }
+
+    .badge-green {
+      background-color: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .badge-amber {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* KPI Mini Cards */
+    .kpi-card {
+      background-color: var(--w3-surface);
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid var(--w3-border-light);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .kpi-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .kpi-icon.red {
+      background-color: rgba(220, 38, 38, 0.15);
+      color: var(--brand-red);
+    }
+
+    .kpi-icon.green {
+      background-color: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+
+    .kpi-icon.amber {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+    }
+
+    /* Data Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .data-table th {
+      padding: 12px 20px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #71717a;
+      font-weight: 700;
+      border-bottom: 1px solid var(--w3-border-light);
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    body.w3-dark-mode .data-table th {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .data-table td {
+      padding: 14px 20px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--w3-border-light);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    .data-table tbody tr:hover {
+      background-color: rgba(220, 38, 38, 0.03);
+    }
+
+    /* Search input */
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      max-width: 320px;
+      width: 100%;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      background-color: var(--w3-surface);
+      color: var(--w3-text-color);
+      border: 1px solid var(--w3-border-color);
+      border-radius: 8px;
+      padding: 8px 12px 8px 36px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-wrapper input:focus {
+      border-color: var(--brand-red);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      width: 16px;
+      height: 16px;
+      color: #71717a;
+      pointer-events: none;
+    }
+
+    /* Overlay for mobile drawer */
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 15;
+    }
+  </style>
+</head>
+<body
+  x-data="{
+    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+    sidebarOpen: false,
+    search: '',
+    purchasesList: [
+      {% for purchase in purchases %}
+      {
+        id: {{ purchase.id }},
+        supplier_invoice_code: '{{ purchase.supplier_invoice_code|e('js') }}',
+        supplier_name: '{{ purchase.supplier_name|e('js') }}',
+        supplier_alias: '{{ purchase.supplier_alias|e('js') }}',
+        created_at: '{{ purchase.created_at|e('js') }}',
+        verified_at: {% if purchase.verified_at is not null %}'{{ purchase.verified_at|e('js') }}'{% else %}null{% endif %}
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ],
+    init() {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      this.isDarkMode = mediaQuery.matches;
+      mediaQuery.addEventListener('change', (event) => {
+        this.isDarkMode = event.matches;
+      });
+    },
+    get filteredPurchases() {
+      if (!this.search.trim()) {
+        return this.purchasesList;
+      }
+      const q = this.search.toLowerCase().trim();
+      return this.purchasesList.filter(p =>
+        (p.supplier_invoice_code && p.supplier_invoice_code.toLowerCase().includes(q)) ||
+        (p.supplier_name && p.supplier_name.toLowerCase().includes(q)) ||
+        (p.supplier_alias && p.supplier_alias.toLowerCase().includes(q)) ||
+        (p.created_at && p.created_at.toLowerCase().includes(q))
+      );
+    },
+    get verifiedCount() {
+      return this.purchasesList.filter(p => p.verified_at !== null).length;
+    },
+    get pendingCount() {
+      return this.purchasesList.filter(p => p.verified_at === null).length;
+    }
+  }"
+  :class="{ 'w3-dark-mode': isDarkMode }"
+>
+
+  <!-- Telón de fondo móvil -->
+  <div
+    class="sidebar-backdrop"
+    x-show="sidebarOpen"
+    @click="sidebarOpen = false"
+    x-transition:enter="w3-animate-opacity"
+    x-transition:leave="w3-animate-opacity"
+    style="display: none;"
+  ></div>
+
+  <!-- Barra lateral (Sidebar) -->
+  <aside class="app-sidebar" :class="{ 'open': sidebarOpen }">
+    <div class="sidebar-brand">
+      <img
+        src="/resources/images/banner.jpg"
+        alt="{{ _ENV['APP_NAME'] }}"
+        class="brand-avatar"
+        onerror="this.style.display='none'"
+      >
+      <div style="overflow: hidden;">
+        <div style="font-weight: 800; font-size: 13px; text-transform: uppercase; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          {{ _ENV['APP_NAME'] }}
+        </div>
+        <div style="font-size: 11px; color: #a1a1aa; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background-color: #22c55e; display: inline-block;"></span>
+          Sistema en línea
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav style="padding: 8px 0 24px;">
+      <div class="nav-group-title">Principal</div>
+
+      <a href="/" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="nav-group-title">Gestión de Negocio</div>
+
+      <a href="/clientes" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span>Clientes</span>
+      </a>
+
+      <a href="/proveedores" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+        <span>Proveedores</span>
+      </a>
+
+      <a href="/vendedores" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <span>Vendedores</span>
+      </a>
+
+      <a href="/cotizaciones" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Tasas de Cambio</span>
+      </a>
+
+      <div class="nav-group-title">Módulos de Repuestos</div>
+
+      <a href="/productos" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <span>Catálogo de Productos</span>
+      </a>
+
+      <a href="/compras" class="nav-item active">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+        <span>Inventario y Lotes</span>
+      </a>
+
+      <a href="#pos" class="nav-item" @click.prevent="alert('Punto de venta y facturación en proceso')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+        <span>Punto de Venta (POS)</span>
+      </a>
+
+      <div class="nav-group-title">Sistema y Seguridad</div>
+
+      <a href="/actualizar-clave" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <span>Actualizar Contraseña</span>
+      </a>
+
+      <a href="/salir" class="nav-item" style="color: #ef4444;">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span>Cerrar Sesión</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Área principal (Topbar + Contenido) -->
+  <div class="app-main">
+    <!-- Topbar -->
+    <header class="app-topbar">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button
+          type="button"
+          class="btn-secondary w3-hide-large"
+          @click="sidebarOpen = true"
+          aria-label="Abrir menú"
+        >
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <h1 style="margin: 0; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+          <span>Historial de Compras</span>
+          <span class="badge-pill badge-red w3-hide-small">Inventario</span>
+        </h1>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button
+          type="button"
+          class="btn-secondary"
+          @click="isDarkMode = !isDarkMode"
+          :title="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+          aria-label="Alternar modo de color"
+        >
+          <svg x-show="isDarkMode" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg x-show="!isDarkMode" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <a href="/salir" class="btn-brand" style="padding: 7px 14px;" title="Cerrar sesión actual">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span class="w3-hide-small">Salir</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Contenido -->
+    <main style="padding: 24px; flex: 1;">
+      <!-- Breadcrumb y acción principal -->
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+          <div style="font-size: 12px; color: #71717a; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+            <a href="/" style="color: inherit; text-decoration: none;">Dashboard</a>
+            <span>&rsaquo;</span>
+            <span style="color: var(--brand-red); font-weight: 600;">Compras</span>
+          </div>
+          <h2 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.3px;">
+            Historial de Compras por Lote
+          </h2>
+          <p style="margin: 4px 0 0; font-size: 13px; color: #71717a;">
+            Registro de todas las órdenes de compra realizadas a proveedores, con su estado de verificación y trazabilidad de lotes.
+          </p>
+        </div>
+      </div>
+
+      <!-- Métricas rápidas -->
+      <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="kpi-card">
+          <div class="kpi-icon red">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: #71717a; text-transform: uppercase; font-weight: 700;">Total Compras</div>
+            <div style="font-size: 22px; font-weight: 800; margin-top: 2px;">{{ purchases|length }}</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon green">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: #71717a; text-transform: uppercase; font-weight: 700;">Verificadas</div>
+            <div style="font-size: 22px; font-weight: 800; margin-top: 2px; color: #22c55e;" x-text="verifiedCount"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon amber">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: #71717a; text-transform: uppercase; font-weight: 700;">Pendientes</div>
+            <div style="font-size: 22px; font-weight: 800; margin-top: 2px; color: #f59e0b;" x-text="pendingCount"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabla y Filtro -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <!-- Buscador en vivo -->
+          <div class="search-wrapper">
+            <svg class="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Buscar por proveedor, factura, fecha..."
+              x-model="search"
+              aria-label="Buscar compra"
+            >
+          </div>
+
+          <!-- Contador de resultados -->
+          <div style="font-size: 13px; color: #71717a; font-weight: 500;">
+            <span x-text="'Mostrando ' + filteredPurchases.length + ' de ' + purchasesList.length + ' compras'"></span>
+          </div>
+        </div>
+
+        {% if purchases is empty %}
+          <!-- Estado Vacío -->
+          <div style="text-align: center; padding: 64px 20px;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background-color: rgba(220, 38, 38, 0.1); color: var(--brand-red); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+              <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </div>
+            <h3 style="margin: 0 0 8px; font-size: 18px; font-weight: 700;">No hay compras registradas</h3>
+            <p style="margin: 0 auto; font-size: 13px; color: #71717a; max-width: 440px; line-height: 1.5;">
+              Aún no se han registrado órdenes de compra. Las compras por lote aparecerán aquí una vez que se generen desde el módulo de inventario.
+            </p>
+          </div>
+        {% else %}
+          <div style="overflow-x: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;"># ID</th>
+                  <th>Proveedor</th>
+                  <th>Código de Factura</th>
+                  <th>Fecha de Compra</th>
+                  <th>Estado</th>
+                  <th>Verificada</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="purchase in filteredPurchases" :key="purchase.id">
+                  <tr>
+                    <!-- ID -->
+                    <td style="font-weight: 700; color: #71717a; font-family: monospace;">
+                      #<span x-text="String(purchase.id).padStart(3, '0')"></span>
+                    </td>
+
+                    <!-- Proveedor -->
+                    <td>
+                      <div>
+                        <div style="font-weight: 700; font-size: 14px;" x-text="purchase.supplier_name"></div>
+                        <div style="font-size: 12px; color: #71717a; margin-top: 1px; display: flex; align-items: center; gap: 6px;">
+                          <span>Alias:</span>
+                          <span style="font-weight: 600; color: var(--brand-red);" x-text="purchase.supplier_alias"></span>
+                        </div>
+                      </div>
+                    </td>
+
+                    <!-- Código de Factura -->
+                    <td>
+                      <span class="badge-pill badge-gray" style="font-family: monospace; font-size: 12px;" x-text="purchase.supplier_invoice_code"></span>
+                    </td>
+
+                    <!-- Fecha de Compra -->
+                    <td style="font-size: 13px; color: #a1a1aa;" x-text="purchase.created_at"></td>
+
+                    <!-- Estado -->
+                    <td>
+                      <template x-if="purchase.verified_at !== null">
+                        <span class="badge-pill badge-green">Verificada</span>
+                      </template>
+                      <template x-if="purchase.verified_at === null">
+                        <span class="badge-pill badge-amber">Pendiente</span>
+                      </template>
+                    </td>
+
+                    <!-- Fecha de Verificación -->
+                    <td style="font-size: 13px; color: #a1a1aa;">
+                      <span x-text="purchase.verified_at ?? '—'"></span>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+
+            <!-- Sin resultados de búsqueda -->
+            <div x-show="filteredPurchases.length === 0 && purchasesList.length > 0" style="text-align: center; padding: 40px 20px; color: #71717a; display: none;">
+              <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="margin: 0 auto 12px; display: block; opacity: 0.4;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <p style="margin: 0; font-size: 14px;">No se encontraron compras que coincidan con "<span x-text="search" style="font-weight: 600;"></span>"</p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>
