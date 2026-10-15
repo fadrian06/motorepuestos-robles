@@ -26,6 +26,7 @@ use App\Http\Handlers\UpdateClient;
 use App\Http\Handlers\UpdateExchangeRates;
 use App\Http\Handlers\UpdatePassword;
 use App\Http\Handlers\UpdateProduct;
+use App\Http\Handlers\UpdatePurchase;
 use App\Http\Handlers\UpdateSupplier;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Middleware\Authenticate;
@@ -99,6 +100,8 @@ return static function (ContainerInterface $container): Router {
     $registerProduct = $container->get(RegisterProduct::class);
     /** @var RequestHandlerInterface */
     $updateProduct = $container->get(UpdateProduct::class);
+    /** @var RequestHandlerInterface */
+    $updatePurchase = $container->get(UpdatePurchase::class);
     /** @var RequestHandlerInterface */
     $deleteProduct = $container->get(DeleteProduct::class);
     /** @var Auth */
@@ -359,6 +362,17 @@ return static function (ContainerInterface $container): Router {
             $authenticate,
             $ensureEmailIsVerified,
             $authorize->withPermissions('register purchase'),
+        ),
+    );
+
+    $router->attach(
+        ['GET', 'POST'],
+        ['#^/compras/(?<id>\d+)$#'],
+        new QueueRequestHandler(
+            $updatePurchase,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('update purchase'),
         ),
     );
 

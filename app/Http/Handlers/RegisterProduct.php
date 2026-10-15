@@ -63,10 +63,7 @@ final readonly class RegisterProduct implements RequestHandlerInterface
                     );
                 }
 
-                $db
-                    ->insert('products')
-                    ->params($validated)
-                    ->unique('name');
+                $db->insert('products')->params($validated)->unique('name');
 
                 if ($db->execute()) {
                     return $this->responseFactory->createResponse()->withHeader(

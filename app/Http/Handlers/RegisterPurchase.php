@@ -31,7 +31,7 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return match ($request->getMethod()) {
-            'GET'  => $this->handleGet(),
+            'GET' => $this->handleGet(),
             'POST' => $this->handlePost($request),
             default => $this->responseFactory->createResponse(405),
         };
@@ -56,9 +56,9 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
         ')->all();
 
         $html = $this->environment->render('pages/register-purchase.twig', [
-            'flash'     => $this->flash->display(),
+            'flash' => $this->flash->display(),
             'suppliers' => $suppliers ?? [],
-            'products'  => $products  ?? [],
+            'products' => $products ?? [],
         ]);
 
         $response = $this->responseFactory->createResponse();
@@ -73,7 +73,7 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
         $body = $request->getParsedBody();
 
         $validated = $this->form->validate($body, [
-            'supplier_id'           => 'number',
+            'supplier_id' => 'number',
             'supplier_invoice_code' => 'string',
         ]);
 
@@ -86,12 +86,14 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
         /** @var string[] */
         $productIds = (array) ($body['product_id'] ?? []);
         /** @var string[] */
-        $quantities = (array) ($body['quantity']   ?? []);
+        $quantities = (array) ($body['quantity'] ?? []);
         /** @var string[] */
-        $costs      = (array) ($body['cost']       ?? []);
+        $costs = (array) ($body['cost'] ?? []);
 
         if (count($productIds) === 0) {
-            $this->flash->set(['items' => 'Debes agregar al menos un ítem a la compra.']);
+            $this->flash->set([
+                'items' => 'Debes agregar al menos un ítem a la compra.',
+            ]);
 
             return $this->redirect('/compras/registrar');
         }
@@ -113,23 +115,23 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
      * @param  string[] $costs
      * @return array[]|null
      */
-    private function validateItems(array $productIds, array $quantities, array $costs): ?array
-    {
+    private function validateItems(
+        array $productIds,
+        array $quantities,
+        array $costs,
+    ): ?array {
         $items = [];
 
         foreach ($productIds as $i => $productId) {
-            $lineValidated = $this->form->validate(
-                [
-                    'product_id' => $productId,
-                    'quantity'   => $quantities[$i] ?? '',
-                    'cost'       => $costs[$i]      ?? '',
-                ],
-                [
-                    'product_id' => 'number',
-                    'quantity'   => 'number',
-                    'cost'       => 'number',
-                ],
-            );
+            $lineValidated = $this->form->validate([
+                'product_id' => $productId,
+                'quantity' => $quantities[$i] ?? '',
+                'cost' => $costs[$i] ?? '',
+            ], [
+                'product_id' => 'number',
+                'quantity' => 'number',
+                'cost' => 'number',
+            ]);
 
             if (!$lineValidated) {
                 $this->flash->set($this->form->errors());
@@ -149,9 +151,11 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
      * @param array   $header Validated header fields.
      * @param array[] $items  Validated line items.
      */
-    private function persistPurchase(array $header, array $items): ResponseInterface
-    {
-        $db  = $this->auth->db();
+    private function persistPurchase(
+        array $header,
+        array $items,
+    ): ResponseInterface {
+        $db = $this->auth->db();
 
         /** @var \PDO */
         $pdo = $db->connection();
@@ -159,14 +163,17 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
 
         try {
             /** @var array */
-            $user   = $this->auth->user();
+            $user = $this->auth->user();
             $userId = $user['id'] ?? null;
 
-            $db->insert('purchases')->params([
-                'user_id'               => $userId,
-                'supplier_id'           => $header['supplier_id'],
-                'supplier_invoice_code' => $header['supplier_invoice_code'],
-            ])->unique('supplier_invoice_code');
+            $db
+                ->insert('purchases')
+                ->params([
+                    'user_id' => $userId,
+                    'supplier_id' => $header['supplier_id'],
+                    'supplier_invoice_code' => $header['supplier_invoice_code'],
+                ])
+                ->unique('supplier_invoice_code');
 
             if (!$db->execute()) {
                 $pdo->rollBack();
@@ -180,9 +187,9 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
             foreach ($items as $item) {
                 $db->insert('purchases_items')->params([
                     'purchase_id' => $purchaseId,
-                    'product_id'  => $item['product_id'],
-                    'quantity'    => $item['quantity'],
-                    'cost'        => $item['cost'],
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'cost' => $item['cost'],
                 ]);
 
                 if (!$db->execute()) {
@@ -206,6 +213,9 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
 
     private function redirect(string $location): ResponseInterface
     {
-        return $this->responseFactory->createResponse()->withHeader('location', $location);
+        return $this->responseFactory->createResponse()->withHeader(
+            'location',
+            $location,
+        );
     }
 }
