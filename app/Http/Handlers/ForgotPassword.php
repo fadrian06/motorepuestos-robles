@@ -16,6 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
 
+/** @mago-expect lint:excessive-parameter-list */
 final readonly class ForgotPassword implements RequestHandlerInterface
 {
     public function __construct(

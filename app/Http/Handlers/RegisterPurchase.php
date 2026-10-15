@@ -162,9 +162,7 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
         $pdo->beginTransaction();
 
         try {
-            /** @var array */
-            $user = $this->auth->user();
-            $userId = $user['id'] ?? null;
+            $userId = $this->auth->id();
 
             $db
                 ->insert('purchases')

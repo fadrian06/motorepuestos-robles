@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Venta - {{ _ENV['APP_NAME'] }}</title>
+  <link rel="icon" type="image/jpeg" href="/resources/images/favicon.jpg">
+  <link rel="stylesheet" href="/resources/styles/w3.css">
+  <script defer src="/resources/scripts/alpinejs/dist/cdn.min.js"></script>
+  <style>
+    :root {
+      --brand-red: #dc2626;
+      --brand-red-hover: #b91c1c;
+      --brand-red-glow: rgba(220, 38, 38, 0.25);
+      --brand-black: #0d0d11;
+      --brand-charcoal: #18181b;
+      --sidebar-width: 260px;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--w3-surface-alt);
+      color: var(--w3-text-color);
+      font-family: var(--w3-font-family);
+      margin: 0;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.w3-dark-mode {
+      background-color: var(--w3-page-bg);
+    }
+
+    /* Sidebar Layout */
+    .app-sidebar {
+      width: var(--sidebar-width);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      background-color: var(--brand-black);
+      color: #ffffff;
+      z-index: 20;
+      overflow-y: auto;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: transform 0.3s ease;
+    }
+
+    .app-main {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: margin-left 0.3s ease;
+    }
+
+    @media (max-width: 992px) {
+      .app-sidebar {
+        transform: translateX(-100%);
+      }
+      .app-sidebar.open {
+        transform: translateX(0);
+      }
+      .app-main {
+        margin-left: 0;
+      }
+    }
+
+    /* Topbar */
+    .app-topbar {
+      height: 64px;
+      background-color: var(--w3-surface);
+      border-bottom: 1px solid var(--w3-border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Brand Header in Sidebar */
+    .sidebar-brand {
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid var(--brand-red);
+      background-color: #08080a;
+    }
+
+    .brand-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1.5px solid var(--brand-red);
+      box-shadow: 0 2px 10px var(--brand-red-glow);
+    }
+
+    /* Navigation Links */
+    .nav-group-title {
+      padding: 16px 20px 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #71717a;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 20px;
+      color: #a1a1aa;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-left-color: #71717a;
+    }
+
+    .nav-item.active {
+      color: #ffffff;
+      background-color: rgba(220, 38, 38, 0.12);
+      border-left-color: var(--brand-red);
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Buttons */
+    .btn-brand {
+      background-color: var(--brand-red);
+      color: #ffffff;
+      border: 1px solid var(--brand-red);
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-brand:hover {
+      background-color: var(--brand-red-hover);
+      border-color: var(--brand-red-hover);
+      color: #ffffff;
+    }
+
+    .btn-brand:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: inherit;
+      border: 1px solid var(--w3-border-color);
+      padding: 10px 18px;
+      font-weight: 500;
+      font-size: 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--w3-hover-bg);
+      color: var(--w3-hover-text);
+    }
+
+    .btn-danger-outline {
+      background-color: transparent;
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 6px 12px;
+      font-weight: 500;
+      font-size: 13px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-danger-outline:hover {
+      background-color: rgba(239, 68, 68, 0.08);
+    }
+
+    /* Panel Card */
+    .panel-card {
+      background-color: var(--w3-surface);
+      border-radius: 12px;
+      border: 1px solid var(--w3-border-light);
+      overflow: hidden;
+      margin-bottom: 24px;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .panel-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--w3-border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      color: var(--w3-text-color);
+    }
+
+    .form-input {
+      width: 100%;
+      background-color: var(--w3-surface-alt);
+      color: var(--w3-text-color);
+      border: 1px solid var(--w3-border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--brand-red);
+      box-shadow: 0 0 0 3px var(--brand-red-glow);
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: #71717a;
+      margin-top: 6px;
+    }
+
+    /* Items and Payments Table */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .items-table th {
+      padding: 10px 14px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #71717a;
+      font-weight: 700;
+      border-bottom: 1px solid var(--w3-border-light);
+      background-color: rgba(0, 0, 0, 0.02);
+      text-align: left;
+    }
+
+    body.w3-dark-mode .items-table th {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .items-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--w3-border-light);
+      vertical-align: middle;
+    }
+
+    .item-input {
+      width: 100%;
+      background-color: var(--w3-surface-alt);
+      color: var(--w3-text-color);
+      border: 1px solid var(--w3-border-color);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13px;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+    }
+
+    .item-input:focus {
+      border-color: var(--brand-red);
+    }
+
+    /* Badges */
+    .badge-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-red {
+      background-color: rgba(220, 38, 38, 0.15);
+      color: var(--brand-red);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+    }
+
+    .badge-gray {
+      background-color: rgba(113, 113, 122, 0.15);
+      color: #a1a1aa;
+      border: 1px solid rgba(113, 113, 122, 0.3);
+    }
+
+    .badge-green {
+      background-color: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .badge-blue {
+      background-color: rgba(59, 130, 246, 0.15);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    /* Alert error box */
+    .alert-error {
+      background-color: rgba(239, 68, 68, 0.1);
+      border-left: 4px solid var(--brand-red);
+      color: #ef4444;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 20px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .alert-warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      border-left: 4px solid #f59e0b;
+      color: #d97706;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 20px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Summary Card */
+    .summary-box {
+      background-color: rgba(0, 0, 0, 0.03);
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px dashed var(--w3-border-color);
+    }
+
+    body.w3-dark-mode .summary-box {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 15;
+    }
+  </style>
+</head>
+<body
+  x-data="{
+    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+    sidebarOpen: false,
+    submitting: false,
+    latestRate: {% if latestExchangeRate %}{ id: {{ latestExchangeRate.id }}, usd_ves: {{ latestExchangeRate.usd_ves }}, usd_cop: {{ latestExchangeRate.usd_cop }} }{% else %}null{% endif %},
+    clientsList: [
+      {% for c in clients %}
+      { id: {{ c.id }}, name: '{{ c.name|e('js') }}' }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ],
+    batchesList: [
+      {% for b in availableBatches %}
+      {
+        purchase_item_id: {{ b.purchase_item_id }},
+        product_id: {{ b.product_id }},
+        product_name: '{{ b.product_name|e('js') }}',
+        product_category: '{{ b.product_category|e('js') }}',
+        default_price: {{ b.default_price }},
+        cost: {{ b.cost }},
+        supplier_alias: '{{ b.supplier_alias|e('js') }}',
+        supplier_invoice_code: '{{ b.supplier_invoice_code|e('js') }}',
+        available_quantity: {{ b.available_quantity }}
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ],
+    items: [
+      { purchase_item_id: '', quantity: '1', product_price: '' }
+    ],
+    payments: [
+      { amount: '', currency: 'usd' }
+    ],
+    addItem() {
+      this.items.push({ purchase_item_id: '', quantity: '1', product_price: '' });
+    },
+    removeItem(index) {
+      if (this.items.length > 1) {
+        this.items.splice(index, 1);
+      }
+    },
+    addPayment() {
+      this.payments.push({ amount: '', currency: 'usd' });
+    },
+    removePayment(index) {
+      this.payments.splice(index, 1);
+    },
+    onBatchChange(item) {
+      const b = this.batchesList.find(x => x.purchase_item_id == item.purchase_item_id);
+      if (b && (!item.product_price || item.product_price === '')) {
+        item.product_price = b.default_price;
+      }
+    },
+    getBatch(id) {
+      return this.batchesList.find(x => x.purchase_item_id == id) || null;
+    },
+    get totalUSD() {
+      return this.items.reduce((sum, it) => {
+        const q = parseFloat(it.quantity) || 0;
+        const p = parseFloat(it.product_price) || 0;
+        return sum + (q * p);
+      }, 0);
+    },
+    get totalVES() {
+      if (!this.latestRate) return 0;
+      return this.totalUSD * this.latestRate.usd_ves;
+    },
+    get totalCOP() {
+      if (!this.latestRate) return 0;
+      return this.totalUSD * this.latestRate.usd_cop;
+    },
+    get totalPaidUSD() {
+      if (!this.latestRate) return 0;
+      return this.payments.reduce((sum, pm) => {
+        const a = parseFloat(pm.amount) || 0;
+        if (pm.currency === 'usd') return sum + a;
+        if (pm.currency === 'ves') return sum + (this.latestRate.usd_ves > 0 ? (a / this.latestRate.usd_ves) : 0);
+        if (pm.currency === 'cop') return sum + (this.latestRate.usd_cop > 0 ? (a / this.latestRate.usd_cop) : 0);
+        return sum;
+      }, 0);
+    },
+    formatUSD(v) {
+      return '$' + (Number(v) || 0).toFixed(2);
+    },
+    formatVES(v) {
+      return (Number(v) || 0).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Bs';
+    },
+    formatCOP(v) {
+      return (Number(v) || 0).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' COP';
+    },
+    init() {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      this.isDarkMode = mediaQuery.matches;
+      mediaQuery.addEventListener('change', (event) => {
+        this.isDarkMode = event.matches;
+      });
+    }
+  }"
+  :class="{ 'w3-dark-mode': isDarkMode }"
+>
+
+  <!-- Telón de fondo móvil -->
+  <div
+    class="sidebar-backdrop"
+    x-show="sidebarOpen"
+    @click="sidebarOpen = false"
+    x-transition:enter="w3-animate-opacity"
+    x-transition:leave="w3-animate-opacity"
+    style="display: none;"
+  ></div>
+
+  <!-- Barra lateral (Sidebar) -->
+  <aside class="app-sidebar" :class="{ 'open': sidebarOpen }">
+    <div class="sidebar-brand">
+      <img
+        src="/resources/images/banner.jpg"
+        alt="{{ _ENV['APP_NAME'] }}"
+        class="brand-avatar"
+        onerror="this.style.display='none'"
+      >
+      <div style="overflow: hidden;">
+        <div style="font-weight: 800; font-size: 13px; text-transform: uppercase; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          {{ _ENV['APP_NAME'] }}
+        </div>
+        <div style="font-size: 11px; color: #a1a1aa; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background-color: #22c55e; display: inline-block;"></span>
+          Sistema en línea
+        </div>
+      </div>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav style="padding: 8px 0 24px;">
+      <div class="nav-group-title">Principal</div>
+
+      <a href="/" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="nav-group-title">Gestión de Negocio</div>
+
+      <a href="/clientes" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span>Clientes</span>
+      </a>
+
+      <a href="/proveedores" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+        <span>Proveedores</span>
+      </a>
+
+      <a href="/vendedores" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <span>Vendedores</span>
+      </a>
+
+      <a href="/cotizaciones" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Tasas de Cambio</span>
+      </a>
+
+      <div class="nav-group-title">Módulos de Repuestos</div>
+
+      <a href="/productos" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <span>Catálogo de Productos</span>
+      </a>
+
+      <a href="/compras" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+        <span>Inventario y Lotes</span>
+      </a>
+
+      <a href="/ventas" class="nav-item active">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+        <span>Ventas y Facturación</span>
+      </a>
+
+      <div class="nav-group-title">Sistema y Seguridad</div>
+
+      <a href="/actualizar-clave" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <span>Actualizar Contraseña</span>
+      </a>
+
+      <a href="/salir" class="nav-item" style="color: #ef4444;">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span>Cerrar Sesión</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Área principal (Topbar + Contenido) -->
+  <div class="app-main">
+    <!-- Topbar -->
+    <header class="app-topbar">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <button
+          type="button"
+          class="btn-secondary w3-hide-large"
+          @click="sidebarOpen = true"
+          aria-label="Abrir menú"
+        >
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <h1 style="margin: 0; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+          <span>Registrar Venta</span>
+          <span class="badge-pill badge-red w3-hide-small">Facturación</span>
+        </h1>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button
+          type="button"
+          class="btn-secondary"
+          @click="isDarkMode = !isDarkMode"
+          :title="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+          aria-label="Alternar modo de color"
+        >
+          <svg x-show="isDarkMode" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg x-show="!isDarkMode" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <a href="/salir" class="btn-brand" style="padding: 7px 14px;" title="Cerrar sesión actual">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span class="w3-hide-small">Salir</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Contenido -->
+    <main style="padding: 24px; flex: 1;">
+      <!-- Migas de pan y encabezado -->
+      <div style="margin-bottom: 24px;">
+        <div style="font-size: 12px; color: #71717a; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          <a href="/" style="color: inherit; text-decoration: none;">Dashboard</a>
+          <span>&rsaquo;</span>
+          <a href="/ventas" style="color: inherit; text-decoration: none;">Ventas</a>
+          <span>&rsaquo;</span>
+          <span style="color: var(--brand-red); font-weight: 600;">Nueva Venta</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <h2 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.3px;">
+            Registrar Nueva Venta
+          </h2>
+          <a href="/ventas" class="btn-secondary" style="font-size: 13px;">
+            &larr; Volver al Historial
+          </a>
+        </div>
+      </div>
+
+      <!-- Notificación de tasa no configurada -->
+      {% if not latestExchangeRate %}
+        <div class="alert-warning">
+          <div style="font-weight: 700; margin-bottom: 4px;">Atención: Cotización requerida</div>
+          <div>
+            No existe ninguna tasa de cambio registrada en el sistema. Debes <a href="/cotizaciones" style="color: inherit; font-weight: 700; text-decoration: underline;">configurar las tasas del día</a> antes de emitir ventas.
+          </div>
+        </div>
+      {% endif %}
+
+      <form
+        method="post"
+        novalidate
+        @submit="submitting = true"
+        style="max-width: 920px; margin: 0 auto;"
+      >
+
+        <!-- ── Sección 1: Datos de la Venta ───────────────────────────────── -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div style="font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+              <span style="width: 4px; height: 18px; background-color: var(--brand-red); border-radius: 2px;"></span>
+              <span>Datos Principales del Comprobante</span>
+            </div>
+            <span class="badge-pill badge-red">Requerido</span>
+          </div>
+
+          <div style="padding: 24px;">
+            <!-- Notificación de Errores Flash -->
+            {% if flash %}
+              <div class="alert-error">
+                <div style="font-weight: 700; margin-bottom: 4px;">Atención:</div>
+                {% for key, error in flash %}
+                  <div>&bull; {{ error is iterable ? error|join(', ') : error }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="w3-row-padding" style="margin: 0 -8px;">
+              <!-- Código de Factura/Venta -->
+              <div class="w3-col l6 m12" style="padding: 0 8px;">
+                <div class="form-group">
+                  <label for="code" class="form-label">
+                    Código de Venta / Factura <span style="color: var(--brand-red);">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="code"
+                    name="code"
+                    class="form-input"
+                    required
+                    placeholder="Ej: VEN-2026-0001"
+                    autofocus
+                  >
+                  <div class="form-hint">Código único de control de la venta.</div>
+                </div>
+              </div>
+
+              <!-- Cliente -->
+              <div class="w3-col l6 m12" style="padding: 0 8px;">
+                <div class="form-group">
+                  <label for="client_id" class="form-label">
+                    Cliente <span style="color: var(--brand-red);">*</span>
+                  </label>
+                  <select
+                    id="client_id"
+                    name="client_id"
+                    class="form-input"
+                    required
+                  >
+                    <option value="" disabled selected>Seleccionar cliente…</option>
+                    {% for c in clients %}
+                      <option value="{{ c.id }}">{{ c.name }}</option>
+                    {% endfor %}
+                  </select>
+                  <div class="form-hint">Comprador registrado. Si es nuevo, regístralo antes en <a href="/clientes/registrar" style="color: inherit; text-decoration: underline;">Clientes</a>.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tasa de cambio aplicada informativa -->
+            {% if latestExchangeRate %}
+              <div class="summary-box" style="margin-top: 8px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 13px;">
+                  <div>
+                    <span style="font-weight: 700;">Tasa de Cambio Vigente:</span>
+                    <span style="color: #71717a; margin-left: 6px;">(Cotización #{{ latestExchangeRate.id }} del {{ latestExchangeRate.created_at }})</span>
+                  </div>
+                  <div style="display: flex; gap: 14px; font-family: monospace; font-weight: 600;">
+                    <span style="color: #22c55e;">1 USD = {{ latestExchangeRate.usd_ves|number_format(2, ',', '.') }} Bs</span>
+                    <span style="color: #3b82f6;">1 USD = {{ latestExchangeRate.usd_cop|number_format(2, ',', '.') }} COP</span>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- ── Sección 2: Selección de Repuestos e Inventario por Lote ──────── -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div style="font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+              <span style="width: 4px; height: 18px; background-color: var(--brand-red); border-radius: 2px;"></span>
+              <span>Repuestos y Control de Lote</span>
+            </div>
+            <button
+              type="button"
+              class="btn-brand"
+              style="padding: 8px 14px; font-size: 13px;"
+              @click="addItem()"
+            >
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Agregar Ítem
+            </button>
+          </div>
+
+          <div style="padding: 0 24px 24px;">
+            {% if availableBatches is empty %}
+              <div style="padding: 32px 16px; text-align: center; color: #71717a;">
+                <p style="margin: 0 0 6px; font-weight: 700;">No hay stock disponible en lotes verificados</p>
+                <p style="margin: 0; font-size: 13px;">
+                  Para vender repuestos es necesario ingresar compras y <a href="/compras" style="color: inherit; text-decoration: underline; font-weight: 600;">verificarlas</a> previamente.
+                </p>
+              </div>
+            {% else %}
+              <div style="overflow-x: auto; margin-top: 16px;">
+                <table class="items-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 44%;">Lote / Repuesto (Disponible)</th>
+                      <th style="width: 18%;">Cantidad</th>
+                      <th style="width: 20%;">Precio Unit. (USD)</th>
+                      <th style="width: 18%; text-align: right;">Subtotal</th>
+                      <th style="width: 50px; text-align: center;"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-for="(item, index) in items" :key="index">
+                      <tr>
+                        <!-- Lote / Producto -->
+                        <td>
+                          <select
+                            :name="'purchase_item_id[]'"
+                            x-model="item.purchase_item_id"
+                            @change="onBatchChange(item)"
+                            class="item-input"
+                            required
+                          >
+                            <option value="" disabled selected>Seleccionar repuesto por lote…</option>
+                            <template x-for="b in batchesList" :key="b.purchase_item_id">
+                              <option
+                                :value="b.purchase_item_id"
+                                x-text="b.product_name + ' [Disp: ' + b.available_quantity + '] (Lote: ' + b.supplier_alias + ' ' + b.supplier_invoice_code + ')'"
+                              ></option>
+                            </template>
+                          </select>
+                          <template x-if="getBatch(item.purchase_item_id)">
+                            <div style="font-size: 11px; color: #71717a; margin-top: 4px;">
+                              Categoría: <span x-text="getBatch(item.purchase_item_id).product_category"></span> |
+                              Costo lote: <span x-text="formatUSD(getBatch(item.purchase_item_id).cost)"></span>
+                            </div>
+                          </template>
+                        </td>
+
+                        <!-- Cantidad -->
+                        <td>
+                          <input
+                            type="number"
+                            :name="'quantity[]'"
+                            x-model="item.quantity"
+                            class="item-input"
+                            min="0.01"
+                            step="0.01"
+                            :max="getBatch(item.purchase_item_id) ? getBatch(item.purchase_item_id).available_quantity : null"
+                            placeholder="0.00"
+                            required
+                          >
+                        </td>
+
+                        <!-- Precio Unitario en USD -->
+                        <td>
+                          <input
+                            type="number"
+                            :name="'product_price[]'"
+                            x-model="item.product_price"
+                            class="item-input"
+                            min="0.01"
+                            step="0.01"
+                            placeholder="0.00"
+                            required
+                          >
+                        </td>
+
+                        <!-- Subtotal Calculado -->
+                        <td style="text-align: right; font-weight: 700; font-family: monospace; font-size: 13px;" x-text="formatUSD((parseFloat(item.quantity) || 0) * (parseFloat(item.product_price) || 0))">
+                        </td>
+
+                        <!-- Quitar -->
+                        <td style="text-align: center;">
+                          <button
+                            type="button"
+                            class="btn-danger-outline"
+                            style="padding: 6px 8px;"
+                            @click="removeItem(index)"
+                            :disabled="items.length === 1"
+                            title="Quitar este ítem"
+                          >
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            {% endif %}
+
+            <!-- Totales de la Venta -->
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+              <div class="summary-box" style="min-width: 280px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 14px;">
+                  <span style="color: #71717a;">Total en Dólares:</span>
+                  <span style="font-weight: 800; font-size: 16px; color: #22c55e;" x-text="formatUSD(totalUSD)"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; color: #71717a;">
+                  <span>Ref. Bolívares:</span>
+                  <span style="font-family: monospace;" x-text="formatVES(totalVES)"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: #71717a;">
+                  <span>Ref. Pesos COP:</span>
+                  <span style="font-family: monospace;" x-text="formatCOP(totalCOP)"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Sección 3: Métodos de Pago (Opcional / Cobro) ────────────────── -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div style="font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+              <span style="width: 4px; height: 18px; background-color: var(--brand-red); border-radius: 2px;"></span>
+              <span>Cobro y Pagos Recibidos</span>
+            </div>
+            <button
+              type="button"
+              class="btn-secondary"
+              style="padding: 7px 12px; font-size: 12px;"
+              @click="addPayment()"
+            >
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Agregar Pago
+            </button>
+          </div>
+
+          <div style="padding: 0 24px 24px;">
+            <p style="font-size: 13px; color: #71717a; margin: 16px 0 12px;">
+              Puedes registrar abonos o pagos inmediatos en dólares (USD), bolívares (VES) o pesos colombianos (COP).
+            </p>
+
+            <div style="overflow-x: auto;">
+              <table class="items-table">
+                <thead>
+                  <tr>
+                    <th style="width: 40%;">Monto Recibido</th>
+                    <th style="width: 35%;">Moneda</th>
+                    <th style="width: 15%; text-align: right;">Equiv. USD</th>
+                    <th style="width: 50px; text-align: center;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="(pm, pIndex) in payments" :key="pIndex">
+                    <tr>
+                      <td>
+                        <input
+                          type="number"
+                          :name="'payment_amount[]'"
+                          x-model="pm.amount"
+                          class="item-input"
+                          min="0.01"
+                          step="0.01"
+                          placeholder="Monto pagado"
+                        >
+                      </td>
+                      <td>
+                        <select
+                          :name="'payment_currency[]'"
+                          x-model="pm.currency"
+                          class="item-input"
+                        >
+                          <option value="usd">Dólares Estadounidenses (USD)</option>
+                          <option value="ves">Bolívares (VES)</option>
+                          <option value="cop">Pesos Colombianos (COP)</option>
+                        </select>
+                      </td>
+                      <td style="text-align: right; font-family: monospace; font-size: 13px; font-weight: 600;">
+                        <span x-text="pm.currency === 'usd' ? formatUSD(pm.amount) : (pm.currency === 'ves' && latestRate ? formatUSD(pm.amount / latestRate.usd_ves) : (pm.currency === 'cop' && latestRate ? formatUSD(pm.amount / latestRate.usd_cop) : '$0.00'))"></span>
+                      </td>
+                      <td style="text-align: center;">
+                        <button
+                          type="button"
+                          class="btn-danger-outline"
+                          style="padding: 6px 8px;"
+                          @click="removePayment(pIndex)"
+                          title="Eliminar este pago"
+                        >
+                          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 14px; display: flex; justify-content: flex-end;">
+              <div style="font-size: 13px; color: #71717a;">
+                Total Pagado: <strong style="color: var(--brand-red);" x-text="formatUSD(totalPaidUSD)"></strong>
+                &bull; Saldo pendiente: <strong x-text="formatUSD(Math.max(0, totalUSD - totalPaidUSD))"></strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Botones de acción ─────────────────────────────────────────── -->
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding-bottom: 24px;">
+          <a href="/ventas" class="btn-secondary">
+            Cancelar
+          </a>
+          <button
+            type="submit"
+            class="btn-brand"
+            :disabled="submitting || !latestRate || availableBatches.length === 0"
+          >
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span x-text="submitting ? 'Procesando Venta...' : 'Completar y Registrar Venta'"></span>
+          </button>
+        </div>
+
+      </form>
+    </main>
+
+    <!-- Footer -->
+    <footer style="padding: 20px 24px; border-top: 1px solid var(--w3-border-light); font-size: 12px; color: #71717a; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <div>
+        &copy; 2026 <strong>{{ _ENV['APP_NAME'] }}</strong>. Emisión y registro de facturas de venta.
+      </div>
+      <div>
+        Sistema de inventario por lote y trazabilidad comercial.
+      </div>
+    </footer>
+  </div>
+
+</body>
+</html>

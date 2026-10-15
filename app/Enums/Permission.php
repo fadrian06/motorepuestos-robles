@@ -29,6 +29,7 @@ enum Permission
     case DeletePurchase;
     case VerifyPurchase;
     case ViewSales;
+    case RegisterSale;
 
     public function key(): string
     {
@@ -55,6 +56,7 @@ enum Permission
             Permission::DeletePurchase => 'delete purchase',
             Permission::VerifyPurchase => 'verify purchase',
             Permission::ViewSales => 'view sales',
+            Permission::RegisterSale => 'register sale',
         };
     }
 
@@ -91,6 +93,7 @@ enum Permission
             Permission::DeletePurchase => 'Eliminar Compras',
             Permission::VerifyPurchase => 'Verificar Compras',
             Permission::ViewSales => 'Ver Ventas',
+            Permission::RegisterSale => 'Registrar Ventas',
         };
     }
 
@@ -141,6 +144,8 @@ enum Permission
                 => 'Permite verificar compras e incorporarlas al inventario.',
             Permission::ViewSales
                 => 'Permite consultar el historial de ventas y facturación.',
+            Permission::RegisterSale
+                => 'Permite emitir y registrar nuevas ventas y facturas.',
         };
     }
 
@@ -173,7 +178,7 @@ enum Permission
             Permission::DeletePurchase,
             Permission::VerifyPurchase,
                 => 'Compras',
-            Permission::ViewSales => 'Ventas',
+            Permission::ViewSales, Permission::RegisterSale => 'Ventas',
         };
     }
 }
