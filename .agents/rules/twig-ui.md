@@ -36,7 +36,7 @@ Toda vista del panel administrativo se compone de:
    - Grupos de navegación:
      - **Principal:** Dashboard (`/`).
      - **Gestión de Negocio:** Clientes (`/clientes`), Proveedores (`/proveedores`), Vendedores (`/vendedores`), Tasas de Cambio (`/cotizaciones`).
-     - **Módulos de Repuestos:** Inventario y Lotes (`#inventario`), Punto de Venta (`#pos`).
+     - **Módulos de Repuestos:** Catálogo de Productos (`/productos`), Inventario y Lotes (`#inventario`), Punto de Venta (`#pos`).
      - **Sistema y Seguridad:** Actualizar Contraseña (`/actualizar-clave`), Cerrar Sesión (`/salir`).
    - El enlace de la página activa debe incluir la clase `active`.
 2. **Topbar Superior (`.app-topbar`):**

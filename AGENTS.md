@@ -52,6 +52,7 @@ motorepuestos-robles/
 | Módulo | Rutas | Handlers | Vistas Twig |
 | :--- | :--- | :--- | :--- |
 | **Dashboard** | `GET /` | `Dashboard` | `resources/views/pages/dashboard.twig` |
+| **Productos** | `GET /productos`<br>`GET,POST /productos/registrar`<br>`GET,POST /productos/{id}`<br>`GET /productos/{id}/eliminar` | `ListProducts`<br>`RegisterProduct`<br>`UpdateProduct`<br>`DeleteProduct` | `pages/products.twig`<br>`pages/register-product.twig`<br>`pages/update-product.twig` |
 | **Proveedores** | `GET /proveedores`<br>`GET,POST /proveedores/registrar`<br>`GET,POST /proveedores/{id}`<br>`GET /proveedores/{id}/eliminar` | `ListSuppliers`<br>`RegisterSupplier`<br>`UpdateSupplier`<br>`DeleteSupplier` | `pages/suppliers.twig`<br>`pages/register-supplier.twig`<br>`pages/update-supplier.twig` |
 | **Clientes** | `GET /clientes`<br>`GET,POST /clientes/registrar`<br>`GET,POST /clientes/{id}`<br>`GET /clientes/{id}/eliminar` | `ListClients`<br>`RegisterClient`<br>`UpdateClient`<br>`DeleteClient` | `pages/clients.twig`<br>`pages/register-client.twig`<br>`pages/update-client.twig` |
 | **Vendedores** | `GET /vendedores`<br>`GET,POST /vendedores/registrar` | `ListSellers`<br>`RegisterSeller` | `pages/sellers.twig`<br>`pages/register-seller.twig` |
@@ -62,6 +63,12 @@ motorepuestos-robles/
 ---
 
 ## 4. Esquema de Datos Clave
+
+### Tabla `products`:
+- `id`: INTEGER PRIMARY KEY AUTOINCREMENT
+- `name`: TEXT NOT NULL UNIQUE (Nombre descriptivo del repuesto)
+- `category`: TEXT NOT NULL (Categoría o agrupación)
+- `price`: REAL NOT NULL CHECK (price > 0) (Precio base en USD)
 
 ### Tabla `suppliers`:
 - `id`: INTEGER PRIMARY KEY AUTOINCREMENT
@@ -91,7 +98,7 @@ motorepuestos-robles/
 
 2. **Vistas Twig & UI:**
    - Mantener el sistema de diseño existente: Dark/Light mode con Alpine.js (`:class="{ 'w3-dark-mode': isDarkMode }"`).
-   - Sidebar consistente: Todos los menús deben incluir los enlaces principales (*Dashboard, Clientes, Proveedores, Vendedores, Tasas de Cambio, Inventario, POS, Actualizar Contraseña, Cerrar Sesión*).
+   - Sidebar consistente: Todos los menús deben incluir los enlaces principales (*Dashboard, Clientes, Proveedores, Vendedores, Tasas de Cambio, Catálogo de Productos, Inventario y Lotes, POS, Actualizar Contraseña, Cerrar Sesión*).
    - Para tablas con búsqueda en vivo, pasar los datos a Alpine mediante array serializado en JSON o Twig loop:
      ```twig
      suppliersList: [
