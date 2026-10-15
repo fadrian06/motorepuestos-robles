@@ -47,7 +47,10 @@ return new readonly class implements Migration
                 UNIQUE
                 CHECK (
                     verified_at IS NULL
-                    OR verified_at LIKE "____-__-__ __:__:__"
+                    OR (
+                        verified_at LIKE "____-__-__ __:__:__"
+                        AND verified_at >= created_at
+                    )
                 )
             ',
         ]);
