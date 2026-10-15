@@ -16,13 +16,14 @@ Sistema web de gestión comercial y venta de repuestos automotrices con control 
 
 - **Gestión de Proveedores (CRUD Completo)** — Directorio de importadoras y distribuidores mayoristas con RIF, alias para lotes, asesor comercial asignado, teléfono y dirección física.
 - **Directorio de Clientes** — Registro y administración de compradores particulares y talleres mecánicos para cotizaciones y ventas.
+- **Catálogo de Productos y Repuestos (CRUD Completo)** — Gestión completa de repuestos clasificados por categoría, precio base en USD, búsqueda reactiva y validación legal de margen comercial.
 - **Gestión de Vendedores y Permisos Granulares** — Control de acceso basado en permisos (`App\Enums\Permission`) con gestión de roles y restablecimiento de accesos.
 - **Cotizaciones y Tasas de Cambio** — Registro y actualización en tiempo real de tasas oficiales USD/VES y USD/COP para cálculo y preservación histórica en ventas.
 - **Seguridad y Autenticación Robusta** — Registro, inicio de sesión, verificación de correo electrónico vía token, recuperación y cambio de contraseñas.
 - **Interfaz Moderna y Modo Oscuro** — UI responsiva optimizada con W3.CSS, variables de diseño de marca (`--brand-red`), Alpine.js para búsquedas reactivas en vivo, modales y alternador de tema claro/oscuro.
 - **Próximas Fases:**
   - *Inventario y Lotes* — Registro de compras con costo unitario y stock calculado por suma de lotes disponibles.
-  - *Punto de Venta (POS)* — Búsqueda por código/nombre, selección manual de lote por el vendedor, comprobante imprimible y pago mixto.
+  - *Punto de Venta (POS)* — Búsqueda por nombre/categoría, selección manual de lote por el vendedor, comprobante imprimible y pago mixto.
 
 ---
 
@@ -122,6 +123,7 @@ motorepuestos-robles/
 | Módulo | Rutas | Descripción |
 | :--- | :--- | :--- |
 | **Dashboard** | `GET /` | Panel principal de métricas y accesos rápidos de operaciones. |
+| **Productos** | `GET /productos`<br>`GET,POST /productos/registrar`<br>`GET,POST /productos/{id}`<br>`GET /productos/{id}/eliminar` | Catálogo de repuestos, registro, edición y eliminación de productos. |
 | **Proveedores** | `GET /proveedores`<br>`GET,POST /proveedores/registrar`<br>`GET,POST /proveedores/{id}`<br>`GET /proveedores/{id}/eliminar` | Directorio, alta, modificación y eliminación con confirmación modal. |
 | **Clientes** | `GET /clientes`<br>`GET,POST /clientes/registrar`<br>`GET,POST /clientes/{id}`<br>`GET /clientes/{id}/eliminar` | Cartera de compradores y talleres automotrices. |
 | **Vendedores** | `GET /vendedores`<br>`GET,POST /vendedores/registrar` | Equipo comercial y asignación de permisos de usuario. |
@@ -137,9 +139,9 @@ motorepuestos-robles/
 - **`exchange_rates`** — Historial y registro de tasas de cambio (`usd_ves`, `usd_cop`).
 - **`clients`** — Cartera de clientes (`id`, `name`).
 - **`suppliers`** — Proveedores con `name`, `tax_id` (RIF), `alias`, `seller`, `phone` y `address`.
+- **`products`** — Catálogo de repuestos automotrices (`id`, `name`, `category`, `price`).
 
 ### Tablas Planificadas (Inventario y Ventas):
-- `products` — Catálogo de repuestos con precio de venta base.
 - `purchases` / `purchase_items` — Cabecera de compra y renglones de lote con costo unitario y cantidad disponible.
 - `sales` / `sale_items` — Cabecera de venta y detalle enlazado al lote específico consumido.
 - `payments` — Métodos y montos aplicados a cada venta (pago mixto).

@@ -374,6 +374,13 @@
 
       <div class="nav-group-title">Módulos de Repuestos</div>
 
+      <a href="/productos" class="nav-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <span>Catálogo de Productos</span>
+      </a>
+
       <a href="#inventario" class="nav-item" @click.prevent="alert('Módulo de inventario y lotes en proceso')">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -473,18 +480,18 @@
               Plataforma integral de venta de repuestos automotrices, trazabilidad por lote y gestión de clientes y vendedores.
             </p>
           </div>
-          <div class="w3-col l4 m12" style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 16px;">
-            <a href="/clientes/registrar" class="btn-brand">
+          <div class="w3-col l4 m12" style="display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
+            <a href="/productos/registrar" class="btn-brand">
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
-              <span>Nuevo Cliente</span>
+              <span>Nuevo Producto</span>
             </a>
-            <a href="/vendedores/registrar" class="btn-secondary" style="background-color: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.2);">
+            <a href="/clientes/registrar" class="btn-secondary" style="background-color: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.2);">
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
               </svg>
-              <span>Nuevo Vendedor</span>
+              <span>Nuevo Cliente</span>
             </a>
           </div>
         </div>
@@ -517,6 +524,20 @@
             <div style="font-size: 12px; color: #71717a; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Proveedores</div>
             <div style="font-size: 22px; font-weight: 800; margin-top: 2px;">Compras</div>
             <div style="font-size: 11px; color: var(--brand-red); font-weight: 600; margin-top: 2px;">Ver directorio &rarr;</div>
+          </div>
+        </a>
+
+        <!-- KPI: Productos -->
+        <a href="/productos" class="kpi-card" style="text-decoration: none; color: inherit;">
+          <div class="kpi-icon red">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <div>
+            <div style="font-size: 12px; color: #71717a; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Productos</div>
+            <div style="font-size: 22px; font-weight: 800; margin-top: 2px;">Catálogo</div>
+            <div style="font-size: 11px; color: var(--brand-red); font-weight: 600; margin-top: 2px;">Ver catálogo &rarr;</div>
           </div>
         </a>
 
@@ -624,6 +645,22 @@
                 <span class="btn-secondary" style="font-size: 12px;">Gestionar</span>
               </a>
 
+              <!-- Tarjeta de Catálogo de Productos -->
+              <a href="/productos" class="action-tile">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <div style="width: 40px; height: 40px; border-radius: 8px; background-color: rgba(220, 38, 38, 0.1); color: var(--brand-red); display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div style="font-weight: 700; font-size: 14px;">Catálogo de Productos</div>
+                    <div style="font-size: 12px; color: #71717a; margin-top: 2px;">Lista de repuestos, precios USD y categorías</div>
+                  </div>
+                </div>
+                <span class="btn-secondary" style="font-size: 12px;">Gestionar</span>
+              </a>
+
               <!-- Tarjeta de Cotizaciones y Tasas -->
               <a href="/cotizaciones" class="action-tile">
                 <div style="display: flex; align-items: center; gap: 14px;">
@@ -667,6 +704,22 @@
                   <div>
                     <div style="font-weight: 700; font-size: 14px;">Registrar Nuevo Proveedor</div>
                     <div style="font-size: 12px; color: #71717a; margin-top: 2px;">Alta de distribuidora para compras por lote</div>
+                  </div>
+                </div>
+                <span class="btn-brand" style="font-size: 12px; padding: 6px 12px;">+ Registrar</span>
+              </a>
+
+              <!-- Registrar Producto -->
+              <a href="/productos/registrar" class="action-tile">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <div style="width: 40px; height: 40px; border-radius: 8px; background-color: rgba(220, 38, 38, 0.1); color: var(--brand-red); display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div style="font-weight: 700; font-size: 14px;">Registrar Nuevo Producto</div>
+                    <div style="font-size: 12px; color: #71717a; margin-top: 2px;">Alta de repuesto en el catálogo comercial</div>
                   </div>
                 </div>
                 <span class="btn-brand" style="font-size: 12px; padding: 6px 12px;">+ Registrar</span>
