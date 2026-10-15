@@ -20,11 +20,39 @@ return new readonly class implements Migration
 
         $db->createTableIfNotExists('purchases', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
-            'user_id' => "INTEGER NOT NULL REFERENCES {$authTable}({$authIdKey}) ON DELETE CASCADE",
-            'supplier_id' => 'INTEGER NOT NULL REFERENCES suppliers(id) ON DELETE CASCADE',
-            'supplier_invoice_code' => 'TEXT NOT NULL',
-            'created_at' => 'TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP',
-            'verified_at' => 'TEXT',
+            'user_id' => "
+                INTEGER
+                NOT NULL
+                REFERENCES {$authTable}({$authIdKey})
+                ON DELETE CASCADE
+            ",
+            'supplier_id' => '
+                INTEGER
+                NOT NULL
+                REFERENCES suppliers(id)
+                ON DELETE CASCADE
+            ',
+            'supplier_invoice_code' => '
+                TEXT
+                NOT NULL
+                UNIQUE
+                CHECK (LENGTH(supplier_invoice_code) > 0)
+            ',
+            'created_at' => '
+                TEXT
+                NOT NULL
+                UNIQUE
+                DEFAULT CURRENT_TIMESTAMP
+                CHECK (created_at LIKE "____-__-__ __:__:__")
+            ',
+            'verified_at' => '
+                TEXT
+                UNIQUE
+                CHECK (
+                    verified_at IS NULL
+                    OR verified_at LIKE "____-__-__ __:__:__"
+                )
+            ',
         ]);
 
         $db->execute();

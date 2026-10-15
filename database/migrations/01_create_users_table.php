@@ -27,9 +27,13 @@ return new readonly class implements Migration
         $db->createTableIfNotExists($authTable, [
             $authIdKey => 'INTEGER PRIMARY KEY AUTOINCREMENT',
             'email' => 'TEXT NOT NULL UNIQUE CHECK (email LIKE "%@%")',
-            $passwordKey => 'TEXT NOT NULL',
-            $rolesKey => 'TEXT NOT NULL',
-            'permissions' => 'TEXT NOT NULL',
+            $passwordKey => "
+                TEXT
+                NOT NULL
+                CHECK (LENGTH({$passwordKey}) > 0)
+            ",
+            $rolesKey => "TEXT NOT NULL CHECK ({$rolesKey} LIKE '[\"%\"]')",
+            'permissions' => 'TEXT NOT NULL CHECK (permissions LIKE "[%]")',
         ]);
 
         $db->execute();

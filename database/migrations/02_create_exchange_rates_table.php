@@ -14,9 +14,15 @@ return new readonly class implements Migration
 
         $db->createTableIfNotExists('exchange_rates', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
-            'created_at' => 'TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP',
-            'usd_ves' => 'REAL NOT NULL',
-            'usd_cop' => 'REAL NOT NULL',
+            'created_at' => '
+                TEXT
+                NOT NULL
+                UNIQUE
+                DEFAULT CURRENT_TIMESTAMP
+                CHECK (created_at LIKE "____-__-__ __:__:__")
+            ',
+            'usd_ves' => 'REAL NOT NULL CHECK (usd_ves > 0)',
+            'usd_cop' => 'REAL NOT NULL CHECK (usd_cop > 0)',
         ]);
 
         $db->execute();

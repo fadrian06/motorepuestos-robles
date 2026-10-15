@@ -13,9 +13,18 @@ return new readonly class implements Migration {
 
         $db->createTableIfNotExists('payments', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
-            'sale_id' => 'INTEGER NOT NULL REFERENCES sales(id) ON DELETE CASCADE',
-            'amount' => 'REAL NOT NULL',
-            'method' => 'TEXT NOT NULL',
+            'sale_id' => '
+                INTEGER
+                NOT NULL
+                REFERENCES sales(id)
+                ON DELETE CASCADE
+            ',
+            'amount' => 'REAL NOT NULL CHECK (amount > 0)',
+            'currency' => '
+                TEXT
+                NOT NULL
+                CHECK (currency IN ("usd", "cop", "ves"))
+            ',
         ]);
 
         $db->execute();

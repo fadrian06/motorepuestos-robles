@@ -14,7 +14,7 @@ return new readonly class implements Migration
 
         $db->createTableIfNotExists('clients', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
-            'name' => 'TEXT NOT NULL UNIQUE',
+            'name' => 'TEXT NOT NULL UNIQUE CHECK (LENGTH(name) > 0)',
         ]);
 
         $db->execute();

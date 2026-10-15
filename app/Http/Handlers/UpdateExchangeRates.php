@@ -54,19 +54,26 @@ final readonly class UpdateExchangeRates implements RequestHandlerInterface
                 return $response;
 
             case 'POST':
-                $db->insert('exchange_rates')->params([
-                    'usd_ves' => $requestBody['usd_ves'],
-                    'usd_cop' => $requestBody['usd_cop'],
+                /** @var false|array<string, string> */
+                $validated = $this->form->validate($requestBody, [
+                    'usd_ves' => 'string',
+                    'usd_cop' => 'string',
                 ]);
 
-                if ($db->execute()) {
+                if (!$validated) {
+                    $this->flash->set($this->form->errors());
+
                     return $this->responseFactory->createResponse()->withHeader(
                         'location',
                         '/cotizaciones',
                     );
                 }
 
-                $this->flash->set($db->errors());
+                $db->insert('exchange_rates')->params($validated);
+
+                if (!$db->execute()) {
+                    $this->flash->set($db->errors());
+                }
 
                 return $this->responseFactory->createResponse()->withHeader(
                     'location',

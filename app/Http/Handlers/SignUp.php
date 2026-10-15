@@ -63,12 +63,9 @@ final readonly class SignUp implements RequestHandlerInterface
             case 'GET':
                 $flash = $this->flash->display();
 
-                if ($flash) {
-                    dd($flash);
-                }
-
                 $html = $this->environment->render('pages/signup.twig', [
                     'passwordKey' => $passwordKey,
+                    'flash' => $flash,
                 ]);
 
                 $response = $this->responseFactory->createResponse();

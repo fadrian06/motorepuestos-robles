@@ -70,7 +70,14 @@ final readonly class RegisterSupplier implements RequestHandlerInterface
                 $db
                     ->insert('suppliers')
                     ->params($validated)
-                    ->unique('name', 'tax_id');
+                    ->unique(
+                        'name',
+                        'tax_id',
+                        'address',
+                        'phone',
+                        'seller',
+                        'alias',
+                    );
 
                 if (!$db->execute()) {
                     $this->flash->set($db->errors());

@@ -20,10 +20,26 @@ return new readonly class implements Migration
 
         $db->createTableIfNotExists('sales', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
-            'code' => 'TEXT NOT NULL UNIQUE',
-            'created_at' => 'TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP',
-            'client_id' => 'INTEGER NOT NULL REFERENCES clients(id) ON DELETE CASCADE',
-            'user_id' => "INTEGER NOT NULL REFERENCES {$authTable}({$authIdKey}) ON DELETE CASCADE",
+            'code' => 'TEXT NOT NULL UNIQUE CHECK (LENGTH(code) > 0)',
+            'created_at' => '
+                TEXT
+                NOT NULL
+                UNIQUE
+                DEFAULT CURRENT_TIMESTAMP
+                CHECK (created_at LIKE "____-__-__ __:__:__")
+            ',
+            'client_id' => '
+                INTEGER
+                NOT NULL
+                REFERENCES clients(id)
+                ON DELETE CASCADE
+            ',
+            'user_id' => "
+                INTEGER
+                NOT NULL
+                REFERENCES {$authTable}({$authIdKey})
+                ON DELETE CASCADE
+            ",
         ]);
 
         $db->execute();
