@@ -5,8 +5,7 @@ declare(strict_types=1);
 use App\Migration;
 use Leaf\Auth;
 
-return new readonly class implements Migration
-{
+return new readonly class implements Migration {
     #[Override]
     public function up(Auth $auth): void
     {

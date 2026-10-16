@@ -26,14 +26,11 @@ final readonly class ListSellers implements RequestHandlerInterface
     #[NoDiscard]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        /** @var string */
-        $authTable = $this->auth->config('db.table');
+        $authTable = (string) $this->auth->config('db.table');
+        $rolesKey = (string) $this->auth->config('roles.key');
+        $db = $this->auth->db();
 
-        /** @var string */
-        $rolesKey = $this->auth->config('roles.key');
-
-        /** @var Db */
-        $db = $this->auth->db()->select($authTable);
+        $db->select($authTable);
 
         /** @var array[] */
         $sellers = $db->where($rolesKey, 'LIKE', '%seller%')->all();

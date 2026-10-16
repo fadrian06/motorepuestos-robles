@@ -32,20 +32,15 @@ final readonly class ResetPassword implements RequestHandlerInterface
         /** @var string */
         $token = $request->getQueryParams()['token'] ?? '';
 
-        /** @var string */
-        $passwordKey = $this->auth->config('password.key');
-
-        /** @var array */
-        $requestBody = $request->getParsedBody();
-
-        /** @var string */
-        $authTable = $this->auth->config('db.table');
+        $authTable = (string) $this->auth->config('db.table');
+        $passwordKey = (string) $this->auth->config('password.key');
+        $redirectGuest = (string) $this->auth->config('redirect.guest');
 
         /** @var callable(string): string */
         $hasher = $this->auth->config('password.encode');
 
-        /** @var string */
-        $redirectGuest = $this->auth->config('redirect.guest');
+        /** @var array */
+        $requestBody = $request->getParsedBody();
 
         $user = $this->auth->verifyToken($token);
 

@@ -34,8 +34,7 @@ final readonly class Authenticate implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        /** @var string */
-        $redirectLogin = $this->auth->config('redirect.login');
+        $redirectLogin = (string) $this->auth->config('redirect.login');
 
         return $this->responseFactory->createResponse()->withHeader(
             'location',

@@ -7,7 +7,8 @@ use Leaf\Auth;
 
 return new readonly class implements Migration {
     #[Override]
-    public function up(Auth $auth): void {
+    public function up(Auth $auth): void
+    {
         $db = $auth->db();
 
         $db->createTableIfNotExists('sales_items', [

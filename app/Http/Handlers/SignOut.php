@@ -23,8 +23,7 @@ final readonly class SignOut implements RequestHandlerInterface
     #[NoDiscard]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        /** @var string */
-        $redirectLogin = $this->auth->config('redirect.login');
+        $redirectLogin = (string) $this->auth->config('redirect.login');
 
         $this->auth->logout();
 

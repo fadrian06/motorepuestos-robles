@@ -29,11 +29,8 @@ final readonly class UpdatePassword implements RequestHandlerInterface
     #[NoDiscard]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        /** @var string */
-        $passwordKey = $this->auth->config('password.key');
-
-        /** @var string */
-        $redirectGuest = $this->auth->config('redirect.guest');
+        $passwordKey = (string) $this->auth->config('password.key');
+        $redirectGuest = (string) $this->auth->config('redirect.guest');
 
         /** @var array */
         $requestBody = $request->getParsedBody();

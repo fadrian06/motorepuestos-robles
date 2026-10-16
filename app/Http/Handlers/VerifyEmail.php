@@ -27,8 +27,7 @@ final readonly class VerifyEmail implements RequestHandlerInterface
     #[NoDiscard]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        /** @var string */
-        $redirectGuest = $this->auth->config('redirect.guest');
+        $redirectGuest = (string) $this->auth->config('redirect.guest');
 
         /** @var string */
         $token = $request->getQueryParams()['token'] ?? '';

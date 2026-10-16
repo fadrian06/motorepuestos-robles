@@ -5,18 +5,13 @@ declare(strict_types=1);
 use App\Migration;
 use Leaf\Auth;
 
-return new readonly class implements Migration
-{
+return new readonly class implements Migration {
     #[Override]
     public function up(Auth $auth): void
     {
         $db = $auth->db();
-
-        /** @var string */
-        $authTable = $auth->config('db.table');
-
-        /** @var string */
-        $authIdKey = $auth->config('id.key');
+        $authTable = (string) $auth->config('db.table');
+        $authIdKey = (string) $auth->config('id.key');
 
         $db->createTableIfNotExists('sales', [
             'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',

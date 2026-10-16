@@ -30,26 +30,17 @@ final readonly class SignUp implements RequestHandlerInterface
     #[NoDiscard]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        /** @var string */
-        $authTable = $this->auth->config('db.table');
-
-        /** @var string */
-        $passwordKey = $this->auth->config('password.key');
-
-        /** @var string */
-        $redirectLogin = $this->auth->config('redirect.login');
-
-        /** @var string */
-        $redirectGuest = $this->auth->config('redirect.guest');
-
-        /** @var string */
-        $rolesKey = $this->auth->config('roles.key');
+        $authTable = (string) $this->auth->config('db.table');
+        $passwordKey = (string) $this->auth->config('password.key');
+        $redirectLogin = (string) $this->auth->config('redirect.login');
+        $redirectGuest = (string) $this->auth->config('redirect.guest');
+        $rolesKey = (string) $this->auth->config('roles.key');
+        $db = $this->auth->db();
 
         /** @var array */
         $requestBody = $request->getParsedBody();
 
-        /** @var Db */
-        $db = $this->auth->db()->select($authTable);
+        $db->select($authTable);
         $usersCount = $db->count();
 
         if ($usersCount) {

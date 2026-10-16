@@ -5,6 +5,7 @@ paths = [
   "app",
   "bootstrap",
   "config",
+  "database",
   "resources/views",
   "routes",
   "tests",

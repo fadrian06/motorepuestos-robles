@@ -32,8 +32,7 @@ final readonly class Authorize implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler,
     ): ResponseInterface {
-        /** @var string */
-        $redirectGuest = $this->auth->config('redirect.guest');
+        $redirectGuest = (string) $this->auth->config('redirect.guest');
 
         if ($this->auth->user()?->can($this->permissions ?? [])) {
             return $handler->handle($request);

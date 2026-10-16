@@ -36,8 +36,7 @@ return static function (): Auth {
         }
     }
 
-    /** @var string */
-    $authTable = $auth->config('db.table');
+    $authTable = (string) $auth->config('db.table');
     $db = $auth->db();
     $db->select($authTable);
 

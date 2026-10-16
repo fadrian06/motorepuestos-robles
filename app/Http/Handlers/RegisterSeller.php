@@ -32,11 +32,8 @@ final readonly class RegisterSeller implements RequestHandlerInterface
         /** @var array */
         $requestBody = $request->getParsedBody();
 
-        /** @var string */
-        $passwordKey = $this->auth->config('password.key');
-
-        /** @var string */
-        $rolesKey = $this->auth->config('roles.key');
+        $passwordKey = (string) $this->auth->config('password.key');
+        $rolesKey = (string) $this->auth->config('roles.key');
 
         switch ($request->getMethod()) {
             case 'GET':

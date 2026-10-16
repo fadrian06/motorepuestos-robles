@@ -34,17 +34,12 @@ final readonly class ResetPermissions implements RequestHandlerInterface
         /** @var array */
         $requestBody = $request->getParsedBody();
 
-        /** @var string */
-        $authTable = $this->auth->config('db.table');
+        $authTable = (string) $this->auth->config('db.table');
+        $rolesKey = (string) $this->auth->config('roles.key');
+        $authIdKey = (string) $this->auth->config('id.key');
+        $db = $this->auth->db();
 
-        /** @var string */
-        $rolesKey = $this->auth->config('roles.key');
-
-        /** @var string */
-        $authIdKey = $this->auth->config('id.key');
-
-        /** @var Db */
-        $db = $this->auth->db()->select($authTable);
+        $db->select($authTable);
 
         /** @var false|array */
         $seller = $db

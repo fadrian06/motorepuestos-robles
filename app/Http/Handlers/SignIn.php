@@ -29,14 +29,9 @@ final readonly class SignIn implements RequestHandlerInterface
     #[NoDiscard]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        /** @var string */
-        $passwordKey = $this->auth->config('password.key');
-
-        /** @var string */
-        $redirectLogin = $this->auth->config('redirect.login');
-
-        /** @var string */
-        $redirectGuest = $this->auth->config('redirect.guest');
+        $passwordKey = (string) $this->auth->config('password.key');
+        $redirectLogin = (string) $this->auth->config('redirect.login');
+        $redirectGuest = (string) $this->auth->config('redirect.guest');
 
         /** @var array */
         $requestBody = $request->getParsedBody();
