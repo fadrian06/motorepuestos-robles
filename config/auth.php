@@ -25,13 +25,15 @@ return static function (): Auth {
 
     $auth->autoConnect();
 
-    $migrationFiles = array_filter((array) glob(__DIR__
-    . '/../database/migrations/*.php'));
+    $migrationFiles = (array) glob(__DIR__ . '/../database/migrations/*.php');
 
-    foreach ($migrationFiles as $migration) {
-        /** @var Migration */
-        $migration = require_once $migration;
-        $migration->up($auth);
+    foreach (array_filter($migrationFiles) as $migration) {
+        /** @var 1|mixed|Migration */
+        $migration = require $migration;
+
+        if ($migration instanceof Migration) {
+            $migration->up($auth);
+        }
     }
 
     /** @var string */
