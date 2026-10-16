@@ -12,8 +12,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 return static function (ContainerInterface $container): RequestHandlerInterface {
     /** @var RequestHandlerInterface */
     $fallbackHandler = $container->get(NotFound::class);
+
     /** @var callable(ContainerInterface): Router */
     $webRouterFactory = require_once __DIR__ . '/../routes/web.php';
+
     $router = $webRouterFactory($container);
     $routingMiddleware = new RoutingMiddleware($router);
 
