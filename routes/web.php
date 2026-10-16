@@ -33,6 +33,7 @@ use App\Http\Handlers\UpdatePurchase;
 use App\Http\Handlers\UpdateSupplier;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Handlers\VerifyPurchase;
+use App\Http\Handlers\ViewSale;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authorize;
 use App\Http\Middleware\EnsureEmailIsVerified;
@@ -100,6 +101,8 @@ return static function (ContainerInterface $container): Router {
     $listPurchases = $container->get(ListPurchases::class);
     /** @var RequestHandlerInterface */
     $listSales = $container->get(ListSales::class);
+    /** @var RequestHandlerInterface */
+    $viewSale = $container->get(ViewSale::class);
     /** @var RequestHandlerInterface */
     $registerSale = $container->get(RegisterSale::class);
     /** @var RequestHandlerInterface */
@@ -429,6 +432,17 @@ return static function (ContainerInterface $container): Router {
             $authenticate,
             $ensureEmailIsVerified,
             $authorize->withPermissions('register sale'),
+        ),
+    );
+
+    $router->attach(
+        ['GET'],
+        ['#^/ventas/(?<id>\d+)$#'],
+        new QueueRequestHandler(
+            $viewSale,
+            $authenticate,
+            $ensureEmailIsVerified,
+            $authorize->withPermissions('view sales'),
         ),
     );
 

@@ -703,6 +703,7 @@
                   <th>Ítems</th>
                   <th style="text-align: right;">Total USD</th>
                   <th style="text-align: right;">Total VES (Ref)</th>
+                  <th style="text-align: center; width: 130px;">Acción</th>
                 </tr>
               </thead>
               <tbody>
@@ -715,7 +716,9 @@
 
                     <!-- Código -->
                     <td>
-                      <span class="badge-pill badge-gray" style="font-family: monospace; font-size: 12px;" x-text="sale.code"></span>
+                      <a :href="'/ventas/' + sale.id" style="text-decoration: none;">
+                        <span class="badge-pill badge-gray" style="font-family: monospace; font-size: 12px; cursor: pointer;" x-text="sale.code"></span>
+                      </a>
                     </td>
 
                     <!-- Cliente -->
@@ -741,6 +744,17 @@
 
                     <!-- Total VES referencial según tasa histórica de la venta -->
                     <td style="text-align: right; font-size: 13px; color: #a1a1aa; font-family: monospace;" x-text="formatVES(sale.total_usd, sale.usd_ves)"></td>
+
+                    <!-- Ver Comprobante -->
+                    <td style="text-align: center;">
+                      <a :href="'/ventas/' + sale.id" class="btn-secondary" style="padding: 6px 10px; font-size: 12px;" title="Ver Comprobante">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>Ver</span>
+                      </a>
+                    </td>
                   </tr>
                 </template>
               </tbody>
