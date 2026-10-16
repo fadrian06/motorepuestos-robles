@@ -113,7 +113,7 @@ final readonly class RegisterSale implements RequestHandlerInterface
         /** @var false|array<string, string> */
         $validated = $this->form->validate($body, [
             'code' => 'string',
-            'client_id' => 'number',
+            'client_id' => 'string',
         ]);
 
         if (!$validated) {
@@ -260,9 +260,9 @@ final readonly class RegisterSale implements RequestHandlerInterface
                 'quantity' => $quantities[$i] ?? '',
                 'product_price' => $productPrices[$i] ?? '',
             ], [
-                'purchase_item_id' => 'number',
-                'quantity' => 'number',
-                'product_price' => 'number',
+                'purchase_item_id' => 'string',
+                'quantity' => 'string',
+                'product_price' => 'string',
             ]);
 
             if (!$lineValidated) {
