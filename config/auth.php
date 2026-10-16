@@ -28,8 +28,7 @@ return static function (): Auth {
     $migrationFiles = (array) glob(__DIR__ . '/../database/migrations/*.php');
 
     foreach (array_filter($migrationFiles) as $migration) {
-        /** @var 1|mixed|Migration */
-        $migration = require $migration;
+        $migration = (object) require $migration;
 
         if ($migration instanceof Migration) {
             $migration->up($auth);
