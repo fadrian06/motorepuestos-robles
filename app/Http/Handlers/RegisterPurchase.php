@@ -73,7 +73,7 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
         $body = $request->getParsedBody();
 
         $validated = $this->form->validate($body, [
-            'supplier_id' => 'number',
+            'supplier_id' => 'string',
             'supplier_invoice_code' => 'string',
         ]);
 
@@ -128,9 +128,9 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
                 'quantity' => $quantities[$i] ?? '',
                 'cost' => $costs[$i] ?? '',
             ], [
-                'product_id' => 'number',
-                'quantity' => 'number',
-                'cost' => 'number',
+                'product_id' => 'string',
+                'quantity' => 'string',
+                'cost' => 'string',
             ]);
 
             if (!$lineValidated) {
