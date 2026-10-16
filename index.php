@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Enums\Permission;
-use App\Migration;
 use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Container\Container;
 use Leaf\Auth;
-use Leaf\Helpers\Password;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -43,65 +40,10 @@ $container->singleton(Environment::class, static function (): Environment {
     return $environment;
 });
 
-$container->singleton(Auth::class, static function (): Auth {
-    $auth = new Auth();
+/** @var Closure(): Auth */
+$authFactory = require_once __DIR__ . '/config/auth.php';
 
-    $auth->config('timestamps', false);
-
-    $auth->config(
-        'password.encode',
-        static fn(
-            #[SensitiveParameter]
-            string $password,
-        ): string => (string) Password::hash($password, Password::BCRYPT, [
-            'cost' => $_ENV['BCRYPT_ROUNDS'],
-        ]),
-    );
-
-    $auth->config('session', true);
-    $auth->config('token.secret', $_ENV['TOKEN_SECRET']);
-
-    $auth->autoConnect();
-
-    $migrationFiles = array_filter((array) glob(__DIR__
-    . '/database/migrations/*.php'));
-
-    foreach ($migrationFiles as $migration) {
-        /** @var Migration */
-        $migration = require_once $migration;
-        $migration->up($auth);
-    }
-
-    /** @var string */
-    $authTable = $auth->config('db.table');
-    $db = $auth->db();
-    $db->select($authTable);
-
-    /** @var array[] */
-    $users = $db->all();
-    $customPermissions = [];
-
-    foreach ($users as $user) {
-        /** @var string */
-        $permissions = $user['permissions'];
-
-        $customPermissions[$user['email']] = json_decode(
-            $permissions,
-            associative: true,
-        );
-    }
-
-    /** @var array<string, string[]> */
-    $roles = [
-        'admin' => Permission::keys(),
-        'seller' => [],
-        ...$customPermissions,
-    ];
-
-    $auth->createRoles($roles);
-
-    return $auth;
-});
+$container->singleton(Auth::class, $authFactory);
 
 $container->bind(PHPMailer::class, static function (): PHPMailer {
     $mail = new PHPMailer(true);
