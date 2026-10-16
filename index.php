@@ -3,11 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\Permission;
-use App\Http\Handlers\NotFound;
 use App\Migration;
-use Faslatam\PsrFramework\QueueRequestHandler;
-use Faslatam\PsrFramework\Router;
-use Faslatam\PsrFramework\RoutingMiddleware;
 use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Container\Container;
@@ -17,6 +13,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -123,18 +120,11 @@ $container->bind(PHPMailer::class, static function (): PHPMailer {
     return $mail;
 });
 
-$fallbackHandler = $container->get(NotFound::class);
-/** @var callable(ContainerInterface): Router */
-$webRouterFactory = require_once __DIR__ . '/routes/web.php';
-$router = $webRouterFactory($container);
-$routingMiddleware = new RoutingMiddleware($router);
-
-$queueRequestHandler = new QueueRequestHandler(
-    $fallbackHandler,
-    $routingMiddleware,
-);
+/** @var callable(ContainerInterface): RequestHandlerInterface */
+$requestHandlerFactory = require_once __DIR__ . '/bootstrap/app.php';
+$requestHandler = $requestHandlerFactory($container);
 
 $request = $container->get(ServerRequestInterface::class);
-$response = $queueRequestHandler->handle($request);
+$response = $requestHandler->handle($request);
 
 send_response($response);
