@@ -63,7 +63,7 @@ final readonly class UpdateProduct implements RequestHandlerInterface
                 $validated = $this->form->validate($requestBody, [
                     'name' => 'string',
                     'category' => 'string',
-                    'price' => 'number',
+                    'price' => 'string',
                 ]);
 
                 if (!$validated) {
