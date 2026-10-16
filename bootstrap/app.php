@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Http\Handlers\NotFound;
+use App\RouterFactory;
 use Faslatam\PsrFramework\QueueRequestHandler;
-use Faslatam\PsrFramework\Router;
 use Faslatam\PsrFramework\RoutingMiddleware;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -13,11 +13,18 @@ return static function (ContainerInterface $container): RequestHandlerInterface 
     /** @var RequestHandlerInterface */
     $fallbackHandler = $container->get(NotFound::class);
 
-    /** @var callable(ContainerInterface): Router */
-    $webRouterFactory = require_once __DIR__ . '/../routes/web.php';
+    $middlewares = [];
 
-    $router = $webRouterFactory($container);
-    $routingMiddleware = new RoutingMiddleware($router);
+    $routesFiles = (array) glob(__DIR__ . '/../routes/*.php');
 
-    return new QueueRequestHandler($fallbackHandler, $routingMiddleware);
+    foreach (array_filter($routesFiles) as $routesFile) {
+        $routerFactory = (object) require $routesFile;
+
+        if ($routerFactory instanceof RouterFactory) {
+            $router = $routerFactory($container);
+            $middlewares[] = new RoutingMiddleware($router);
+        }
+    }
+
+    return new QueueRequestHandler($fallbackHandler, ...$middlewares);
 };
