@@ -60,10 +60,11 @@ enum Permission
         };
     }
 
+    /** @return string[] */
     public static function keys(): array
     {
         return array_map(
-            static fn(Permission $permission) => $permission->key(),
+            static fn(Permission $permission): string => $permission->key(),
             self::cases(),
         );
     }

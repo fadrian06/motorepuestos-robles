@@ -37,30 +37,24 @@ return static function (): Auth {
 
     $authTable = (string) $auth->config('db.table');
     $db = $auth->db();
-    $db->select($authTable);
+    $db->select($authTable, 'email, permissions');
 
-    /** @var array[] */
+    /** @var array{email: string, permissions: string}[] */
     $users = $db->all();
+
     $customPermissions = [];
 
     foreach ($users as $user) {
-        /** @var string */
-        $permissions = $user['permissions'];
+        /** @var string[] */
+        $permissions = json_decode($user['permissions'], associative: true);
 
-        $customPermissions[$user['email']] = json_decode(
-            $permissions,
-            associative: true,
-        );
+        $customPermissions[$user['email']] = $permissions;
     }
 
-    /** @var array<string, string[]> */
-    $roles = [
+    $auth->createRoles([
         'admin' => Permission::keys(),
         'seller' => [],
-        ...$customPermissions,
-    ];
-
-    $auth->createRoles($roles);
+    ] + $customPermissions);
 
     return $auth;
 };
