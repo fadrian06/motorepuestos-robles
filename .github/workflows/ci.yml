@@ -17,6 +17,7 @@ jobs:
             **/.agents/**
             **/storage/**
             **/tests/**
+            ,editorconfig
             .env.example
             AGENTS.md
             composer.*
