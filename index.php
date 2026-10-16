@@ -44,8 +44,8 @@ $container->singleton(Environment::class, $viewFactory);
 
 /** @var callable(ContainerInterface): RequestHandlerInterface */
 $requestHandlerFactory = require_once __DIR__ . '/bootstrap/app.php';
-$requestHandler = $requestHandlerFactory($container);
 
+$requestHandler = $requestHandlerFactory($container);
 $request = $container->get(ServerRequestInterface::class);
 $response = $requestHandler->handle($request);
 

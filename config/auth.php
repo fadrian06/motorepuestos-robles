@@ -10,8 +10,6 @@ use Leaf\Helpers\Password;
 return static function (): Auth {
     $auth = new Auth();
 
-    $auth->config('timestamps', false);
-
     $auth->config(
         'password.encode',
         static fn(
@@ -28,7 +26,7 @@ return static function (): Auth {
     $auth->autoConnect();
 
     $migrationFiles = array_filter((array) glob(__DIR__
-    . '/database/migrations/*.php'));
+    . '/../database/migrations/*.php'));
 
     foreach ($migrationFiles as $migration) {
         /** @var Migration */

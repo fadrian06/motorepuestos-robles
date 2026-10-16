@@ -34,6 +34,21 @@ return new readonly class implements Migration
             ",
             $rolesKey => "TEXT NOT NULL CHECK ({$rolesKey} LIKE '[\"%\"]')",
             'permissions' => 'TEXT NOT NULL CHECK (permissions LIKE "[%]")',
+            'created_at' => '
+                TEXT
+                NOT NULL
+                DEFAULT CURRENT_TIMESTAMP
+                CHECK (created_at LIKE "____-__-__ __:__:__")
+            ',
+            'updated_at' => '
+                TEXT
+                NOT NULL
+                DEFAULT CURRENT_TIMESTAMP
+                CHECK (
+                    updated_at LIKE "____-__-__ __:__:__"
+                    AND updated_at >= created_at
+                )
+            ',
         ]);
 
         $db->execute();
