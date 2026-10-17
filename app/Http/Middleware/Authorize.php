@@ -37,7 +37,7 @@ final readonly class Authorize implements MiddlewareInterface
 
         $permissions = array_map(
             static fn(Permission $permission) => $permission->name,
-            $this->permissions
+            $this->permissions,
         );
 
         if ($this->auth->user()?->can($permissions)) {

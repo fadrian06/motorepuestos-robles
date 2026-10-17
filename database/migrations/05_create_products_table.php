@@ -11,17 +11,20 @@ return new readonly class implements Migration {
     {
         $db = $auth->db();
 
-        $autoincrement = match ($_ENV['DB_CONNECTION']) {
-            'mysql' => 'AUTO_INCREMENT',
-            default => 'AUTOINCREMENT',
+        $keys = match ($_ENV['DB_CONNECTION']) {
+            'mysql' => [
+                'id' => 'INTEGER PRIMARY KEY AUTO_INCREMENT',
+            ],
+            default => [
+                'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+            ],
         };
 
         $db->createTableIfNotExists('products', [
-            'id' => "INTEGER PRIMARY KEY {$autoincrement}",
             'name' => 'TEXT NOT NULL UNIQUE CHECK (LENGTH(name) > 0)',
             'category' => 'TEXT NOT NULL CHECK (LENGTH(category) > 0)',
             'price' => 'REAL NOT NULL CHECK (price > 0)',
-        ]);
+        ] + $keys);
 
         $db->execute();
     }

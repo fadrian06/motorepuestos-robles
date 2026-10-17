@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\Permission;
 use App\Http\Handlers\Dashboard;
 use App\Http\Handlers\DeleteClient;
 use App\Http\Handlers\DeleteProduct;
@@ -34,7 +35,6 @@ use App\Http\Handlers\UpdateSupplier;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Handlers\VerifyPurchase;
 use App\Http\Handlers\ViewSale;
-use App\Enums\Permission;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authorize;
 use App\Http\Middleware\EnsureEmailIsVerified;

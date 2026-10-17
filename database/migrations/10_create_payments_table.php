@@ -11,30 +11,45 @@ return new readonly class implements Migration {
     {
         $db = $auth->db();
 
-        $autoincrement = match ($_ENV['DB_CONNECTION']) {
-            'mysql' => 'AUTO_INCREMENT',
-            default => 'AUTOINCREMENT',
+        $keys = match ($_ENV['DB_CONNECTION']) {
+            'mysql' => [
+                'id' => 'INTEGER PRIMARY KEY AUTO_INCREMENT',
+                'sale_id' => '
+                    INTEGER
+                    NOT NULL,
+                    FOREIGN KEY (sale_id)
+                    REFERENCES sales(id)
+                ',
+                'exchange_rate_id' => '
+                    INTEGER
+                    NOT NULL,
+                    FOREIGN KEY (exchange_rate_id)
+                    REFERENCES exchange_rates(id)
+                ',
+            ],
+            default => [
+                'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+                'sale_id' => '
+                    INTEGER
+                    NOT NULL
+                    REFERENCES sales(id)
+                ',
+                'exchange_rate_id' => '
+                    INTEGER
+                    NOT NULL
+                    REFERENCES exchange_rates(id)
+                ',
+            ],
         };
 
         $db->createTableIfNotExists('payments', [
-            'id' => "INTEGER PRIMARY KEY {$autoincrement}",
-            'sale_id' => '
-                INTEGER
-                NOT NULL
-                REFERENCES sales(id)
-            ',
             'amount' => 'REAL NOT NULL CHECK (amount > 0)',
             'currency' => '
                 TEXT
                 NOT NULL
                 CHECK (currency IN ("usd", "cop", "ves"))
             ',
-            'exchange_rate_id' => '
-                INTEGER
-                NOT NULL
-                REFERENCES exchange_rates(id)
-            ',
-        ]);
+        ] + $keys);
 
         $db->execute();
     }

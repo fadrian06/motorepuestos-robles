@@ -13,18 +13,38 @@ return new readonly class implements Migration {
         $authTable = (string) $auth->config('db.table');
         $authIdKey = (string) $auth->config('id.key');
 
-        $autoincrement = match ($_ENV['DB_CONNECTION']) {
-            'mysql' => 'AUTO_INCREMENT',
-            default => 'AUTOINCREMENT',
+        $keys = match ($_ENV['DB_CONNECTION']) {
+            'mysql' => [
+                'id' => 'INTEGER PRIMARY KEY AUTO_INCREMENT',
+                'purchase_item_id' => '
+                    INTEGER
+                    NOT NULL,
+                    FOREIGN KEY (purchase_item_id)
+                    REFERENCES purchases_items(id)
+                ',
+                'user_id' => "
+                    INTEGER
+                    NOT NULL,
+                    FOREIGN KEY (user_id)
+                    REFERENCES {$authTable}({$authIdKey})
+                ",
+            ],
+            default => [
+                'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+                'purchase_item_id' => '
+                    INTEGER
+                    NOT NULL
+                    REFERENCES purchases_items(id)
+                ',
+                'user_id' => "
+                    INTEGER
+                    NOT NULL
+                    REFERENCES {$authTable}({$authIdKey})
+                ",
+            ],
         };
 
         $db->createTableIfNotExists('products_losses', [
-            'id' => "INTEGER PRIMARY KEY {$autoincrement}",
-            'purchase_item_id' => '
-                INTEGER
-                NOT NULL
-                REFERENCES purchases_items(id)
-            ',
             'quantity' => '
                 REAL
                 NOT NULL
@@ -41,12 +61,7 @@ return new readonly class implements Migration {
                 DEFAULT CURRENT_TIMESTAMP
                 CHECK (created_at LIKE "____-__-__ __:__:__")
             ',
-            'user_id' => "
-                INTEGER
-                NOT NULL
-                REFERENCES {$authTable}({$authIdKey})
-            ",
-        ]);
+        ] + $keys);
 
         $db->execute();
     }

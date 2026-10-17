@@ -15,13 +15,16 @@ return new readonly class implements Migration {
         $rolesKey = (string) $auth->config('roles.key');
         $passwordKey = (string) $auth->config('password.key');
 
-        $autoincrement = match ($_ENV['DB_CONNECTION']) {
-            'mysql' => 'AUTO_INCREMENT',
-            default => 'AUTOINCREMENT',
+        $keys = match ($_ENV['DB_CONNECTION']) {
+            'mysql' => [
+                $authIdKey => 'INTEGER PRIMARY KEY AUTO_INCREMENT',
+            ],
+            default => [
+                $authIdKey => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+            ],
         };
 
         $db->createTableIfNotExists($authTable, [
-            $authIdKey => "INTEGER PRIMARY KEY {$autoincrement}",
             'email' => 'TEXT NOT NULL UNIQUE CHECK (email LIKE "%@%")',
             $passwordKey => "
                 TEXT
@@ -45,7 +48,7 @@ return new readonly class implements Migration {
                     AND updated_at >= created_at
                 )
             ',
-        ]);
+        ] + $keys);
 
         $db->execute();
     }

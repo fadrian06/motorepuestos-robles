@@ -13,23 +13,38 @@ return new readonly class implements Migration {
         $authTable = (string) $auth->config('db.table');
         $authIdKey = (string) $auth->config('id.key');
 
-        $autoincrement = match ($_ENV['DB_CONNECTION']) {
-            'mysql' => 'AUTO_INCREMENT',
-            default => 'AUTOINCREMENT',
+        $keys = match ($_ENV['DB_CONNECTION']) {
+            'mysql' => [
+                'id' => 'INTEGER PRIMARY KEY AUTO_INCREMENT',
+                'user_id' => "
+                    INTEGER
+                    NOT NULL,
+                    FOREIGN KEY (user_id)
+                    REFERENCES {$authTable}({$authIdKey})
+                ",
+                'supplier_id' => '
+                    INTEGER
+                    NOT NULL,
+                    FOREIGN KEY (supplier_id)
+                    REFERENCES suppliers(id)
+                ',
+            ],
+            default => [
+                'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+                'user_id' => "
+                    INTEGER
+                    NOT NULL
+                    REFERENCES {$authTable}({$authIdKey})
+                ",
+                'supplier_id' => '
+                    INTEGER
+                    NOT NULL
+                    REFERENCES suppliers(id)
+                ',
+            ],
         };
 
         $db->createTableIfNotExists('purchases', [
-            'id' => "INTEGER PRIMARY KEY {$autoincrement}",
-            'user_id' => "
-                INTEGER
-                NOT NULL
-                REFERENCES {$authTable}({$authIdKey})
-            ",
-            'supplier_id' => '
-                INTEGER
-                NOT NULL
-                REFERENCES suppliers(id)
-            ',
             'supplier_invoice_code' => '
                 TEXT
                 NOT NULL
@@ -53,7 +68,7 @@ return new readonly class implements Migration {
                     )
                 )
             ',
-        ]);
+        ] + $keys);
 
         $db->execute();
     }

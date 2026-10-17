@@ -11,13 +11,16 @@ return new readonly class implements Migration {
     {
         $db = $auth->db();
 
-        $autoincrement = match ($_ENV['DB_CONNECTION']) {
-            'mysql' => 'AUTO_INCREMENT',
-            default => 'AUTOINCREMENT',
+        $keys = match ($_ENV['DB_CONNECTION']) {
+            'mysql' => [
+                'id' => 'INTEGER PRIMARY KEY AUTO_INCREMENT',
+            ],
+            default => [
+                'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+            ],
         };
 
         $db->createTableIfNotExists('exchange_rates', [
-            'id' => "INTEGER PRIMARY KEY {$autoincrement}",
             'created_at' => '
                 TEXT
                 NOT NULL
@@ -26,7 +29,7 @@ return new readonly class implements Migration {
             ',
             'usd_ves' => 'REAL NOT NULL CHECK (usd_ves > 0)',
             'usd_cop' => 'REAL NOT NULL CHECK (usd_cop > 0)',
-        ]);
+        ] + $keys);
 
         $db->execute();
     }
