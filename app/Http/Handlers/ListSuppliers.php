@@ -31,7 +31,13 @@ final readonly class ListSuppliers implements RequestHandlerInterface
         $db->select('suppliers');
 
         /** @var array[] */
-        $suppliers = $db->all();
+        $suppliers = array_map(static function (array $supplier): array {
+            return array_map(static function ($value) {
+                return is_string($value)
+                    ? mb_convert_encoding($value, 'UTF-8', 'UTF-8')
+                    : $value;
+            }, $supplier);
+        }, $db->all());
 
         $html = $this->environment->render('pages/suppliers.twig', [
             'suppliers' => $suppliers,
