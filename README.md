@@ -14,6 +14,7 @@ Sistema web de gestión comercial y venta de repuestos automotrices con control 
 
 ## Características Principales
 
+- **Gestión de Ventas y Facturación (POS)** — Módulo de Punto de Venta con búsqueda reactiva de productos, selección manual de lote para garantizar trazabilidad, registro de ventas y emisión de facturas.
 - **Gestión de Compras e Inventario por Lote (CRUD Completo)** — Órdenes de compra a proveedores con código de factura, registro de ítems con costo unitario en USD y cantidad, actualización de compras no verificadas, anulación/eliminación atómica con sus ítems, y verificación para inmutabilidad del lote.
 - **Directorio de Clientes** — Registro y administración de compradores particulares y talleres mecánicos para cotizaciones y ventas.
 - **Catálogo de Productos y Repuestos (CRUD Completo)** — Gestión completa de repuestos clasificados por categoría, precio base en USD, búsqueda reactiva y validación legal de margen comercial.
@@ -22,7 +23,6 @@ Sistema web de gestión comercial y venta de repuestos automotrices con control 
 - **Seguridad y Autenticación Robusta** — Registro, inicio de sesión, verificación de correo electrónico vía token, recuperación y cambio de contraseñas.
 - **Interfaz Moderna y Modo Oscuro** — UI responsiva optimizada con W3.CSS, variables de diseño de marca (`--brand-red`), Alpine.js para búsquedas reactivas en vivo, modales y alternador de tema claro/oscuro.
 - **Próximas Fases:**
-  - *Punto de Venta (POS)* — Búsqueda por nombre/categoría, selección manual de lote por el vendedor, comprobante imprimible y pago mixto.
   - *Control de Mermas y Pérdidas* — Registro y trazabilidad de productos vencidos o dañados por lote (`products_losses`).
 
 ---
@@ -144,9 +144,10 @@ motorepuestos-robles/
 - **`products`** — Catálogo de repuestos automotrices (`id`, `name`, `category`, `price`).
 - **`purchases`** — Órdenes de compra (`id`, `user_id`, `supplier_id`, `supplier_invoice_code`, `created_at`, `verified_at`).
 - **`purchases_items`** — Lotes y renglones de compra (`id`, `purchase_id`, `product_id`, `quantity`, `cost`).
+- **`sales`** — Cabecera de ventas y facturación (`id`, `user_id`, `client_id`, `total`, `created_at`).
+- **`sales_items`** — Detalle de productos vendidos enlazados al lote consumido (`id`, `sale_id`, `purchase_item_id`, `quantity`, `unit_price`).
 
-### Tablas Planificadas (Punto de Venta y Mermas):
-- `sales` / `sales_items` — Cabecera de venta y detalle enlazado al lote específico consumido (`purchase_item_id`).
+### Tablas Planificadas:
 - `payments` — Métodos y montos aplicados a cada venta (pago mixto).
 - `products_losses` — Registro de pérdidas y mermas por lote (`purchase_item_id`, `quantity`, `reason`).
 
