@@ -10,9 +10,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 return static function (ContainerInterface $container): RequestHandlerInterface {
-    /** @var RequestHandlerInterface */
-    $fallbackHandler = $container->get(NotFound::class);
-
     $middlewares = [];
 
     $routesFiles = (array) glob(__DIR__ . '/../routes/*.php');
@@ -26,5 +23,8 @@ return static function (ContainerInterface $container): RequestHandlerInterface 
         }
     }
 
-    return new QueueRequestHandler($fallbackHandler, ...$middlewares);
+    return new QueueRequestHandler(
+        NotFound::class,
+        ...$middlewares,
+    )->setContainer($container);
 };

@@ -12,23 +12,24 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fadrian06/psr-framework.git",
-                "reference": "57288c5782afafca9588f7f05505cf6f31ff81f3"
+                "reference": "de3006168c630426d112913f63da9b0fc12de03b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fadrian06/psr-framework/zipball/57288c5782afafca9588f7f05505cf6f31ff81f3",
-                "reference": "57288c5782afafca9588f7f05505cf6f31ff81f3",
+                "url": "https://api.github.com/repos/fadrian06/psr-framework/zipball/de3006168c630426d112913f63da9b0fc12de03b",
+                "reference": "de3006168c630426d112913f63da9b0fc12de03b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.3",
+                "php": ">=8.4",
+                "psr/container": "^2.0",
                 "psr/http-server-handler": "^1.0",
                 "psr/http-server-middleware": "^1.0"
             },
             "require-dev": {
-                "carthage-software/mago": "^1.49",
+                "carthage-software/mago": "^1.57",
                 "guzzlehttp/psr7": "^3.1",
-                "phpunit/phpunit": "^12.5"
+                "phpunit/phpunit": "^13.4"
             },
             "default-branch": true,
             "type": "library",
@@ -44,7 +45,7 @@
                 "source": "https://github.com/fadrian06/psr-framework/tree/main",
                 "issues": "https://github.com/fadrian06/psr-framework/issues"
             },
-            "time": "2026-09-23T00:12:06+00:00"
+            "time": "2026-10-17T03:40:48+00:00"
         },
         {
             "name": "firebase/php-jwt",

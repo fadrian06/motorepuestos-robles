@@ -43,123 +43,14 @@ use Faslatam\PsrFramework\QueueRequestHandler;
 use Faslatam\PsrFramework\Router;
 use Leaf\Auth;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
 return new readonly class implements RouterFactory {
     #[Override]
     #[NoDiscard]
     public function __invoke(ContainerInterface $container): Router
     {
-        /** @var MiddlewareInterface */
-        $authenticate = $container->get(Authenticate::class);
-
-        /** @var MiddlewareInterface */
-        $redirectIfAuthenticated = $container->get(
-            RedirectIfAuthenticated::class,
-        );
-
-        /** @var MiddlewareInterface */
-        $ensureEmailIsVerified = $container->get(EnsureEmailIsVerified::class);
-
         /** @var Authorize */
         $authorize = $container->get(Authorize::class);
-
-        /** @var RequestHandlerInterface */
-        $dashboard = $container->get(Dashboard::class);
-
-        /** @var RequestHandlerInterface */
-        $signIn = $container->get(SignIn::class);
-
-        /** @var RequestHandlerInterface */
-        $signUp = $container->get(SignUp::class);
-
-        /** @var RequestHandlerInterface */
-        $signOut = $container->get(SignOut::class);
-
-        /** @var RequestHandlerInterface */
-        $verifyEmail = $container->get(VerifyEmail::class);
-
-        /** @var RequestHandlerInterface */
-        $forgotPassword = $container->get(ForgotPassword::class);
-
-        /** @var RequestHandlerInterface */
-        $resetPassword = $container->get(ResetPassword::class);
-
-        /** @var RequestHandlerInterface */
-        $updatePassword = $container->get(UpdatePassword::class);
-
-        /** @var RequestHandlerInterface */
-        $registerSeller = $container->get(RegisterSeller::class);
-
-        /** @var RequestHandlerInterface */
-        $listSellers = $container->get(ListSellers::class);
-
-        /** @var RequestHandlerInterface */
-        $resetPermissions = $container->get(ResetPermissions::class);
-
-        /** @var RequestHandlerInterface */
-        $registerClient = $container->get(RegisterClient::class);
-
-        /** @var RequestHandlerInterface */
-        $listClients = $container->get(ListClients::class);
-
-        /** @var RequestHandlerInterface */
-        $updateClient = $container->get(UpdateClient::class);
-
-        /** @var RequestHandlerInterface */
-        $deleteClient = $container->get(DeleteClient::class);
-
-        /** @var RequestHandlerInterface */
-        $updateExchangeRates = $container->get(UpdateExchangeRates::class);
-
-        /** @var RequestHandlerInterface */
-        $listSuppliers = $container->get(ListSuppliers::class);
-
-        /** @var RequestHandlerInterface */
-        $registerSupplier = $container->get(RegisterSupplier::class);
-
-        /** @var RequestHandlerInterface */
-        $updateSupplier = $container->get(UpdateSupplier::class);
-
-        /** @var RequestHandlerInterface */
-        $deleteSupplier = $container->get(DeleteSupplier::class);
-
-        /** @var RequestHandlerInterface */
-        $listProducts = $container->get(ListProducts::class);
-
-        /** @var RequestHandlerInterface */
-        $listPurchases = $container->get(ListPurchases::class);
-
-        /** @var RequestHandlerInterface */
-        $listSales = $container->get(ListSales::class);
-
-        /** @var RequestHandlerInterface */
-        $viewSale = $container->get(ViewSale::class);
-
-        /** @var RequestHandlerInterface */
-        $registerSale = $container->get(RegisterSale::class);
-
-        /** @var RequestHandlerInterface */
-        $registerPurchase = $container->get(RegisterPurchase::class);
-
-        /** @var RequestHandlerInterface */
-        $registerProduct = $container->get(RegisterProduct::class);
-
-        /** @var RequestHandlerInterface */
-        $updateProduct = $container->get(UpdateProduct::class);
-
-        /** @var RequestHandlerInterface */
-        $updatePurchase = $container->get(UpdatePurchase::class);
-
-        /** @var RequestHandlerInterface */
-        $deleteProduct = $container->get(DeleteProduct::class);
-
-        /** @var RequestHandlerInterface */
-        $deletePurchase = $container->get(DeletePurchase::class);
-
-        /** @var RequestHandlerInterface */
-        $verifyPurchase = $container->get(VerifyPurchase::class);
 
         /** @var Auth */
         $auth = $container->get(Auth::class);
@@ -173,320 +64,338 @@ return new readonly class implements RouterFactory {
             ['GET'],
             ['#^/$#', "#^{$redirectGuest}$#"],
             new QueueRequestHandler(
-                $dashboard,
-                $authenticate,
-                $ensureEmailIsVerified,
-            ),
+                Dashboard::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ["#^{$redirectLogin}$#"],
-            new QueueRequestHandler($signIn, $redirectIfAuthenticated),
+            new QueueRequestHandler(
+                SignIn::class,
+                RedirectIfAuthenticated::class,
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/registrarse$#'],
-            new QueueRequestHandler($signUp, $redirectIfAuthenticated),
+            new QueueRequestHandler(
+                SignUp::class,
+                RedirectIfAuthenticated::class,
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/salir$#'],
-            new QueueRequestHandler($signOut, $authenticate),
+            new QueueRequestHandler(
+                SignOut::class,
+                Authenticate::class,
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/verificar-correo$#'],
-            new QueueRequestHandler($verifyEmail, $authenticate),
+            new QueueRequestHandler(
+                VerifyEmail::class,
+                Authenticate::class,
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/recuperar-clave$#'],
-            new QueueRequestHandler($forgotPassword, $redirectIfAuthenticated),
+            new QueueRequestHandler(
+                ForgotPassword::class,
+                RedirectIfAuthenticated::class,
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/restablecer-clave$#'],
-            new QueueRequestHandler($resetPassword, $redirectIfAuthenticated),
+            new QueueRequestHandler(
+                ResetPassword::class,
+                RedirectIfAuthenticated::class,
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/actualizar-clave$#'],
             new QueueRequestHandler(
-                $updatePassword,
-                $authenticate,
-                $ensureEmailIsVerified,
-            ),
+                UpdatePassword::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/vendedores$#'],
             new QueueRequestHandler(
-                $listSellers,
-                $authenticate,
-                $ensureEmailIsVerified,
+                ListSellers::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view sellers'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/vendedores/registrar$#'],
             new QueueRequestHandler(
-                $registerSeller,
-                $authenticate,
-                $ensureEmailIsVerified,
+                RegisterSeller::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register seller'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/vendedores/(?<id>\d+)$#'],
             new QueueRequestHandler(
-                $resetPermissions,
-                $authenticate,
-                $ensureEmailIsVerified,
+                ResetPermissions::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('reset seller permissions'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/clientes$#'],
             new QueueRequestHandler(
-                $listClients,
-                $authenticate,
-                $ensureEmailIsVerified,
+                ListClients::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view clients'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/clientes/registrar$#'],
             new QueueRequestHandler(
-                $registerClient,
-                $authenticate,
-                $ensureEmailIsVerified,
+                RegisterClient::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register client'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/clientes/(?<id>\d+)$#'],
             new QueueRequestHandler(
-                $updateClient,
-                $authenticate,
-                $ensureEmailIsVerified,
+                UpdateClient::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update client'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/clientes/(?<id>\d+)/eliminar$#'],
             new QueueRequestHandler(
-                $deleteClient,
-                $authenticate,
-                $ensureEmailIsVerified,
+                DeleteClient::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('delete client'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/cotizaciones$#'],
             new QueueRequestHandler(
-                $updateExchangeRates,
-                $authenticate,
-                $ensureEmailIsVerified,
+                UpdateExchangeRates::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update exchange rates'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/proveedores$#'],
             new QueueRequestHandler(
-                $listSuppliers,
-                $authenticate,
-                $ensureEmailIsVerified,
+                ListSuppliers::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view suppliers'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/proveedores/registrar$#'],
             new QueueRequestHandler(
-                $registerSupplier,
-                $authenticate,
-                $ensureEmailIsVerified,
+                RegisterSupplier::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register supplier'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/proveedores/(?<id>\d+)$#'],
             new QueueRequestHandler(
-                $updateSupplier,
-                $authenticate,
-                $ensureEmailIsVerified,
+                UpdateSupplier::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update supplier'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/proveedores/(?<id>\d+)/eliminar$#'],
             new QueueRequestHandler(
-                $deleteSupplier,
-                $authenticate,
-                $ensureEmailIsVerified,
+                DeleteSupplier::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('delete supplier'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/productos$#'],
             new QueueRequestHandler(
-                $listProducts,
-                $authenticate,
-                $ensureEmailIsVerified,
+                ListProducts::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view products'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/productos/registrar$#'],
             new QueueRequestHandler(
-                $registerProduct,
-                $authenticate,
-                $ensureEmailIsVerified,
+                RegisterProduct::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register product'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/productos/(?<id>\d+)$#'],
             new QueueRequestHandler(
-                $updateProduct,
-                $authenticate,
-                $ensureEmailIsVerified,
+                UpdateProduct::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update product'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/productos/(?<id>\d+)/eliminar$#'],
             new QueueRequestHandler(
-                $deleteProduct,
-                $authenticate,
-                $ensureEmailIsVerified,
+                DeleteProduct::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('delete product'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/compras$#'],
             new QueueRequestHandler(
-                $listPurchases,
-                $authenticate,
-                $ensureEmailIsVerified,
+                ListPurchases::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view purchases'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/compras/registrar$#'],
             new QueueRequestHandler(
-                $registerPurchase,
-                $authenticate,
-                $ensureEmailIsVerified,
+                RegisterPurchase::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register purchase'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/compras/(?<id>\d+)$#'],
             new QueueRequestHandler(
-                $updatePurchase,
-                $authenticate,
-                $ensureEmailIsVerified,
+                UpdatePurchase::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update purchase'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/compras/(?<id>\d+)/eliminar$#'],
             new QueueRequestHandler(
-                $deletePurchase,
-                $authenticate,
-                $ensureEmailIsVerified,
+                DeletePurchase::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('delete purchase'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/compras/(?<id>\d+)/verificar$#'],
             new QueueRequestHandler(
-                $verifyPurchase,
-                $authenticate,
-                $ensureEmailIsVerified,
+                VerifyPurchase::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('verify purchase'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/ventas$#'],
             new QueueRequestHandler(
-                $listSales,
-                $authenticate,
-                $ensureEmailIsVerified,
+                ListSales::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view sales'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/ventas/registrar$#'],
             new QueueRequestHandler(
-                $registerSale,
-                $authenticate,
-                $ensureEmailIsVerified,
+                RegisterSale::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register sale'),
-            ),
+            )->setContainer($container),
         );
 
         $router->attach(
             ['GET'],
             ['#^/ventas/(?<id>\d+)$#'],
             new QueueRequestHandler(
-                $viewSale,
-                $authenticate,
-                $ensureEmailIsVerified,
+                ViewSale::class,
+                Authenticate::class,
+                EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view sales'),
-            ),
+            )->setContainer($container),
         );
 
         return $router;
