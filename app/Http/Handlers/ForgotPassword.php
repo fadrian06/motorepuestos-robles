@@ -16,6 +16,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
 
+use function Faslatam\PsrFramework\getenv;
+
 /** @mago-expect lint:excessive-parameter-list */
 final readonly class ForgotPassword implements RequestHandlerInterface
 {
@@ -73,7 +75,7 @@ final readonly class ForgotPassword implements RequestHandlerInterface
                     $email = $this->auth->user()?->get()['email'] ?? '';
 
                     $mailBody = $this->environment->render('emails/password-reset-token.twig', [
-                        'appUrl' => $_ENV['APP_URL'],
+                        'appUrl' => getenv('APP_URL'),
                         'token' => $token,
                     ]);
 

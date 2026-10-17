@@ -7,6 +7,8 @@ use App\Migration;
 use Leaf\Auth;
 use Leaf\Helpers\Password;
 
+use function Faslatam\PsrFramework\getenv;
+
 return static function (): Auth {
     $auth = new Auth();
 
@@ -16,12 +18,12 @@ return static function (): Auth {
             #[SensitiveParameter]
             string $password,
         ): string => (string) Password::hash($password, Password::BCRYPT, [
-            'cost' => $_ENV['BCRYPT_ROUNDS'],
+            'cost' => getenv('BCRYPT_ROUNDS'),
         ]),
     );
 
     $auth->config('session', true);
-    $auth->config('token.secret', $_ENV['TOKEN_SECRET']);
+    $auth->config('token.secret', getenv('TOKEN_SECRET'));
 
     $auth->autoConnect();
 

@@ -14,6 +14,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
 
+use function Faslatam\PsrFramework\getenv;
+
 final readonly class VerifyEmail implements RequestHandlerInterface
 {
     public function __construct(
@@ -59,7 +61,7 @@ final readonly class VerifyEmail implements RequestHandlerInterface
                 $email = $this->auth->user()?->get()['email'] ?? '';
 
                 $mailBody = $this->environment->render('emails/verify-email-token.twig', [
-                    'appUrl' => $_ENV['APP_URL'],
+                    'appUrl' => getenv('APP_URL'),
                     'token' => $token,
                 ]);
 

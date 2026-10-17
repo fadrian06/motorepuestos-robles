@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Handlers\NotFound;
+use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\RouterFactory;
 use Faslatam\PsrFramework\QueueRequestHandler;
 use Faslatam\PsrFramework\RoutingMiddleware;
@@ -10,7 +11,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 return static function (ContainerInterface $container): RequestHandlerInterface {
-    $middlewares = [];
+    $middlewares = [PreventRequestsDuringMaintenance::class];
 
     $routesFiles = (array) glob(__DIR__ . '/../routes/*.php');
 
