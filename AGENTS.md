@@ -58,8 +58,9 @@ motorepuestos-robles/
 | **Clientes** | `GET /clientes`<br>`GET,POST /clientes/registrar`<br>`GET,POST /clientes/{id}`<br>`GET /clientes/{id}/eliminar` | `ListClients`<br>`RegisterClient`<br>`UpdateClient`<br>`DeleteClient` | `pages/clients.twig`<br>`pages/register-client.twig`<br>`pages/update-client.twig` |
 | **Vendedores** | `GET /vendedores`<br>`GET,POST /vendedores/registrar` | `ListSellers`<br>`RegisterSeller` | `pages/sellers.twig`<br>`pages/register-seller.twig` |
 | **Cotizaciones** | `GET,POST /cotizaciones` | `UpdateExchangeRates` | `pages/update-exchange-rates.twig` |
+| **Ventas / POS** | `GET /ventas`<br>`GET,POST /ventas/registrar` | `ListSales`<br>`RegisterSale` | `pages/sales.twig`<br>`pages/register-sale.twig` |
 | **Seguridad & Auth** | `/entrar`, `/salir`, `/registrarse`, `/verificar-correo`, `/recuperar-clave`, `/restablecer-clave`, `/actualizar-clave` | Handlers en `app/Http/Handlers/` | `signin.twig`, `signup.twig`, `update-password.twig`, etc. |
-| **En Progreso** | POS (`#pos`), Mermas (`#mermas`) | Pendientes | Pendientes |
+| **En Progreso** | Mermas (`#mermas`) | Pendientes | Pendientes |
 
 ---
 

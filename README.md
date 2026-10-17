@@ -129,6 +129,7 @@ motorepuestos-robles/
 | **Clientes** | `GET /clientes`<br>`GET,POST /clientes/registrar`<br>`GET,POST /clientes/{id}`<br>`GET /clientes/{id}/eliminar` | Cartera de compradores y talleres automotrices. |
 | **Vendedores** | `GET /vendedores`<br>`GET,POST /vendedores/registrar` | Equipo comercial y asignación de permisos de usuario. |
 | **Cotizaciones** | `GET,POST /cotizaciones` | Ajuste de tasas de cambio operativas USD / VES / COP. |
+| **Ventas / POS** | `GET,POST /ventas`<br>`GET,POST /ventas/registrar` | Registro de ventas, selección de lotes y facturación. |
 | **Autenticación** | `GET,POST /entrar`<br>`GET /salir`<br>`GET,POST /registrarse`<br>`GET,POST /verificar-correo`<br>`GET,POST /recuperar-clave`<br>`GET,POST /restablecer-clave`<br>`GET,POST /actualizar-clave` | Flujo de seguridad, verificación de correo y contraseñas. |
 
 ---
