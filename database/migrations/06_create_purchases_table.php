@@ -13,8 +13,13 @@ return new readonly class implements Migration {
         $authTable = (string) $auth->config('db.table');
         $authIdKey = (string) $auth->config('id.key');
 
+        $autoincrement = match ($_ENV['DB_CONNECTION']) {
+            'mysql' => 'AUTO_INCREMENT',
+            default => 'AUTOINCREMENT',
+        };
+
         $db->createTableIfNotExists('purchases', [
-            'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+            'id' => "INTEGER PRIMARY KEY {$autoincrement}",
             'user_id' => "
                 INTEGER
                 NOT NULL
