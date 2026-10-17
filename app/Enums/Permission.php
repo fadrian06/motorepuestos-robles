@@ -31,40 +31,11 @@ enum Permission
     case ViewSales;
     case RegisterSale;
 
-    public function key(): string
-    {
-        return match ($this) {
-            Permission::ViewSellers => 'view sellers',
-            Permission::RegisterSeller => 'register seller',
-            Permission::ResetPermissions => 'reset seller permissions',
-            Permission::ViewClients => 'view clients',
-            Permission::RegisterClient => 'register client',
-            Permission::UpdateClient => 'update client',
-            Permission::DeleteClient => 'delete client',
-            Permission::UpdateExchangeRates => 'update exchange rates',
-            Permission::ViewSuppliers => 'view suppliers',
-            Permission::RegisterSupplier => 'register supplier',
-            Permission::UpdateSupplier => 'update supplier',
-            Permission::DeleteSupplier => 'delete supplier',
-            Permission::ViewProducts => 'view products',
-            Permission::RegisterProduct => 'register product',
-            Permission::UpdateProduct => 'update product',
-            Permission::DeleteProduct => 'delete product',
-            Permission::ViewPurchases => 'view purchases',
-            Permission::RegisterPurchase => 'register purchase',
-            Permission::UpdatePurchase => 'update purchase',
-            Permission::DeletePurchase => 'delete purchase',
-            Permission::VerifyPurchase => 'verify purchase',
-            Permission::ViewSales => 'view sales',
-            Permission::RegisterSale => 'register sale',
-        };
-    }
-
     /** @return string[] */
-    public static function keys(): array
+    public static function names(): array
     {
         return array_map(
-            static fn(Permission $permission): string => $permission->key(),
+            static fn(Permission $permission): string => $permission->name,
             self::cases(),
         );
     }

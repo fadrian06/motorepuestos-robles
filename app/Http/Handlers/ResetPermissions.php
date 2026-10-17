@@ -6,7 +6,6 @@ namespace App\Http\Handlers;
 
 use App\Enums\Permission;
 use Leaf\Auth;
-use Leaf\Db;
 use Leaf\Flash;
 use NoDiscard;
 use Override;
@@ -53,7 +52,7 @@ final readonly class ResetPermissions implements RequestHandlerInterface
 
         $availablePermissions = array_map(
             static fn(Permission $permission): array => [
-                'key' => $permission->key(),
+                'key' => $permission->name,
                 'name' => $permission->name(),
                 'desc' => $permission->description(),
                 'category' => $permission->category(),

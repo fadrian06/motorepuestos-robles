@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Enums\Permission;
 use Leaf\Auth;
 use NoDiscard;
 use Override;
@@ -15,13 +16,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final readonly class Authorize implements MiddlewareInterface
 {
-    /** @var string[] */
+    /** @var Permission[] */
     private array $permissions;
 
     public function __construct(
         private ResponseFactoryInterface $responseFactory,
         private Auth $auth,
-        string ...$permissions,
+        Permission ...$permissions,
     ) {
         $this->permissions = $permissions;
     }
@@ -34,7 +35,12 @@ final readonly class Authorize implements MiddlewareInterface
     ): ResponseInterface {
         $redirectGuest = (string) $this->auth->config('redirect.guest');
 
-        if ($this->auth->user()?->can($this->permissions ?? [])) {
+        $permissions = array_map(
+            static fn(Permission $permission) => $permission->name,
+            $this->permissions
+        );
+
+        if ($this->auth->user()?->can($permissions)) {
             return $handler->handle($request);
         }
 
@@ -44,7 +50,7 @@ final readonly class Authorize implements MiddlewareInterface
         );
     }
 
-    public function withPermissions(string ...$permissions): self
+    public function withPermissions(Permission ...$permissions): self
     {
         return new self($this->responseFactory, $this->auth, ...$permissions);
     }

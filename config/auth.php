@@ -52,7 +52,7 @@ return static function (): Auth {
     }
 
     $auth->createRoles([
-        'admin' => Permission::keys(),
+        'admin' => Permission::names(),
         'seller' => [],
     ] + $customPermissions);
 

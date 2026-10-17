@@ -34,6 +34,7 @@ use App\Http\Handlers\UpdateSupplier;
 use App\Http\Handlers\VerifyEmail;
 use App\Http\Handlers\VerifyPurchase;
 use App\Http\Handlers\ViewSale;
+use App\Enums\Permission;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authorize;
 use App\Http\Middleware\EnsureEmailIsVerified;
@@ -135,7 +136,7 @@ return new readonly class implements RouterFactory {
                 ListSellers::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('view sellers'),
+                $authorize->withPermissions(Permission::ViewSellers),
             ),
         );
 
@@ -146,7 +147,7 @@ return new readonly class implements RouterFactory {
                 RegisterSeller::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('register seller'),
+                $authorize->withPermissions(Permission::RegisterSeller),
             ),
         );
 
@@ -157,7 +158,7 @@ return new readonly class implements RouterFactory {
                 ResetPermissions::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('reset seller permissions'),
+                $authorize->withPermissions(Permission::ResetPermissions),
             ),
         );
 
@@ -168,7 +169,7 @@ return new readonly class implements RouterFactory {
                 ListClients::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('view clients'),
+                $authorize->withPermissions(Permission::ViewClients),
             ),
         );
 
@@ -179,7 +180,7 @@ return new readonly class implements RouterFactory {
                 RegisterClient::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('register client'),
+                $authorize->withPermissions(Permission::RegisterClient),
             ),
         );
 
@@ -190,7 +191,7 @@ return new readonly class implements RouterFactory {
                 UpdateClient::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('update client'),
+                $authorize->withPermissions(Permission::UpdateClient),
             ),
         );
 
@@ -201,7 +202,7 @@ return new readonly class implements RouterFactory {
                 DeleteClient::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('delete client'),
+                $authorize->withPermissions(Permission::DeleteClient),
             ),
         );
 
@@ -212,7 +213,7 @@ return new readonly class implements RouterFactory {
                 UpdateExchangeRates::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('update exchange rates'),
+                $authorize->withPermissions(Permission::UpdateExchangeRates),
             ),
         );
 
@@ -223,7 +224,7 @@ return new readonly class implements RouterFactory {
                 ListSuppliers::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('view suppliers'),
+                $authorize->withPermissions(Permission::ViewSuppliers),
             ),
         );
 
@@ -234,7 +235,7 @@ return new readonly class implements RouterFactory {
                 RegisterSupplier::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('register supplier'),
+                $authorize->withPermissions(Permission::RegisterSupplier),
             ),
         );
 
@@ -245,7 +246,7 @@ return new readonly class implements RouterFactory {
                 UpdateSupplier::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('update supplier'),
+                $authorize->withPermissions(Permission::UpdateSupplier),
             ),
         );
 
@@ -256,7 +257,7 @@ return new readonly class implements RouterFactory {
                 DeleteSupplier::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('delete supplier'),
+                $authorize->withPermissions(Permission::DeleteSupplier),
             ),
         );
 
@@ -267,7 +268,7 @@ return new readonly class implements RouterFactory {
                 ListProducts::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('view products'),
+                $authorize->withPermissions(Permission::ViewProducts),
             ),
         );
 
@@ -278,7 +279,7 @@ return new readonly class implements RouterFactory {
                 RegisterProduct::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('register product'),
+                $authorize->withPermissions(Permission::RegisterProduct),
             ),
         );
 
@@ -289,7 +290,7 @@ return new readonly class implements RouterFactory {
                 UpdateProduct::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('update product'),
+                $authorize->withPermissions(Permission::UpdateProduct),
             ),
         );
 
@@ -300,7 +301,7 @@ return new readonly class implements RouterFactory {
                 DeleteProduct::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('delete product'),
+                $authorize->withPermissions(Permission::DeleteProduct),
             ),
         );
 
@@ -311,7 +312,7 @@ return new readonly class implements RouterFactory {
                 ListPurchases::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('view purchases'),
+                $authorize->withPermissions(Permission::ViewPurchases),
             ),
         );
 
@@ -322,7 +323,7 @@ return new readonly class implements RouterFactory {
                 RegisterPurchase::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('register purchase'),
+                $authorize->withPermissions(Permission::RegisterPurchase),
             ),
         );
 
@@ -333,7 +334,7 @@ return new readonly class implements RouterFactory {
                 UpdatePurchase::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('update purchase'),
+                $authorize->withPermissions(Permission::UpdatePurchase),
             ),
         );
 
@@ -344,7 +345,7 @@ return new readonly class implements RouterFactory {
                 DeletePurchase::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('delete purchase'),
+                $authorize->withPermissions(Permission::DeletePurchase),
             ),
         );
 
@@ -355,7 +356,7 @@ return new readonly class implements RouterFactory {
                 VerifyPurchase::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('verify purchase'),
+                $authorize->withPermissions(Permission::VerifyPurchase),
             ),
         );
 
@@ -366,7 +367,7 @@ return new readonly class implements RouterFactory {
                 ListSales::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('view sales'),
+                $authorize->withPermissions(Permission::ViewSales),
             ),
         );
 
@@ -377,7 +378,7 @@ return new readonly class implements RouterFactory {
                 RegisterSale::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('register sale'),
+                $authorize->withPermissions(Permission::RegisterSale),
             ),
         );
 
@@ -388,7 +389,7 @@ return new readonly class implements RouterFactory {
                 ViewSale::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-                $authorize->withPermissions('view sales'),
+                $authorize->withPermissions(Permission::ViewSales),
             ),
         );
 
