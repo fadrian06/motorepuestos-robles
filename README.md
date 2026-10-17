@@ -146,9 +146,9 @@ motorepuestos-robles/
 - **`purchases_items`** — Lotes y renglones de compra (`id`, `purchase_id`, `product_id`, `quantity`, `cost`).
 - **`sales`** — Cabecera de ventas y facturación (`id`, `user_id`, `client_id`, `total`, `created_at`).
 - **`sales_items`** — Detalle de productos vendidos enlazados al lote consumido (`id`, `sale_id`, `purchase_item_id`, `quantity`, `unit_price`).
+- **`payments`** — Gestión de pagos aplicados a cada venta, soportando múltiples monedas y tasas de cambio.
 
 ### Tablas Planificadas:
-- `payments` — Métodos y montos aplicados a cada venta (pago mixto).
 - `products_losses` — Registro de pérdidas y mermas por lote (`purchase_item_id`, `quantity`, `reason`).
 
 ---

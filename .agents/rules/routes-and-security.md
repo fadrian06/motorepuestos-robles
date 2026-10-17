@@ -38,7 +38,7 @@ Todas las rutas web se definen en `routes/web.php` usando el enrutador regex del
           UpdateSupplier::class,
           Authenticate::class,
           EnsureEmailIsVerified::class,
-          $authorize->withPermissions('update supplier'),
+          $authorize->withPermissions(Permission::UpdateSupplier),
       ),
   );
   ```
@@ -46,9 +46,11 @@ Todas las rutas web se definen en `routes/web.php` usando el enrutador regex del
 ## 3. Permisos y Autorización
 
 - Los permisos del sistema se centralizan en el enum `App\Enums\Permission`.
+- **Uso en Rutas:** El middleware `Authorize` ahora recibe casos del Enum `Permission` en lugar de strings.
 - Al agregar un nuevo módulo con acciones restringidas:
   1. Agregar los casos correspondientes en `App\Enums\Permission` (ej: `ViewSuppliers = 'view suppliers'`, `RegisterSupplier = 'register supplier'`, etc.).
-  2. Proteger las rutas con `$authorize->withPermissions('permiso')`.
+  2. Proteger las rutas con `$authorize->withPermissions(Permission::CasoDelEnum)`.
+
 
 
 ## 3. Permisos y Autorización

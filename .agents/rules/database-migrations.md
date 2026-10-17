@@ -44,10 +44,36 @@ Las migraciones residen en `database/migrations/` y definen la estructura del es
 
 ## 2. Tipos de Datos y Restricciones (Compatibilidad SQLite / MySQL)
 
-- Usar tipos compatibles entre SQLite y MySQL:
-  - Llaves primarias: `'id' => 'INTEGER PRIMARY KEY AUTOINCREMENT'`
-  - Cadenas y texto: `'campo' => 'TEXT NOT NULL'` o `'campo' => 'TEXT NOT NULL UNIQUE'`
-  - Números decimales / precios: `'price' => 'REAL NOT NULL CHECK (price > 0)'`
-  - Números enteros / foráneas: `'client_id' => 'INTEGER NOT NULL'`
-  - Fechas: `'created_at' => 'DATETIME DEFAULT CURRENT_TIMESTAMP'`
-- Llamar siempre a `$db->execute()` al final para aplicar la creación.
+Para garantizar la compatibilidad entre SQLite y MySQL, se debe utilizar un patrón de definición basado en la conexión activa (`$_ENV['DB_CONNECTION']`).
+
+### Llaves Primarias y Autoincremento
+El autoincremento varía significativamente entre motores. Definir la PK basándose en la conexión:
+```php
+$pk = match($_ENV['DB_CONNECTION']) {
+    'mysql' => 'INT AUTO_INCREMENT PRIMARY KEY',
+    default => 'INTEGER PRIMARY KEY AUTOINCREMENT',
+};
+```
+
+### Llaves Foráneas y Restricciones
+MySQL requiere sintaxis explícita para las llaves foráneas fuera de la definición de columnas, mientras que SQLite prefiere referencias en línea.
+
+1. **Definición de columnas:** Usar tipos compatibles (`TEXT`, `REAL`, `INTEGER`).
+2. **Definición de llaves:** Consolidar todas las llaves (primarias y foráneas) en una variable `$keys` y aplicarlas mediante `$db->execute()` utilizando el patrón de compatibilidad:
+```php
+$keys = match($_ENV['DB_CONNECTION']) {
+    'mysql' => [
+        "PRIMARY KEY ($pk_col)",
+        "CONSTRAINT fk_name FOREIGN KEY (col) REFERENCES table(id) ON DELETE CASCADE",
+    ],
+    default => [
+        "FOREIGN KEY (col) REFERENCES table(id) ON DELETE CASCADE",
+    ],
+};
+```
+
+### Tipos Recomendados
+- Cadenas y texto: `'TEXT NOT NULL'` o `'TEXT NOT NULL UNIQUE'`
+- Números decimales / precios: `'REAL NOT NULL CHECK (price > 0)'`
+- Fechas: `'TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP'`
+
