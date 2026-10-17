@@ -58,7 +58,7 @@ return new readonly class implements RouterFactory {
         $redirectLogin = $auth->config('redirect.login');
         $redirectGuest = $auth->config('redirect.guest');
 
-        $router = new Router();
+        $router = new Router()->setContainer($container);
 
         $router->attach(
             ['GET'],
@@ -67,7 +67,7 @@ return new readonly class implements RouterFactory {
                 Dashboard::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -76,7 +76,7 @@ return new readonly class implements RouterFactory {
             new QueueRequestHandler(
                 SignIn::class,
                 RedirectIfAuthenticated::class,
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -85,25 +85,19 @@ return new readonly class implements RouterFactory {
             new QueueRequestHandler(
                 SignUp::class,
                 RedirectIfAuthenticated::class,
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
             ['GET'],
             ['#^/salir$#'],
-            new QueueRequestHandler(
-                SignOut::class,
-                Authenticate::class,
-            )->setContainer($container),
+            new QueueRequestHandler(SignOut::class, Authenticate::class),
         );
 
         $router->attach(
             ['GET', 'POST'],
             ['#^/verificar-correo$#'],
-            new QueueRequestHandler(
-                VerifyEmail::class,
-                Authenticate::class,
-            )->setContainer($container),
+            new QueueRequestHandler(VerifyEmail::class, Authenticate::class),
         );
 
         $router->attach(
@@ -112,7 +106,7 @@ return new readonly class implements RouterFactory {
             new QueueRequestHandler(
                 ForgotPassword::class,
                 RedirectIfAuthenticated::class,
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -121,7 +115,7 @@ return new readonly class implements RouterFactory {
             new QueueRequestHandler(
                 ResetPassword::class,
                 RedirectIfAuthenticated::class,
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -131,7 +125,7 @@ return new readonly class implements RouterFactory {
                 UpdatePassword::class,
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -142,7 +136,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view sellers'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -153,7 +147,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register seller'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -164,7 +158,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('reset seller permissions'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -175,7 +169,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view clients'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -186,7 +180,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register client'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -197,7 +191,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update client'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -208,7 +202,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('delete client'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -219,7 +213,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update exchange rates'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -230,7 +224,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view suppliers'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -241,7 +235,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register supplier'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -252,7 +246,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update supplier'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -263,7 +257,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('delete supplier'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -274,7 +268,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view products'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -285,7 +279,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register product'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -296,7 +290,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update product'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -307,7 +301,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('delete product'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -318,7 +312,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view purchases'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -329,7 +323,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register purchase'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -340,7 +334,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('update purchase'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -351,7 +345,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('delete purchase'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -362,7 +356,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('verify purchase'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -373,7 +367,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view sales'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -384,7 +378,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('register sale'),
-            )->setContainer($container),
+            ),
         );
 
         $router->attach(
@@ -395,7 +389,7 @@ return new readonly class implements RouterFactory {
                 Authenticate::class,
                 EnsureEmailIsVerified::class,
                 $authorize->withPermissions('view sales'),
-            )->setContainer($container),
+            ),
         );
 
         return $router;
