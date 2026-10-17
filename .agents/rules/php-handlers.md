@@ -7,16 +7,19 @@ Todos los controladores del sistema se implementan como handlers PSR-15 individu
 - Declarar siempre `declare(strict_types=1);` al inicio.
 - La clase debe ser `final readonly class [Action] implements RequestHandlerInterface`.
 - Utilizar atributos `#[Override]` y `#[NoDiscard]` en el método `handle`.
-- Inyección de dependencias mediante constructor promotion readonly:
-  ```php
-  public function __construct(
-      private ResponseFactoryInterface $responseFactory,
-      private Form $form,
-      private Flash $flash,
-      private Auth $auth,
-      private Environment $environment,
-  ) {}
-  ```
+- **Gestión de Dependencias:**
+  - Importar todas las dependencias mediante sentencias `use` al inicio del archivo.
+  - En el constructor, utilizar los nombres de clase (class names) en lugar de nombres completamente calificados (FQCN) para los tipos de los parámetros.
+  - Inyección de dependencias mediante constructor promotion readonly:
+    ```php
+    public function __construct(
+        private ResponseFactoryInterface $responseFactory,
+        private Form $form,
+        private Flash $flash,
+        private Auth $auth,
+        private Environment $environment,
+    ) {}
+    ```
 
 ## 2. Flujo de Peticiones GET y POST
 
