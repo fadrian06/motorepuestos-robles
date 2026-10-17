@@ -42,18 +42,36 @@ final readonly class RegisterPurchase implements RequestHandlerInterface
         $db = $this->auth->db();
 
         /** @var array[] */
-        $suppliers = $db->query('
+        $suppliers = array_map(
+            static function (array $supplier): array {
+                return array_map(static function ($value) {
+                    return is_string($value)
+                        ? mb_convert_encoding($value, 'UTF-8', 'UTF-8')
+                        : $value;
+                }, $supplier);
+            },
+            $db->query('
             SELECT id, name, alias
             FROM suppliers
             ORDER BY name ASC
-        ')->all();
+        ')->all(),
+        );
 
         /** @var array[] */
-        $products = $db->query('
+        $products = array_map(
+            static function (array $product): array {
+                return array_map(static function ($value) {
+                    return is_string($value)
+                        ? mb_convert_encoding($value, 'UTF-8', 'UTF-8')
+                        : $value;
+                }, $product);
+            },
+            $db->query('
             SELECT id, name, category
             FROM products
             ORDER BY name ASC
-        ')->all();
+        ')->all(),
+        );
 
         $html = $this->environment->render('pages/register-purchase.twig', [
             'flash' => $this->flash->display(),

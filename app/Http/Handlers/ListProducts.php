@@ -29,7 +29,13 @@ final readonly class ListProducts implements RequestHandlerInterface
         $db->select('products');
 
         /** @var array[] */
-        $products = $db->all();
+        $products = array_map(static function (array $product): array {
+            return array_map(static function ($value) {
+                return is_string($value)
+                    ? mb_convert_encoding($value, 'UTF-8', 'UTF-8')
+                    : $value;
+            }, $product);
+        }, $db->all());
 
         $html = $this->environment->render('pages/products.twig', [
             'products' => $products,
