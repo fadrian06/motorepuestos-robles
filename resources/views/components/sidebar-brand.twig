@@ -1,0 +1,42 @@
+<div class="sidebar-brand">
+  <img
+    src="/resources/images/banner.jpg"
+    alt="{{ _ENV['APP_NAME'] }}"
+    class="brand-avatar"
+    onerror="this.style.display='none'"
+  >
+  <div style="overflow: hidden;">
+    <div
+      style="
+        font-weight: 800;
+        font-size: 13px;
+        text-transform: uppercase;
+        color: #ffffff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      ">
+      {{ _ENV['APP_NAME'] }}
+    </div>
+    <div
+      style="
+        font-size: 11px;
+        color: #a1a1aa;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 2px;
+      ">
+      <span
+        style="
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background-color: #22c55e;
+          display: inline-block;
+        ">
+      </span>
+      Sistema en línea
+    </div>
+  </div>
+</div>
