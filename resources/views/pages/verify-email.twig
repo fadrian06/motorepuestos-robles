@@ -27,14 +27,7 @@
     <!-- Encabezado con marca y temática Racing (Negro, Rojo y Gris) -->
     <header class="card-header w3-container w3-center w3-padding-24">
       {{ include('components/theme-toggle-btn.twig') }}
-
-      <!-- Banner / Mascota de Motorepuestos Robles -->
-      <img
-        src="/resources/images/banner.jpg"
-        alt="{{ _ENV['APP_NAME'] }}"
-        class="brand-logo w3-margin-bottom"
-        onerror="this.style.display='none'"
-      >
+      {{ include('components/brand-logo.twig') }}
       <h1 class="w3-large w3-bold" style="margin: 0; color: #ffffff; letter-spacing: 0.5px;">{{ _ENV['APP_NAME'] }}</h1>
       <p class="w3-small" style="margin: 4px 0 0; color: #a1a1aa;">Verificación de cuenta</p>
     </header>
