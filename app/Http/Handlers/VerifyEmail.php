@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Handlers;
 
 use Leaf\Auth;
+use Leaf\Flash;
 use NoDiscard;
 use Override;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -23,6 +24,7 @@ final readonly class VerifyEmail implements RequestHandlerInterface
         private Auth $auth,
         private Environment $environment,
         private PHPMailer $mail,
+        private Flash $flash,
     ) {}
 
     #[Override]
@@ -34,7 +36,9 @@ final readonly class VerifyEmail implements RequestHandlerInterface
         /** @var string */
         $token = $request->getQueryParams()['token'] ?? '';
 
-        if ($this->auth->user()?->isVerified()) {
+        $user = $this->auth->user();
+
+        if ($user?->isVerified()) {
             $response = $this->responseFactory->createResponse();
 
             return $response->withHeader('location', $redirectGuest);
@@ -42,23 +46,47 @@ final readonly class VerifyEmail implements RequestHandlerInterface
 
         switch ($request->getMethod()) {
             case 'GET':
-                if ($this->auth->verifyToken($token)?->verifyEmail()) {
+                $flash = $this->flash->display();
+                $user = $this->auth->verifyToken($token);
+
+                if ($token && !$user) {
+                    $this->flash->set([
+                        'El token de verificación es inválido o ha expirado.',
+                    ]);
+
                     $response = $this->responseFactory->createResponse();
 
-                    return $response->withHeader('location', $redirectGuest);
+                    return $response->withHeader(
+                        'location',
+                        '/verificar-correo',
+                    );
                 }
 
-                $html = $this->environment->render('pages/verify-email.twig');
+                if ($user && !$user?->verifyEmail()) {
+                    $this->flash->set([
+                        'error' => 'Ocurrió un error al verificar tu correo electrónico. Por favor, intenta de nuevo.',
+                    ]);
+
+                    $response = $this->responseFactory->createResponse();
+
+                    return $response->withHeader(
+                        'location',
+                        '/verificar-correo',
+                    );
+                }
+
+                $html = $this->environment->render('pages/verify-email.twig', [
+                    'flash' => $flash,
+                ]);
+
                 $response = $this->responseFactory->createResponse();
                 $response->getBody()->write($html);
 
                 return $response;
 
             case 'POST':
-                $token = $this->auth->user()?->generateVerificationToken();
-
-                /** @var string */
-                $email = $this->auth->user()?->get()['email'] ?? '';
+                $token = $user?->generateVerificationToken();
+                $email = (string) $user?->email;
 
                 $mailBody = $this->environment->render('emails/verify-email-token.twig', [
                     'appUrl' => getenv('APP_URL'),
