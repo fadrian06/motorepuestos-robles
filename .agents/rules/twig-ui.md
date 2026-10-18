@@ -30,6 +30,10 @@ Las plantillas del sistema se ubican en `resources/views/pages/` y deben preserv
 
 ## 2. Layout y Estructura de Páginas
 
+Las vistas deben extender uno de los layouts base según el contexto de acceso:
+- `components/layout-guest.twig`: Para vistas generales del panel administrativo.
+- `components/layout-login.twig`: Para páginas de autenticación y flujo de acceso (signin, signup, etc.).
+
 Toda vista del panel administrativo se compone de:
 1. **Sidebar Persistente (`.app-sidebar`):**
    - Cabecera con avatar/banner de la empresa y estado "Sistema en línea".
@@ -45,6 +49,7 @@ Toda vista del panel administrativo se compone de:
    - Botón alternador de tema oscuro/claro (Sol / Luna).
    - Botón de acceso rápido a Cerrar Sesión.
 3. **Contenido Principal (`.app-main` -> `<main>`):**
+   - **Alertas de Error:** Incluir siempre `{{ include('components/alert-error.twig') }}` al inicio del contenido principal para mostrar errores flash.
    - Migas de pan de navegación (`Dashboard > Módulo > Acción`).
    - Título principal y subtítulo de contexto.
    - Tarjetas de resumen métrico (`.kpi-card`).

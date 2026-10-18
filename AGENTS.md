@@ -36,9 +36,10 @@ motorepuestos-robles/
 ├── database/
 │   └── migrations/                    # Scripts numerados (ej: 04_create_suppliers_table.php)
 ├── resources/
-│   ├── styles/                        # w3.css
+│   ├── styles/                        # w3.css y estilos específicos por página
 │   ├── scripts/                       # alpinejs
 │   └── views/
+│       ├── components/               # Componentes reutilizables (footer, alerts, etc.)
 │       ├── emails/                    # Plantillas de correos
 │       └── pages/                     # Vistas Twig del sistema
 └── routes/
