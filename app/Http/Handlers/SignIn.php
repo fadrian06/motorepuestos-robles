@@ -59,20 +59,16 @@ final readonly class SignIn implements RequestHandlerInterface
 
                 if (!$validated) {
                     $this->flash->set($this->form->errors());
+                    $response = $this->responseFactory->createResponse();
 
-                    return $this->responseFactory->createResponse()->withHeader(
-                        'location',
-                        $redirectLogin,
-                    );
+                    return $response->withHeader('location', $redirectLogin);
                 }
 
                 if (!$this->auth->login($validated)) {
                     $this->flash->set($this->auth->errors());
+                    $response = $this->responseFactory->createResponse();
 
-                    return $this->responseFactory->createResponse()->withHeader(
-                        'location',
-                        $redirectLogin,
-                    );
+                    return $response->withHeader('location', $redirectLogin);
                 }
 
                 return $this->responseFactory->createResponse()->withHeader(

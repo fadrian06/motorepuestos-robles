@@ -68,15 +68,7 @@
           </div>
 
           <div style="padding: 24px;">
-            <!-- Notificación de Errores Flash -->
-            {% if flash %}
-              <div class="alert-error">
-                <div style="font-weight: 700; margin-bottom: 4px;">Atención:</div>
-                {% for key, error in flash %}
-                  <div>&bull; {{ error is iterable ? error|join(', ') : error }}</div>
-                {% endfor %}
-              </div>
-            {% endif %}
+            {{ include('components/alert-error.twig', {flash: flash}) }}
 
             <form
               method="post"
