@@ -136,15 +136,12 @@
         </div>
       </form>
 
-      <!-- Pie y navegación hacia login con mayor separación -->
-      <footer class="w3-center" style="margin-top: 40px; padding: 24px 0 12px; border-top: 1px solid var(--w3-border-light);">
-        <p class="w3-small" style="margin: 0; color: #a1a1aa; line-height: 1.8;">
-          ¿Ya tienes cuenta creada?
-          <a href="/auth/login" class="link-login" style="margin-left: 6px; display: inline-block;">
-            Iniciar sesión
-          </a>
-        </p>
-      </footer>
+      {{ include('components/footer.twig', {
+        text: '¿Ya tienes cuenta creada?',
+        href: '/auth/login',
+        link_text: 'Iniciar sesión',
+        link_class: 'link-login'
+      }) }}
     </div>
   </main>
 

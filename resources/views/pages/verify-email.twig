@@ -71,15 +71,12 @@
         </button>
       </form>
 
-      <!-- Pie y navegación hacia cierre de sesión -->
-      <footer class="w3-center" style="margin-top: 40px; padding: 24px 0 12px; border-top: 1px solid var(--w3-border-light);">
-        <p class="w3-small" style="margin: 0; color: #a1a1aa; line-height: 1.8;">
-          ¿Deseas ingresar con otra cuenta?
-          <a href="/salir" class="link-action" style="margin-left: 6px; display: inline-block;">
-            Cerrar sesión
-          </a>
-        </p>
-      </footer>
+      {{ include('components/footer.twig', {
+        text: '¿Deseas ingresar con otra cuenta?',
+        href: '/salir',
+        link_text: 'Cerrar sesión',
+        link_class: 'link-action'
+      }) }}
     </div>
   </main>
 

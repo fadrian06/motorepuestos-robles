@@ -122,15 +122,12 @@
         </div>
       </form>
 
-      <!-- Pie y navegación hacia registro con separación holgada -->
-      <footer class="w3-center" style="margin-top: 40px; padding: 24px 0 12px; border-top: 1px solid var(--w3-border-light);">
-        <p class="w3-small" style="margin: 0; color: #a1a1aa; line-height: 1.8;">
-          ¿No tienes una cuenta?
-          <a href="/registrarse" class="link-action" style="margin-left: 6px; display: inline-block;">
-            Regístrate aquí
-          </a>
-        </p>
-      </footer>
+      {{ include('components/footer.twig', {
+        text: '¿No tienes una cuenta?',
+        href: '/registrarse',
+        link_text: 'Regístrate aquí',
+        link_class: 'link-action'
+      }) }}
     </div>
   </main>
 
