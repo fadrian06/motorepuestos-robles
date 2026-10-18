@@ -1,17 +1,1 @@
-<doctype html>
-<html>
-  <head>
-    {% block head %}
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width">
-      <meta name="color-scheme" content="light dark">
-      <title>{% block title %}{% endblock %} - {{ _ENV['APP_NAME'] }}</title>
-      <link rel="stylesheet" href="/resources/styles/w3.css">
-      <script
-        defer
-        src="/resources/scripts/alpinejs/dist/cdn.min.js">
-      </script>
-    {% endblock %}
-  </head>
-  {% block content %}{% endblock %}
-</html>
+{% extends "components/layout.twig" %}
