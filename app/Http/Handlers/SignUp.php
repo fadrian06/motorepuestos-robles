@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Handlers;
 
 use Leaf\Auth;
-use Leaf\Db;
 use Leaf\Flash;
 use Leaf\Form;
 use NoDiscard;
@@ -44,6 +43,8 @@ final readonly class SignUp implements RequestHandlerInterface
         $usersCount = $db->count();
 
         if ($usersCount) {
+            $this->flash->set(['Ya existe un administrador registrado.']);
+
             return $this->responseFactory->createResponse()->withHeader(
                 'location',
                 $redirectLogin,
@@ -73,25 +74,24 @@ final readonly class SignUp implements RequestHandlerInterface
 
                 if (!$validated) {
                     $this->flash->set($this->form->errors());
-                    $response = $this->responseFactory->createResponse(400);
+                    $response = $this->responseFactory->createResponse();
 
                     return $response->withHeader('location', '/registrarse');
                 }
 
-                if ($this->auth->register([
-                    ...$validated,
+                if (!$this->auth->register([
                     $rolesKey => json_encode(['admin']),
                     'permissions' => json_encode([]),
-                ])) {
+                ] + $validated)) {
+                    $this->flash->set($this->auth->errors());
                     $response = $this->responseFactory->createResponse();
 
-                    return $response->withHeader('location', $redirectGuest);
+                    return $response->withHeader('location', '/registrarse');
                 }
 
-                $this->flash->set($this->auth->errors());
                 $response = $this->responseFactory->createResponse();
 
-                return $response->withHeader('location', '/registrarse');
+                return $response->withHeader('location', $redirectGuest);
 
             default:
                 return $this->responseFactory->createResponse(405);

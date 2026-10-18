@@ -159,3 +159,15 @@ body.w3-dark-mode {
   color: var(--brand-red-hover);
   text-decoration: underline;
 }
+
+/* Alert error box */
+.alert-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid var(--brand-red);
+  color: #ef4444;
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.5;
+}
