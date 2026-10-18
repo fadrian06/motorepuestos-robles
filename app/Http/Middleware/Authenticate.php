@@ -26,15 +26,15 @@ final readonly class Authenticate implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler,
     ): ResponseInterface {
-        if ($this->auth->user()) {
-            /** @var string */
-            $email = $this->auth->user()?->email;
+        $redirectLogin = (string) $this->auth->config('redirect.login');
+        $user = $this->auth->user();
+
+        if ($user) {
+            $email = (string) $user->email;
             $this->auth->user()?->assign($email);
 
             return $handler->handle($request);
         }
-
-        $redirectLogin = (string) $this->auth->config('redirect.login');
 
         return $this->responseFactory->createResponse()->withHeader(
             'location',

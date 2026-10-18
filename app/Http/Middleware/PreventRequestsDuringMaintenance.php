@@ -31,8 +31,7 @@ final readonly class PreventRequestsDuringMaintenance implements
     ): ResponseInterface {
         if (getenv('APP_MAINTENANCE')) {
             $html = $this->environment->render('pages/maintenance.twig');
-
-            $response = $this->responseFactory->createResponse(503);
+            $response = $this->responseFactory->createResponse();
             $response->getBody()->write($html);
 
             return $response;

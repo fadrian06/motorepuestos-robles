@@ -26,9 +26,9 @@ final readonly class RedirectIfAuthenticated implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler,
     ): ResponseInterface {
-        if ($this->auth->user()) {
-            $redirectGuest = (string) $this->auth->config('redirect.guest');
+        $redirectGuest = (string) $this->auth->config('redirect.guest');
 
+        if ($this->auth->user()) {
             return $this->responseFactory->createResponse()->withHeader(
                 'location',
                 $redirectGuest,

@@ -30,7 +30,7 @@ final readonly class EnsureEmailIsVerified implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        return $this->responseFactory->createResponse(401)->withHeader(
+        return $this->responseFactory->createResponse()->withHeader(
             'location',
             '/verificar-correo',
         );
