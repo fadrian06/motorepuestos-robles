@@ -54,16 +54,7 @@
   }"
   :class="{ 'w3-dark-mode': isDarkMode }"
 >
-
-  <!-- Telón de fondo móvil -->
-  <div
-    class="sidebar-backdrop"
-    x-show="sidebarOpen"
-    @click="sidebarOpen = false"
-    x-transition:enter="w3-animate-opacity"
-    x-transition:leave="w3-animate-opacity"
-    style="display: none;"
-  ></div>
+  {{ include('components/sidebar-backdrop.twig') }}
 
   <!-- Barra lateral (Sidebar) -->
   <aside class="app-sidebar" :class="{ 'open': sidebarOpen }">
