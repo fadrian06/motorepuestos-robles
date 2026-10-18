@@ -1,15 +1,13 @@
 {% extends "components/layout-login.twig" %}
 
-{% block content %}
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - Página no encontrada - {{ _ENV['APP_NAME'] }}</title>
-  <link rel="icon" type="image/jpeg" href="/resources/images/favicon.jpg">
-  <link rel="stylesheet" href="/resources/styles/w3.css">
-  <script defer src="/resources/scripts/alpinejs/dist/cdn.min.js"></script>
+{% block head %}
+  {{ parent() }}
   <link rel="stylesheet" href="/resources/styles/404.css">
-</head>
+{% endblock %}
+
+{% block title %}404 - Página no encontrada{% endblock %}
+
+{% block content %}
 <body
   x-data="{
     isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
