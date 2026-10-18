@@ -249,15 +249,10 @@
       </div>
     </main>
 
-    <!-- Footer -->
-    <footer style="padding: 20px 24px; border-top: 1px solid var(--w3-border-light); font-size: 12px; color: #71717a; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-      <div>
-        &copy; 2026 <strong>{{ _ENV['APP_NAME'] }}</strong>. Equipo de vendedores.
-      </div>
-      <div>
-        Sistema de inventario por lote y trazabilidad comercial.
-      </div>
-    </footer>
+    {{ include(
+      'components/footer-guest.twig',
+      {page_title: 'Equipo de vendedores'},
+    ) }}
   </div>
 
 </body>
