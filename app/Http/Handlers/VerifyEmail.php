@@ -62,17 +62,10 @@ final readonly class VerifyEmail implements RequestHandlerInterface
                     );
                 }
 
-                if ($user && !$user?->verifyEmail()) {
-                    $this->flash->set([
-                        'error' => 'Ocurrió un error al verificar tu correo electrónico. Por favor, intenta de nuevo.',
-                    ]);
-
+                if ($user?->verifyEmail()) {
                     $response = $this->responseFactory->createResponse();
 
-                    return $response->withHeader(
-                        'location',
-                        '/verificar-correo',
-                    );
+                    return $response->withHeader('location', $redirectGuest);
                 }
 
                 $html = $this->environment->render('pages/verify-email.twig', [

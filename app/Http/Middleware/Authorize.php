@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use App\Enums\Permission;
 use Leaf\Auth;
+use Leaf\Flash;
 use NoDiscard;
 use Override;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -16,12 +17,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final readonly class Authorize implements MiddlewareInterface
 {
-    /** @var Permission[] */
     private array $permissions;
 
     public function __construct(
         private ResponseFactoryInterface $responseFactory,
         private Auth $auth,
+        private Flash $flash,
         Permission ...$permissions,
     ) {
         $this->permissions = $permissions;
@@ -44,6 +45,10 @@ final readonly class Authorize implements MiddlewareInterface
             return $handler->handle($request);
         }
 
+        $this->flash->set([
+            'No tienes permisos suficientes para acceder a la página solicitada.',
+        ]);
+
         return $this->responseFactory->createResponse()->withHeader(
             'location',
             $redirectGuest,
@@ -52,6 +57,11 @@ final readonly class Authorize implements MiddlewareInterface
 
     public function withPermissions(Permission ...$permissions): self
     {
-        return new self($this->responseFactory, $this->auth, ...$permissions);
+        return new self(
+            $this->responseFactory,
+            $this->auth,
+            $this->flash,
+            ...$permissions,
+        );
     }
 }
