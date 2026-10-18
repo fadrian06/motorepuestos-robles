@@ -45,6 +45,10 @@ final readonly class ResetPassword implements RequestHandlerInterface
         $user = $this->auth->verifyToken($token);
 
         if (!$user) {
+            $this->flash->set([
+                'El token de recuperación de contraseña es inválido o ha expirado.',
+            ]);
+
             return $this->responseFactory->createResponse()->withHeader(
                 'location',
                 '/recuperar-clave',
@@ -53,8 +57,11 @@ final readonly class ResetPassword implements RequestHandlerInterface
 
         switch ($request->getMethod()) {
             case 'GET':
+                $flash = $this->flash->display();
+
                 $html = $this->environment->render('pages/reset-password.twig', [
                     'passwordKey' => $passwordKey,
+                    'flash' => $flash,
                 ]);
 
                 $response = $this->responseFactory->createResponse();
@@ -80,14 +87,13 @@ final readonly class ResetPassword implements RequestHandlerInterface
 
                 /** @var string */
                 $email = $user->email;
+
                 $password = $hasher($validated[$passwordKey]);
 
                 $this->auth
                     ->db()
                     ->update($authTable)
-                    ->params([
-                        $passwordKey => $password,
-                    ])
+                    ->params([$passwordKey => $password])
                     ->where('email', $email)
                     ->execute();
 

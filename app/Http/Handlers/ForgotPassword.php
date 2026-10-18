@@ -69,10 +69,11 @@ final readonly class ForgotPassword implements RequestHandlerInterface
                 $this->auth->config('password.key', false);
 
                 if ($this->auth->login($validated)) {
-                    $token = $this->auth->user()?->generateVerificationToken();
+                    $user = $this->auth->user();
+                    $token = $user?->generateVerificationToken();
 
                     /** @var string */
-                    $email = $this->auth->user()?->get()['email'] ?? '';
+                    $email = $user?->email;
 
                     $mailBody = $this->environment->render('emails/password-reset-token.twig', [
                         'appUrl' => getenv('APP_URL'),
