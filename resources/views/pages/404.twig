@@ -8,20 +8,7 @@
 {% block title %}404 - Página no encontrada{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
-    }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
-
+<body>
   <button
     type="button"
     class="theme-toggle-btn"

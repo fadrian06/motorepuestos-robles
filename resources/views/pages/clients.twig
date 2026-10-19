@@ -8,47 +8,36 @@
 {% block title %}Directorio de Clientes{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    sidebarOpen: false,
-    search: '',
-    deleteModalOpen: false,
-    clientToDelete: null,
-    clientsList: [
-      {% for client in clients %}
-      {
-        id: {{ client.id }},
-        name: '{{ client.name|e('js') }}'
-      }{% if not loop.last %},{% endif %}
-      {% endfor %}
-    ],
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
-    },
-    get filteredClients() {
-      if (!this.search.trim()) {
-        return this.clientsList;
-      }
-      const q = this.search.toLowerCase().trim();
-      return this.clientsList.filter(c => c.name.toLowerCase().includes(q));
-    },
-    openDelete(client) {
-      this.clientToDelete = client;
-      this.deleteModalOpen = true;
-    },
-    confirmDelete() {
-      if (this.clientToDelete) {
-        window.location.href = '/clientes/' + this.clientToDelete.id + '/eliminar';
-      }
+<body x-data="{
+  sidebarOpen: false,
+  search: '',
+  deleteModalOpen: false,
+  clientToDelete: null,
+  clientsList: [
+    {% for client in clients %}
+    {
+      id: {{ client.id }},
+      name: '{{ client.name|e('js') }}'
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  get filteredClients() {
+    if (!this.search.trim()) {
+      return this.clientsList;
     }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+    const q = this.search.toLowerCase().trim();
+    return this.clientsList.filter(c => c.name.toLowerCase().includes(q));
+  },
+  openDelete(client) {
+    this.clientToDelete = client;
+    this.deleteModalOpen = true;
+  },
+  confirmDelete() {
+    if (this.clientToDelete) {
+      window.location.href = '/clientes/' + this.clientToDelete.id + '/eliminar';
+    }
+  }
+}">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/clientes'}) }}
 

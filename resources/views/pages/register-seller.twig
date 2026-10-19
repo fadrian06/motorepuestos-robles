@@ -8,23 +8,12 @@
 {% block title %}Registrar Vendedor{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    sidebarOpen: false,
-    showPassword: false,
-    submitting: false,
-    password: '',
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
-    }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+<body x-data="{
+  sidebarOpen: false,
+  showPassword: false,
+  submitting: false,
+  password: '',
+}">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/vendedores'}) }}
 

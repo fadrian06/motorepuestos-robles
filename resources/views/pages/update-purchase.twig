@@ -8,52 +8,41 @@
 {% block title %}Modifcar Compra #{{ purchase.id }}{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    sidebarOpen: false,
-    submitting: false,
-    suppliersList: [
-      {% for s in suppliers %}
-      { id: {{ s.id }}, name: '{{ s.name|e('js') }}', alias: '{{ s.alias|e('js') }}' }{% if not loop.last %},{% endif %}
+<body x-data="{
+  sidebarOpen: false,
+  submitting: false,
+  suppliersList: [
+    {% for s in suppliers %}
+    { id: {{ s.id }}, name: '{{ s.name|e('js') }}', alias: '{{ s.alias|e('js') }}' }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  productsList: [
+    {% for p in products %}
+    { id: {{ p.id }}, name: '{{ p.name|e('js') }}', category: '{{ p.category|e('js') }}' }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  items: [
+    {% if items is not empty %}
+      {% for item in items %}
+      {
+        product_id: '{{ item.product_id }}',
+        quantity: '{{ item.quantity }}',
+        cost: '{{ item.cost }}'
+      }{% if not loop.last %},{% endif %}
       {% endfor %}
-    ],
-    productsList: [
-      {% for p in products %}
-      { id: {{ p.id }}, name: '{{ p.name|e('js') }}', category: '{{ p.category|e('js') }}' }{% if not loop.last %},{% endif %}
-      {% endfor %}
-    ],
-    items: [
-      {% if items is not empty %}
-        {% for item in items %}
-        {
-          product_id: '{{ item.product_id }}',
-          quantity: '{{ item.quantity }}',
-          cost: '{{ item.cost }}'
-        }{% if not loop.last %},{% endif %}
-        {% endfor %}
-      {% else %}
-        { product_id: '', quantity: '', cost: '' }
-      {% endif %}
-    ],
-    addItem() {
-      this.items.push({ product_id: '', quantity: '', cost: '' });
-    },
-    removeItem(index) {
-      if (this.items.length > 1) {
-        this.items.splice(index, 1);
-      }
-    },
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
+    {% else %}
+      { product_id: '', quantity: '', cost: '' }
+    {% endif %}
+  ],
+  addItem() {
+    this.items.push({ product_id: '', quantity: '', cost: '' });
+  },
+  removeItem(index) {
+    if (this.items.length > 1) {
+      this.items.splice(index, 1);
     }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+  },
+}">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/compras'}) }}
 

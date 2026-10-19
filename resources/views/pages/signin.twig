@@ -8,30 +8,18 @@
 {% block title %}Iniciar Sesión{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    email: '',
-    password: '',
-    showPassword: false,
-    submitting: false,
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
-    },
-    get isEmailValid() {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email.trim());
-    },
-    get isFormValid() {
-      return this.isEmailValid && this.password.length > 0;
-    }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
-
+<body x-data="{
+  email: '',
+  password: '',
+  showPassword: false,
+  submitting: false,
+  get isEmailValid() {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email.trim());
+  },
+  get isFormValid() {
+    return this.isEmailValid && this.password.length > 0;
+  }
+}">
   <main class="auth-card w3-animate-opacity">
     {{ include(
       'components/card-header.twig',

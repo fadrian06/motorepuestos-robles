@@ -8,53 +8,42 @@
 {% block title %}Catálogo de Productos{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    sidebarOpen: false,
-    search: '',
-    deleteModalOpen: false,
-    productToDelete: null,
-    productsList: [
-      {% for product in products %}
-      {
-        id: {{ product.id }},
-        name: '{{ product.name|e('js') }}',
-        category: '{{ product.category|e('js') }}',
-        price: {{ product.price }}
-      }{% if not loop.last %},{% endif %}
-      {% endfor %}
-    ],
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
-    },
-    get filteredProducts() {
-      if (!this.search.trim()) return this.productsList;
-      const q = this.search.toLowerCase().trim();
-      return this.productsList.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q)
-      );
-    },
-    formatPrice(value) {
-      return '$\u00a0' + parseFloat(value).toFixed(2);
-    },
-    openDelete(product) {
-      this.productToDelete = product;
-      this.deleteModalOpen = true;
-    },
-    confirmDelete() {
-      if (this.productToDelete) {
-        window.location.href = '/productos/' + this.productToDelete.id + '/eliminar';
-      }
+<body x-data="{
+  sidebarOpen: false,
+  search: '',
+  deleteModalOpen: false,
+  productToDelete: null,
+  productsList: [
+    {% for product in products %}
+    {
+      id: {{ product.id }},
+      name: '{{ product.name|e('js') }}',
+      category: '{{ product.category|e('js') }}',
+      price: {{ product.price }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  get filteredProducts() {
+    if (!this.search.trim()) return this.productsList;
+    const q = this.search.toLowerCase().trim();
+    return this.productsList.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q)
+    );
+  },
+  formatPrice(value) {
+    return '$\u00a0' + parseFloat(value).toFixed(2);
+  },
+  openDelete(product) {
+    this.productToDelete = product;
+    this.deleteModalOpen = true;
+  },
+  confirmDelete() {
+    if (this.productToDelete) {
+      window.location.href = '/productos/' + this.productToDelete.id + '/eliminar';
     }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+  }
+}">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/productos'}) }}
 

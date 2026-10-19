@@ -8,34 +8,23 @@
 {% block title %}Modificar Producto{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    sidebarOpen: false,
-    submitting: false,
-    price: '{{ product.price }}',
-    showMarginWarning: false,
-    cost: '',
-    checkMargin() {
-      const p = parseFloat(this.price);
-      const c = parseFloat(this.cost);
-      if (!isNaN(p) && !isNaN(c) && c > 0) {
-        const margin = ((p - c) / c) * 100;
-        this.showMarginWarning = margin > 30;
-      } else {
-        this.showMarginWarning = false;
-      }
-    },
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
+<body x-data="{
+  sidebarOpen: false,
+  submitting: false,
+  price: '{{ product.price }}',
+  showMarginWarning: false,
+  cost: '',
+  checkMargin() {
+    const p = parseFloat(this.price);
+    const c = parseFloat(this.cost);
+    if (!isNaN(p) && !isNaN(c) && c > 0) {
+      const margin = ((p - c) / c) * 100;
+      this.showMarginWarning = margin > 30;
+    } else {
+      this.showMarginWarning = false;
     }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+  },
+}">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/productos'}) }}
 

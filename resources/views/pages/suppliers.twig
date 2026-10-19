@@ -8,59 +8,48 @@
 {% block title %}Directorio de Proveedores{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    sidebarOpen: false,
-    search: '',
-    deleteModalOpen: false,
-    supplierToDelete: null,
-    suppliersList: [
-      {% for supplier in suppliers %}
-      {
-        id: {{ supplier.id }},
-        name: '{{ supplier.name|e('js') }}',
-        tax_id: '{{ supplier.tax_id|e('js') }}',
-        alias: '{{ supplier.alias|e('js') }}',
-        seller: '{{ supplier.seller|e('js') }}',
-        phone: '{{ supplier.phone|e('js') }}',
-        address: '{{ supplier.address|e('js') }}'
-      }{% if not loop.last %},{% endif %}
-      {% endfor %}
-    ],
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
-    },
-    get filteredSuppliers() {
-      if (!this.search.trim()) {
-        return this.suppliersList;
-      }
-      const q = this.search.toLowerCase().trim();
-      return this.suppliersList.filter(s => 
-        (s.name && s.name.toLowerCase().includes(q)) ||
-        (s.tax_id && s.tax_id.toLowerCase().includes(q)) ||
-        (s.alias && s.alias.toLowerCase().includes(q)) ||
-        (s.seller && s.seller.toLowerCase().includes(q)) ||
-        (s.phone && s.phone.toLowerCase().includes(q)) ||
-        (s.address && s.address.toLowerCase().includes(q))
-      );
-    },
-    openDelete(supplier) {
-      this.supplierToDelete = supplier;
-      this.deleteModalOpen = true;
-    },
-    confirmDelete() {
-      if (this.supplierToDelete) {
-        window.location.href = '/proveedores/' + this.supplierToDelete.id + '/eliminar';
-      }
+<body x-data="{
+  sidebarOpen: false,
+  search: '',
+  deleteModalOpen: false,
+  supplierToDelete: null,
+  suppliersList: [
+    {% for supplier in suppliers %}
+    {
+      id: {{ supplier.id }},
+      name: '{{ supplier.name|e('js') }}',
+      tax_id: '{{ supplier.tax_id|e('js') }}',
+      alias: '{{ supplier.alias|e('js') }}',
+      seller: '{{ supplier.seller|e('js') }}',
+      phone: '{{ supplier.phone|e('js') }}',
+      address: '{{ supplier.address|e('js') }}'
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  get filteredSuppliers() {
+    if (!this.search.trim()) {
+      return this.suppliersList;
     }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+    const q = this.search.toLowerCase().trim();
+    return this.suppliersList.filter(s =>
+      (s.name && s.name.toLowerCase().includes(q)) ||
+      (s.tax_id && s.tax_id.toLowerCase().includes(q)) ||
+      (s.alias && s.alias.toLowerCase().includes(q)) ||
+      (s.seller && s.seller.toLowerCase().includes(q)) ||
+      (s.phone && s.phone.toLowerCase().includes(q)) ||
+      (s.address && s.address.toLowerCase().includes(q))
+    );
+  },
+  openDelete(supplier) {
+    this.supplierToDelete = supplier;
+    this.deleteModalOpen = true;
+  },
+  confirmDelete() {
+    if (this.supplierToDelete) {
+      window.location.href = '/proveedores/' + this.supplierToDelete.id + '/eliminar';
+    }
+  }
+}">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/proveedores'}) }}
 

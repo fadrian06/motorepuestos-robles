@@ -8,46 +8,35 @@
 {% block title %}Permisos de Vendedor{% endblock %}
 
 {% block content %}
-<body
-  x-data='{
-    isDarkMode: window.matchMedia(`(prefers-color-scheme: dark)`).matches,
-    sidebarOpen: false,
-    submitting: false,
-    allPermissions: JSON.parse(`{{ availablePermissions|json_encode }}`),
-    selectedPermissions: (function() {
-      try {
-        var raw = `{{ seller.permissions|default("[]")|e("js") }}`;
-        return typeof raw === `string` ? JSON.parse(raw) : (Array.isArray(raw) ? raw : []);
-      } catch(e) {
-        return [];
-      }
-    })(),
-    init() {
-      const mediaQuery = window.matchMedia(`(prefers-color-scheme: dark)`);
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener(`change`, (event) => {
-        this.isDarkMode = event.matches;
-      });
-    },
-    isSelected(key) {
-      return this.selectedPermissions.includes(key);
-    },
-    toggle(key) {
-      if (this.isSelected(key)) {
-        this.selectedPermissions = this.selectedPermissions.filter(k => k !== key);
-      } else {
-        this.selectedPermissions.push(key);
-      }
-    },
-    selectAll() {
-      this.selectedPermissions = this.allPermissions.map(p => p.key);
-    },
-    clearAll() {
-      this.selectedPermissions = [];
+<body x-data='{
+  sidebarOpen: false,
+  submitting: false,
+  allPermissions: JSON.parse(`{{ availablePermissions|json_encode }}`),
+  selectedPermissions: (function() {
+    try {
+      var raw = `{{ seller.permissions|default("[]")|e("js") }}`;
+      return typeof raw === `string` ? JSON.parse(raw) : (Array.isArray(raw) ? raw : []);
+    } catch(e) {
+      return [];
     }
-  }'
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+  })(),
+  isSelected(key) {
+    return this.selectedPermissions.includes(key);
+  },
+  toggle(key) {
+    if (this.isSelected(key)) {
+      this.selectedPermissions = this.selectedPermissions.filter(k => k !== key);
+    } else {
+      this.selectedPermissions.push(key);
+    }
+  },
+  selectAll() {
+    this.selectedPermissions = this.allPermissions.map(p => p.key);
+  },
+  clearAll() {
+    this.selectedPermissions = [];
+  }
+}'>
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/vendedores'}) }}
 

@@ -8,44 +8,33 @@
 {% block title %}Equipo de Vendedores{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    sidebarOpen: false,
-    search: '',
-    sellersList: [
-      {% for seller in sellers %}
-      {
-        id: {{ seller.id }},
-        email: '{{ seller.email|e('js') }}',
-        permissions: (function() {
-          try {
-            var p = '{{ seller.permissions|default("[]")|e("js") }}';
-            return typeof p === 'string' ? JSON.parse(p) : (Array.isArray(p) ? p : []);
-          } catch(e) {
-            return [];
-          }
-        })()
-      }{% if not loop.last %},{% endif %}
-      {% endfor %}
-    ],
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
-    },
-    get filteredSellers() {
-      if (!this.search.trim()) {
-        return this.sellersList;
-      }
-      const q = this.search.toLowerCase().trim();
-      return this.sellersList.filter(s => s.email.toLowerCase().includes(q));
+<body x-data="{
+  sidebarOpen: false,
+  search: '',
+  sellersList: [
+    {% for seller in sellers %}
+    {
+      id: {{ seller.id }},
+      email: '{{ seller.email|e('js') }}',
+      permissions: (function() {
+        try {
+          var p = '{{ seller.permissions|default("[]")|e("js") }}';
+          return typeof p === 'string' ? JSON.parse(p) : (Array.isArray(p) ? p : []);
+        } catch(e) {
+          return [];
+        }
+      })()
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  get filteredSellers() {
+    if (!this.search.trim()) {
+      return this.sellersList;
     }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+    const q = this.search.toLowerCase().trim();
+    return this.sellersList.filter(s => s.email.toLowerCase().includes(q));
+  }
+}">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/vendedores'}) }}
 

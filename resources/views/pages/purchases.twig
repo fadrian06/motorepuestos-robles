@@ -8,72 +8,61 @@
 {% block title %}Historial de Compras{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    sidebarOpen: false,
-    search: '',
-    deleteModalOpen: false,
-    verifyModalOpen: false,
-    selectedPurchase: null,
-    openDelete(purchase) {
-      this.selectedPurchase = purchase;
-      this.deleteModalOpen = true;
-    },
-    confirmDelete() {
-      if (this.selectedPurchase) {
-        window.location.href = '/compras/' + this.selectedPurchase.id + '/eliminar';
-      }
-    },
-    openVerify(purchase) {
-      this.selectedPurchase = purchase;
-      this.verifyModalOpen = true;
-    },
-    confirmVerify() {
-      if (this.selectedPurchase) {
-        window.location.href = '/compras/' + this.selectedPurchase.id + '/verificar';
-      }
-    },
-    purchasesList: [
-      {% for purchase in purchases %}
-      {
-        id: {{ purchase.id }},
-        supplier_invoice_code: '{{ purchase.supplier_invoice_code|e('js') }}',
-        supplier_name: '{{ purchase.supplier_name|e('js') }}',
-        supplier_alias: '{{ purchase.supplier_alias|e('js') }}',
-        created_at: '{{ purchase.created_at|e('js') }}',
-        verified_at: {% if purchase.verified_at is not null %}'{{ purchase.verified_at|e('js') }}'{% else %}null{% endif %}
-      }{% if not loop.last %},{% endif %}
-      {% endfor %}
-    ],
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
-    },
-    get filteredPurchases() {
-      if (!this.search.trim()) {
-        return this.purchasesList;
-      }
-      const q = this.search.toLowerCase().trim();
-      return this.purchasesList.filter(p =>
-        (p.supplier_invoice_code && p.supplier_invoice_code.toLowerCase().includes(q)) ||
-        (p.supplier_name && p.supplier_name.toLowerCase().includes(q)) ||
-        (p.supplier_alias && p.supplier_alias.toLowerCase().includes(q)) ||
-        (p.created_at && p.created_at.toLowerCase().includes(q))
-      );
-    },
-    get verifiedCount() {
-      return this.purchasesList.filter(p => p.verified_at !== null).length;
-    },
-    get pendingCount() {
-      return this.purchasesList.filter(p => p.verified_at === null).length;
+<body x-data="{
+  sidebarOpen: false,
+  search: '',
+  deleteModalOpen: false,
+  verifyModalOpen: false,
+  selectedPurchase: null,
+  openDelete(purchase) {
+    this.selectedPurchase = purchase;
+    this.deleteModalOpen = true;
+  },
+  confirmDelete() {
+    if (this.selectedPurchase) {
+      window.location.href = '/compras/' + this.selectedPurchase.id + '/eliminar';
     }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+  },
+  openVerify(purchase) {
+    this.selectedPurchase = purchase;
+    this.verifyModalOpen = true;
+  },
+  confirmVerify() {
+    if (this.selectedPurchase) {
+      window.location.href = '/compras/' + this.selectedPurchase.id + '/verificar';
+    }
+  },
+  purchasesList: [
+    {% for purchase in purchases %}
+    {
+      id: {{ purchase.id }},
+      supplier_invoice_code: '{{ purchase.supplier_invoice_code|e('js') }}',
+      supplier_name: '{{ purchase.supplier_name|e('js') }}',
+      supplier_alias: '{{ purchase.supplier_alias|e('js') }}',
+      created_at: '{{ purchase.created_at|e('js') }}',
+      verified_at: {% if purchase.verified_at is not null %}'{{ purchase.verified_at|e('js') }}'{% else %}null{% endif %}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  get filteredPurchases() {
+    if (!this.search.trim()) {
+      return this.purchasesList;
+    }
+    const q = this.search.toLowerCase().trim();
+    return this.purchasesList.filter(p =>
+      (p.supplier_invoice_code && p.supplier_invoice_code.toLowerCase().includes(q)) ||
+      (p.supplier_name && p.supplier_name.toLowerCase().includes(q)) ||
+      (p.supplier_alias && p.supplier_alias.toLowerCase().includes(q)) ||
+      (p.created_at && p.created_at.toLowerCase().includes(q))
+    );
+  },
+  get verifiedCount() {
+    return this.purchasesList.filter(p => p.verified_at !== null).length;
+  },
+  get pendingCount() {
+    return this.purchasesList.filter(p => p.verified_at === null).length;
+  }
+}">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/compras'}) }}
 

@@ -8,105 +8,94 @@
 {% block title %}Registrar Venta{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    sidebarOpen: false,
-    submitting: false,
-    latestRate: {% if latestExchangeRate %}{ id: {{ latestExchangeRate.id }}, usd_ves: {{ latestExchangeRate.usd_ves }}, usd_cop: {{ latestExchangeRate.usd_cop }} }{% else %}null{% endif %},
-    clientsList: [
-      {% for c in clients %}
-      { id: {{ c.id }}, name: '{{ c.name|e('js') }}' }{% if not loop.last %},{% endif %}
-      {% endfor %}
-    ],
-    batchesList: [
-      {% for b in availableBatches %}
-      {
-        purchase_item_id: {{ b.purchase_item_id }},
-        product_id: {{ b.product_id }},
-        product_name: '{{ b.product_name|e('js') }}',
-        product_category: '{{ b.product_category|e('js') }}',
-        default_price: {{ b.default_price }},
-        cost: {{ b.cost }},
-        supplier_alias: '{{ b.supplier_alias|e('js') }}',
-        supplier_invoice_code: '{{ b.supplier_invoice_code|e('js') }}',
-        available_quantity: {{ b.available_quantity }}
-      }{% if not loop.last %},{% endif %}
-      {% endfor %}
-    ],
-    items: [
-      { purchase_item_id: '', quantity: '1', product_price: '' }
-    ],
-    payments: [
-      { amount: '', currency: 'usd' }
-    ],
-    addItem() {
-      this.items.push({ purchase_item_id: '', quantity: '1', product_price: '' });
-    },
-    removeItem(index) {
-      if (this.items.length > 1) {
-        this.items.splice(index, 1);
-      }
-    },
-    addPayment() {
-      this.payments.push({ amount: '', currency: 'usd' });
-    },
-    removePayment(index) {
-      this.payments.splice(index, 1);
-    },
-    onBatchChange(item) {
-      const b = this.batchesList.find(x => x.purchase_item_id == item.purchase_item_id);
-      if (b && (!item.product_price || item.product_price === '')) {
-        item.product_price = b.default_price;
-      }
-    },
-    getBatch(id) {
-      return this.batchesList.find(x => x.purchase_item_id == id) || null;
-    },
-    get totalUSD() {
-      return this.items.reduce((sum, it) => {
-        const q = parseFloat(it.quantity) || 0;
-        const p = parseFloat(it.product_price) || 0;
-        return sum + (q * p);
-      }, 0);
-    },
-    get totalVES() {
-      if (!this.latestRate) return 0;
-      return this.totalUSD * this.latestRate.usd_ves;
-    },
-    get totalCOP() {
-      if (!this.latestRate) return 0;
-      return this.totalUSD * this.latestRate.usd_cop;
-    },
-    get totalPaidUSD() {
-      if (!this.latestRate) return 0;
-      return this.payments.reduce((sum, pm) => {
-        const a = parseFloat(pm.amount) || 0;
-        if (pm.currency === 'usd') return sum + a;
-        if (pm.currency === 'ves') return sum + (this.latestRate.usd_ves > 0 ? (a / this.latestRate.usd_ves) : 0);
-        if (pm.currency === 'cop') return sum + (this.latestRate.usd_cop > 0 ? (a / this.latestRate.usd_cop) : 0);
-        return sum;
-      }, 0);
-    },
-    formatUSD(v) {
-      return '$' + (Number(v) || 0).toFixed(2);
-    },
-    formatVES(v) {
-      return (Number(v) || 0).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Bs';
-    },
-    formatCOP(v) {
-      return (Number(v) || 0).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' COP';
-    },
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
+<body x-data="{
+  sidebarOpen: false,
+  submitting: false,
+  latestRate: {% if latestExchangeRate %}{ id: {{ latestExchangeRate.id }}, usd_ves: {{ latestExchangeRate.usd_ves }}, usd_cop: {{ latestExchangeRate.usd_cop }} }{% else %}null{% endif %},
+  clientsList: [
+    {% for c in clients %}
+    { id: {{ c.id }}, name: '{{ c.name|e('js') }}' }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  batchesList: [
+    {% for b in availableBatches %}
+    {
+      purchase_item_id: {{ b.purchase_item_id }},
+      product_id: {{ b.product_id }},
+      product_name: '{{ b.product_name|e('js') }}',
+      product_category: '{{ b.product_category|e('js') }}',
+      default_price: {{ b.default_price }},
+      cost: {{ b.cost }},
+      supplier_alias: '{{ b.supplier_alias|e('js') }}',
+      supplier_invoice_code: '{{ b.supplier_invoice_code|e('js') }}',
+      available_quantity: {{ b.available_quantity }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  items: [
+    { purchase_item_id: '', quantity: '1', product_price: '' }
+  ],
+  payments: [
+    { amount: '', currency: 'usd' }
+  ],
+  addItem() {
+    this.items.push({ purchase_item_id: '', quantity: '1', product_price: '' });
+  },
+  removeItem(index) {
+    if (this.items.length > 1) {
+      this.items.splice(index, 1);
     }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
+  },
+  addPayment() {
+    this.payments.push({ amount: '', currency: 'usd' });
+  },
+  removePayment(index) {
+    this.payments.splice(index, 1);
+  },
+  onBatchChange(item) {
+    const b = this.batchesList.find(x => x.purchase_item_id == item.purchase_item_id);
+    if (b && (!item.product_price || item.product_price === '')) {
+      item.product_price = b.default_price;
+    }
+  },
+  getBatch(id) {
+    return this.batchesList.find(x => x.purchase_item_id == id) || null;
+  },
+  get totalUSD() {
+    return this.items.reduce((sum, it) => {
+      const q = parseFloat(it.quantity) || 0;
+      const p = parseFloat(it.product_price) || 0;
+      return sum + (q * p);
+    }, 0);
+  },
+  get totalVES() {
+    if (!this.latestRate) return 0;
+    return this.totalUSD * this.latestRate.usd_ves;
+  },
+  get totalCOP() {
+    if (!this.latestRate) return 0;
+    return this.totalUSD * this.latestRate.usd_cop;
+  },
+  get totalPaidUSD() {
+    if (!this.latestRate) return 0;
+    return this.payments.reduce((sum, pm) => {
+      const a = parseFloat(pm.amount) || 0;
+      if (pm.currency === 'usd') return sum + a;
+      if (pm.currency === 'ves') return sum + (this.latestRate.usd_ves > 0 ? (a / this.latestRate.usd_ves) : 0);
+      if (pm.currency === 'cop') return sum + (this.latestRate.usd_cop > 0 ? (a / this.latestRate.usd_cop) : 0);
+      return sum;
+    }, 0);
+  },
+  formatUSD(v) {
+    return '$' + (Number(v) || 0).toFixed(2);
+  },
+  formatVES(v) {
+    return (Number(v) || 0).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Bs';
+  },
+  formatCOP(v) {
+    return (Number(v) || 0).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' COP';
+  },
+}">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/ventas'}) }}
 

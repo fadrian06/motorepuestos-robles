@@ -8,21 +8,7 @@
 {% block title %}Verificar Correo{% endblock %}
 
 {% block content %}
-<body
-  x-data="{
-    isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-    submitting: false,
-    init() {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.isDarkMode = mediaQuery.matches;
-      mediaQuery.addEventListener('change', (event) => {
-        this.isDarkMode = event.matches;
-      });
-    }
-  }"
-  :class="{ 'w3-dark-mode': isDarkMode }"
->
-
+<body x-data="{ submitting: false }">
   <main class="auth-card w3-animate-opacity">
     {{ include(
       'components/card-header.twig',
