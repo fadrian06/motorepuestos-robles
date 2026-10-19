@@ -8,7 +8,7 @@
 {% block title %}Comprobante de Venta {{ sale.code }}{% endblock %}
 
 {% block content %}
-<body x-data="{ sidebarOpen: false }">
+<body>
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/ventas'}) }}
 

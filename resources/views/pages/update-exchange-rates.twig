@@ -9,7 +9,6 @@
 
 {% block content %}
 <body x-data="{
-  sidebarOpen: false,
   submitting: false,
   rateVes: {{ (exchangeRate and exchangeRate['usd_ves']) ? exchangeRate['usd_ves'] : '0' }},
   rateCop: {{ (exchangeRate and exchangeRate['usd_cop']) ? exchangeRate['usd_cop'] : '0' }},

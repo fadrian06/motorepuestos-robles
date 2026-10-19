@@ -2,6 +2,7 @@
 <html
   x-data="{
     isDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+    {% block x_data %}{% endblock %}
   }"
   x-init="
     const mediaQuery = matchMedia('(prefers-color-scheme: dark)');

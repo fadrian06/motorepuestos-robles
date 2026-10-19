@@ -9,7 +9,6 @@
 
 {% block content %}
 <body x-data="{
-  sidebarOpen: false,
   submitting: false,
   latestRate: {% if latestExchangeRate %}{ id: {{ latestExchangeRate.id }}, usd_ves: {{ latestExchangeRate.usd_ves }}, usd_cop: {{ latestExchangeRate.usd_cop }} }{% else %}null{% endif %},
   clientsList: [

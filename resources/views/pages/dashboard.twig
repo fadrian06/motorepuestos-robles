@@ -8,7 +8,7 @@
 {% block title %}Panel de Control{% endblock %}
 
 {% block content %}
-<body x-data="{ sidebarOpen: false, userMenuOpen: false }">
+<body x-data="{ userMenuOpen: false }">
   {{ include('components/sidebar-backdrop.twig') }}
   {{ include('components/app-sidebar.twig', {active: '/'}) }}
 
