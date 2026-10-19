@@ -1,5 +1,10 @@
 {% extends "components/layout.twig" %}
 
+{% block head %}
+  {{ parent() }}
+  <link rel="stylesheet" href="/resources/styles/layout-guest.css">
+{% endblock %}
+
 {% block x_data %}
   sidebarOpen: false,
 {% endblock %}
