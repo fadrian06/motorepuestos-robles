@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fadrian06/psr-framework.git",
-                "reference": "95fad2ad8b49f07ea85e4abe14c5f44395f0e1fa"
+                "reference": "0ff4175a9399f0cde9cb93e5a4282ebefaba01ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fadrian06/psr-framework/zipball/95fad2ad8b49f07ea85e4abe14c5f44395f0e1fa",
-                "reference": "95fad2ad8b49f07ea85e4abe14c5f44395f0e1fa",
+                "url": "https://api.github.com/repos/fadrian06/psr-framework/zipball/0ff4175a9399f0cde9cb93e5a4282ebefaba01ab",
+                "reference": "0ff4175a9399f0cde9cb93e5a4282ebefaba01ab",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 "source": "https://github.com/fadrian06/psr-framework/tree/main",
                 "issues": "https://github.com/fadrian06/psr-framework/issues"
             },
-            "time": "2026-10-17T03:56:49+00:00"
+            "time": "2026-10-19T00:26:46+00:00"
         },
         {
             "name": "firebase/php-jwt",
